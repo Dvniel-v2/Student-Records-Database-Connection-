@@ -1,51 +1,116 @@
 # Student Records Database Connection
 
-A Flask application for managing student enrolment records with a clear
-presentation, service, and repository architecture backed by PostgreSQL.
+This project is a Flask web application for managing student records in a
+university database. It uses PostgreSQL for data storage, SQLAlchemy for database
+access, and a Bootstrap based interface inspired by the linked Figma design.
 
-## Stack
+The code is organised into three clear layers:
 
-- Flask and Jinja templates
-- Flask-SQLAlchemy
-- Flask-Migrate and Alembic
-- PostgreSQL with psycopg
-- Faker seed data
-- pytest, pytest-cov, Ruff, and Black
+1. Routes handle web requests and render pages.
+2. Services hold validation and business rules.
+3. Repositories handle direct database access.
+
+## Design And Planning Links
+
+Lucidchart database diagram:
+https://lucid.app/lucidchart/ad06d20a-3336-4adb-add4-77f31ad7f94c/edit?invitationId=inv_6f6bd50f-0f97-40bd-8323-8ab224c53b49&page=page1#
+
+Figma interface design:
+https://www.figma.com/design/9WqQOoMQ63DJAITQx6WDRU/University-Records-Database-Management-System?node-id=0-1&p=f&t=ZcNWLZ92BzlOmx4i-0
+
+## What The App Does
+
+The current app lets an administrator create, view, edit and delete student
+records. Each student record stores:
+
+1. Student number
+2. First name
+3. Last name
+4. Email address
+5. Course
+6. Enrolment date
+
+The interface includes a dashboard layout, student record table, quick action
+cards, student forms, detail pages and delete confirmation.
+
+## Main Technologies
+
+1. Flask
+2. Jinja templates
+3. Bootstrap
+4. Flask SQLAlchemy
+5. Flask Migrate and Alembic
+6. PostgreSQL
+7. psycopg
+8. pytest
+9. Ruff
+10. Black
 
 ## Project Structure
 
 ```text
 app/
-  models/student.py
-  repositories/student_repository.py
-  routes/main.py
-  services/student_service.py
-  static/css/style.css
-  static/js/main.js
+  models/
+  repositories/
+  routes/
+  services/
+  static/
   templates/
 docs/
+logs/
 migrations/
-scripts/seed_database.py
+scripts/
 tests/
+.env.example
+pyproject.toml
+requirements.txt
+run.py
+wsgi.py
 ```
+
+## Important Files
+
+`pyproject.toml` contains the project metadata, dependencies and tool settings
+for Black, Ruff and pytest.
+
+`requirements.txt` is the single install file. It points to the dependencies in
+`pyproject.toml`.
+
+`.env.example` shows the environment variables needed to run the app. Keep real
+passwords and secrets in a local `.env` file. The local `.env` file is ignored by
+Git.
+
+`logs/` is for local runtime logs. Log files are ignored by Git.
 
 ## Setup
 
-Create and activate a virtual environment:
+Create a virtual environment:
 
 ```powershell
 py -3.11 -m venv .venv
+```
+
+Activate it in Windows PowerShell:
+
+```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Install dependencies:
+Install the project dependencies:
 
 ```bash
 pip install -r requirements.txt
-pip install -r requirements-dev.txt
 ```
 
-Create `.env` from `.env.example` and update credentials if needed:
+Create your local environment file:
+
+```bash
+copy .env.example .env
+```
+
+Then update `.env` if your PostgreSQL username, password or port is different.
+
+Example values:
 
 ```env
 FLASK_APP=run.py
@@ -54,65 +119,86 @@ SECRET_KEY=replace-with-a-secure-key
 DATABASE_URL=postgresql+psycopg://postgres:password@localhost:5432/student_records
 ```
 
-## PostgreSQL
+## PostgreSQL Setup
 
-Create the development database:
+Create the development database in PostgreSQL:
 
 ```sql
 CREATE DATABASE student_records;
 ```
 
-pgAdmin can be used to inspect the `students` table and run local
-administration tasks, but schema changes should go through migrations.
+pgAdmin can be used to inspect tables and records during development. Schema
+changes should be handled through migrations.
 
-## Migrations
+## Database Migrations
 
-Create and apply migrations with Flask-Migrate:
+Create a migration after changing models:
 
 ```bash
-flask db migrate -m "create students table"
+flask db migrate -m "describe the change"
+```
+
+Apply migrations:
+
+```bash
 flask db upgrade
 ```
 
-For quick local setup without a migration history, create tables explicitly:
+For quick local setup, you can create the tables directly:
 
 ```bash
 flask init-db
 ```
 
-## Run
+## Run The App
 
 ```bash
 python run.py
 ```
 
-The app runs at `http://127.0.0.1:5000/`.
+Open the app at:
 
-## Seed Data
+```text
+http://127.0.0.1:5000/
+```
 
-After tables exist, seed realistic student records:
+## Seed Sample Data
+
+After the tables exist, add realistic student records:
 
 ```bash
 python scripts/seed_database.py
 ```
 
-The script avoids duplicate student numbers and email addresses.
+The seed script avoids duplicate student numbers and email addresses.
 
 ## Quality Checks
 
+Run linting:
+
 ```bash
 ruff check .
+```
+
+Check formatting:
+
+```bash
 black --check .
+```
+
+Run tests with coverage:
+
+```bash
 pytest --cov=app --cov-report=term-missing
 ```
 
-Format code with:
+Format the code:
 
 ```bash
 black .
 ```
 
-## Testing
+## Testing Notes
 
-Tests use the Flask testing configuration and an in-memory SQLite database.
-They do not connect to the development PostgreSQL database.
+Tests use the Flask testing configuration and an in memory SQLite database. They
+do not connect to the development PostgreSQL database.
