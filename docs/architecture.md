@@ -41,3 +41,19 @@ student number, update, delete, and email lookup for validation.
 
 PostgreSQL is the development and production database target. Tests use SQLite
 in memory through the testing configuration so test runs stay isolated.
+
+## Entry Points And Configuration
+
+`run.py` is the local development entry point and creates the app with the
+development configuration.
+
+`wsgi.py` is the deployment entry point and creates the app with the production
+configuration.
+
+The production configuration currently sets `DEBUG = False`. Further production
+hardening should be added before a real deployment.
+
+## Schema Management
+
+Flask Migrate and Alembic are the intended tools for tracked schema changes.
+The `flask init-db` command remains as a simple local setup convenience only.

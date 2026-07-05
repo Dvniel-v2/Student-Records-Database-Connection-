@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help improve the project
+about: Report a problem in the Student Records application
 title: ''
 labels: bug
 assignees: ''
@@ -8,17 +8,32 @@ assignees: ''
 
 ## Summary
 
-Describe the bug.
+Briefly explain the problem in the university records application.
 
-## Steps to reproduce
+## Affected Area
 
-1. Step one
-2. Step two
+State the affected entity or layer, such as Student, routes, services,
+repositories, models, templates, migrations or tests.
 
-## Expected behavior
+## Steps To Reproduce
 
-Describe what should happen.
+1. Describe the first action.
+2. Describe the next action.
+3. Describe the result seen.
 
-## Actual behavior
+## Expected Behaviour
 
-Describe what happened instead.
+Explain what should happen.
+
+## Actual Behaviour
+
+Explain what happened instead.
+
+## Database Or Migration Impact
+
+State whether the issue affects database tables, seed data, migrations or local
+environment configuration.
+
+## Checks Completed
+
+List any checks run, such as Ruff, Black, pytest or manual browser testing.

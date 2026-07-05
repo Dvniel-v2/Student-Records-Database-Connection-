@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest a university records feature or improvement
 title: ''
 labels: enhancement
 assignees: ''
@@ -8,12 +8,25 @@ assignees: ''
 
 ## Summary
 
-Describe the proposed feature.
+Briefly explain the proposed university records feature.
 
-## Motivation
+## Affected Entity Or Area
 
-Explain the problem or opportunity.
+State whether this affects Students, Courses, Modules, Enrolments, Grades,
+Reports, dashboard placeholders, database design or another part of the app.
 
-## Proposed solution
+## Why This Is Needed
 
-Describe how it could be implemented.
+Explain the problem, coursework requirement or user need.
+
+## Expected Behaviour
+
+Explain what the feature should do when complete.
+
+## Database Or Migration Impact
+
+State whether new models, migrations, seed data or query functions are expected.
+
+## Test Notes
+
+Describe the tests that should be added or updated.

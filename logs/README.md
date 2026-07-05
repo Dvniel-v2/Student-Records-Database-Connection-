@@ -1,5 +1,6 @@
 # Logs
 
-Runtime server logs can be written here during local development.
+This folder is reserved for local runtime logs if logging is added later.
 
-Log files are ignored by Git.
+The application does not currently configure file logging. Log files are ignored
+by Git.

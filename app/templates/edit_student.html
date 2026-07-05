@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Edit Student{% endblock %}
 {% block page_title %}Edit Student{% endblock %}
-{% block page_subtitle %}Update a complete student record and course assignment{% endblock %}
+{% block page_subtitle %}Update the student record and current course{% endblock %}
 {% block content %}
 <nav class="breadcrumb-strip" aria-label="breadcrumb">
   <a href="{{ url_for('main.index') }}">Students</a>
@@ -11,11 +11,11 @@
 
 <section class="panel form-panel">
   <h2>Student information</h2>
-  <p>Update the student identity, contact details and programme assignment.</p>
+  <p>Update the student identity, contact details and current course.</p>
   <form id="student-form" method="post" action="{{ url_for('main.edit_student', student_id=student.id) }}">
     <div class="row g-3">
       <div class="col-md-4">
-        <label class="form-label" for="student_number">Student ID</label>
+        <label class="form-label" for="student_number">Student Number</label>
         <input class="form-control" id="student_number" name="student_number" type="text" maxlength="20" value="{{ form.student_number if form else student.student_number }}" required />
       </div>
       <div class="col-md-4">

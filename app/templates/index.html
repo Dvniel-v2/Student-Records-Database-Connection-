@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}Student Records{% endblock %}
 {% block page_title %}Student Records{% endblock %}
-{% block page_subtitle %}Search, create, update and manage university students{% endblock %}
+{% block page_subtitle %}Create, update and manage student records{% endblock %}
 {% block content %}
 {% set student_count = students|length %}
-{% set course_count = students|map(attribute='course')|unique|list|length if students else 0 %}
+{# Non-student dashboard cards are presentation placeholders for later entities. #}
 <section class="row g-3 mb-4">
   <div class="col-12 col-sm-6 col-xl-3">
     <article class="metric-card">
@@ -17,25 +17,25 @@
   <div class="col-12 col-sm-6 col-xl-3">
     <article class="metric-card">
       <div class="metric-icon">CR</div>
-      <span class="metric-badge">+{{ course_count }}</span>
+      <span class="metric-badge muted">Placeholder</span>
       <p>Active courses</p>
-      <strong>{{ course_count }}</strong>
+      <strong>Planned</strong>
     </article>
   </div>
   <div class="col-12 col-sm-6 col-xl-3">
     <article class="metric-card">
       <div class="metric-icon">EN</div>
-      <span class="metric-badge">Open</span>
+      <span class="metric-badge muted">Placeholder</span>
       <p>Enrolments</p>
-      <strong>{{ student_count }}</strong>
+      <strong>Planned</strong>
     </article>
   </div>
   <div class="col-12 col-sm-6 col-xl-3">
     <article class="metric-card">
       <div class="metric-icon">GR</div>
-      <span class="metric-badge muted">0</span>
+      <span class="metric-badge muted">Placeholder</span>
       <p>Grades pending</p>
-      <strong>0</strong>
+      <strong>Planned</strong>
     </article>
   </div>
 </section>
@@ -56,7 +56,7 @@
           <table class="table align-middle student-table mb-0">
             <thead>
               <tr>
-                <th>Student ID</th>
+                <th>Student Number</th>
                 <th>Student</th>
                 <th>Course</th>
                 <th>Email</th>
@@ -120,11 +120,11 @@
 
     <form class="panel student-form" id="student-form" method="post" action="{{ url_for('main.create_student') }}">
       <h2>Add New Student</h2>
-      <p>Create a complete student record and initial course assignment.</p>
+      <p>Create a student record and enter the student's current course.</p>
 
       <div class="row g-3">
         <div class="col-12">
-          <label class="form-label" for="student_number">Student ID</label>
+          <label class="form-label" for="student_number">Student Number</label>
           <input class="form-control" id="student_number" name="student_number" type="text" maxlength="20" placeholder="S10249" value="{{ form.student_number if form else '' }}" required />
         </div>
         <div class="col-sm-6">

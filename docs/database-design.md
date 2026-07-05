@@ -25,3 +25,10 @@ numbers, duplicate emails, and enrolment dates before committing changes.
 Local development uses PostgreSQL with the `student_records` database name.
 pgAdmin is useful for inspecting rows and checking schema state, but migrations
 are the source of truth for schema changes.
+
+## Planned Entities
+
+The interface includes placeholders for Courses, Modules, Enrolments, Grades and
+Reports. These entities are not represented by database tables yet. They should
+receive their own models, relationships, repositories, services, routes and
+tests when that part of the system is implemented.

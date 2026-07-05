@@ -10,7 +10,7 @@ from app.repositories.student_repository import StudentRepository
 
 
 def _create_student(repository: StudentRepository, **overrides):
-    data = {
+    student_attrs = {
         "student_number": "SR1001",
         "first_name": "Ada",
         "last_name": "Lovelace",
@@ -18,8 +18,8 @@ def _create_student(repository: StudentRepository, **overrides):
         "course": "Computer Science",
         "enrolment_date": date(2024, 9, 16),
     }
-    data.update(overrides)
-    student = repository.create(**data)
+    student_attrs.update(overrides)
+    student = repository.create(**student_attrs)
     db.session.commit()
     return student
 

@@ -30,9 +30,9 @@ class StudentService:
     def __init__(self, repository: StudentRepository | None = None) -> None:
         self.repository = repository or StudentRepository()
 
-    def create_student(self, **data: Any) -> Student:
+    def create_student(self, **student_fields: Any) -> Student:
         """Validate and persist a new student."""
-        cleaned = self._validate_student_data(data)
+        cleaned = self._validate_student_data(student_fields)
         self._ensure_unique_student_number(cleaned["student_number"])
         self._ensure_unique_email(cleaned["email"])
 
@@ -61,13 +61,13 @@ class StudentService:
         """Return a student by student number."""
         return self.repository.get_by_student_number(student_number.strip())
 
-    def update_student(self, student_id: int, **data: Any) -> Student:
+    def update_student(self, student_id: int, **student_fields: Any) -> Student:
         """Validate and update an existing student."""
         student = self.get_student(student_id)
         if student is None:
             raise StudentValidationError("Student not found.")
 
-        cleaned = self._validate_student_data(data)
+        cleaned = self._validate_student_data(student_fields)
         self._ensure_unique_student_number(cleaned["student_number"], student.id)
         self._ensure_unique_email(cleaned["email"], student.id)
 
@@ -97,15 +97,17 @@ class StudentService:
             db.session.rollback()
             raise StudentServiceError("Unable to delete student.") from exc
 
-    def _validate_student_data(self, data: dict[str, Any]) -> dict[str, Any]:
+    def _validate_student_data(self, student_fields: dict[str, Any]) -> dict[str, Any]:
         student_number = self._required_text(
-            data.get("student_number"), "Student number"
+            student_fields.get("student_number"), "Student number"
         )
-        first_name = self._required_text(data.get("first_name"), "First name")
-        last_name = self._required_text(data.get("last_name"), "Last name")
-        email = self._required_text(data.get("email"), "Email").lower()
-        course = self._required_text(data.get("course"), "Course")
-        enrolment_date = self._parse_enrolment_date(data.get("enrolment_date"))
+        first_name = self._required_text(student_fields.get("first_name"), "First name")
+        last_name = self._required_text(student_fields.get("last_name"), "Last name")
+        email = self._required_text(student_fields.get("email"), "Email").lower()
+        course = self._required_text(student_fields.get("course"), "Course")
+        enrolment_date = self._parse_enrolment_date(
+            student_fields.get("enrolment_date")
+        )
 
         if len(student_number) > 20:
             raise StudentValidationError(

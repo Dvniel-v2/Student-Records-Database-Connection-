@@ -3,6 +3,8 @@
 This project is a Flask web application for managing student records in a
 university database. It uses PostgreSQL for data storage, SQLAlchemy for database
 access, and a Bootstrap based interface inspired by the linked Figma design.
+It is the first functional stage of a Student Records Management System. The
+interface branding uses the name UniRecords.
 
 The code is organised into three clear layers:
 
@@ -32,6 +34,35 @@ records. Each student record stores:
 
 The interface includes a dashboard layout, student record table, quick action
 cards, student forms, detail pages and delete confirmation.
+
+## Current Development Status
+
+The project is currently being developed in stages.
+
+The Student section is the first functional part of the university records
+management system. It currently supports creating, viewing, editing and deleting
+student records through the Flask application and database connection.
+
+Some interface elements are included as design placeholders to demonstrate the
+intended direction of the complete system. These currently include:
+
+1. Courses
+2. Modules
+3. Enrolments
+4. Grades
+5. Reports
+6. Dashboard statistics
+7. Global search
+8. Notifications
+9. Help controls
+
+These placeholder elements are not intended to represent completed
+functionality. They provide a visual structure for future development and show
+how additional university record entities may be incorporated into the
+interface.
+
+As development continues, these areas will be connected to their own database
+models, service logic, repository functions, routes and tests.
 
 ## Main Technologies
 
@@ -80,7 +111,12 @@ for Black, Ruff and pytest.
 passwords and secrets in a local `.env` file. The local `.env` file is ignored by
 Git.
 
-`logs/` is for local runtime logs. Log files are ignored by Git.
+`run.py` is the local development entry point. `wsgi.py` is the deployment
+server entry point.
+
+`logs/` is reserved for local runtime logs if file logging is added later. The
+application does not currently configure file logging. Log files are ignored by
+Git.
 
 ## Setup
 
@@ -114,7 +150,6 @@ Example values:
 
 ```env
 FLASK_APP=run.py
-FLASK_ENV=development
 SECRET_KEY=replace-with-a-secure-key
 DATABASE_URL=postgresql+psycopg://postgres:password@localhost:5432/student_records
 ```
@@ -131,6 +166,9 @@ pgAdmin can be used to inspect tables and records during development. Schema
 changes should be handled through migrations.
 
 ## Database Migrations
+
+The repository includes a Flask Migrate and Alembic scaffold. Migrations are the
+preferred method for tracked schema changes once revision files are created.
 
 Create a migration after changing models:
 
@@ -150,7 +188,12 @@ For quick local setup, you can create the tables directly:
 flask init-db
 ```
 
+`flask init-db` is a convenience command for simple local setup. It is not a
+replacement for tracked migrations.
+
 ## Run The App
+
+For local development, use:
 
 ```bash
 python run.py
@@ -161,6 +204,9 @@ Open the app at:
 ```text
 http://127.0.0.1:5000/
 ```
+
+Deployment servers should import `app` from `wsgi.py`, which uses the production
+configuration class.
 
 ## Seed Sample Data
 

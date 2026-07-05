@@ -22,6 +22,8 @@ class Config:
 class DevelopmentConfig(Config):
     """Development configuration."""
 
+    DEBUG = True
+
 
 class TestingConfig(Config):
     """Testing configuration with an in-memory SQLite database."""
@@ -31,7 +33,9 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    """Production configuration."""
+    """Production configuration for deployed environments."""
+
+    DEBUG = False
 
 
 config = {
