@@ -1,5 +1,7 @@
 .env
 .envrc
+.agent/
+.agents/
 .venv/
 venv/
 env/
@@ -24,6 +26,8 @@ Thumbs.db
 *.sqlite
 *.db
 *.log
+logs/*
+!logs/README.md
 instance/
 tmp/
 temp/

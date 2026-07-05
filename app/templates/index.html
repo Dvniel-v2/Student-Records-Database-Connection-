@@ -1,67 +1,163 @@
 {% extends 'base.html' %}
-{% block title %}Home{% endblock %}
+{% block title %}Student Records{% endblock %}
+{% block page_title %}Student Records{% endblock %}
+{% block page_subtitle %}Search, create, update and manage university students{% endblock %}
 {% block content %}
-<section class="grid">
-  <form class="card" id="student-form" method="post" action="{{ url_for('main.create_student') }}">
-    <h2>Create a student record</h2>
-    <label for="student_number">Student number</label>
-    <input id="student_number" name="student_number" type="text" maxlength="20" value="{{ form.student_number if form else '' }}" required />
+{% set student_count = students|length %}
+{% set course_count = students|map(attribute='course')|unique|list|length if students else 0 %}
+<section class="row g-3 mb-4">
+  <div class="col-12 col-sm-6 col-xl-3">
+    <article class="metric-card">
+      <div class="metric-icon">ST</div>
+      <span class="metric-badge">Live</span>
+      <p>Total students</p>
+      <strong>{{ student_count }}</strong>
+    </article>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <article class="metric-card">
+      <div class="metric-icon">CR</div>
+      <span class="metric-badge">+{{ course_count }}</span>
+      <p>Active courses</p>
+      <strong>{{ course_count }}</strong>
+    </article>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <article class="metric-card">
+      <div class="metric-icon">EN</div>
+      <span class="metric-badge">Open</span>
+      <p>Enrolments</p>
+      <strong>{{ student_count }}</strong>
+    </article>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <article class="metric-card">
+      <div class="metric-icon">GR</div>
+      <span class="metric-badge muted">0</span>
+      <p>Grades pending</p>
+      <strong>0</strong>
+    </article>
+  </div>
+</section>
 
-    <label for="first_name">First name</label>
-    <input id="first_name" name="first_name" type="text" maxlength="80" value="{{ form.first_name if form else '' }}" required />
-
-    <label for="last_name">Last name</label>
-    <input id="last_name" name="last_name" type="text" maxlength="80" value="{{ form.last_name if form else '' }}" required />
-
-    <label for="email">Email</label>
-    <input id="email" name="email" type="email" maxlength="255" value="{{ form.email if form else '' }}" required />
-
-    <label for="course">Course</label>
-    <input id="course" name="course" type="text" maxlength="120" value="{{ form.course if form else '' }}" required />
-
-    <label for="enrolment_date">Enrolment date</label>
-    <input id="enrolment_date" name="enrolment_date" type="date" value="{{ form.enrolment_date if form else '' }}" required />
-
-    <button type="submit">Save student</button>
-    <p id="form-status" class="helper-text">Fill in the form to add a student record.</p>
-  </form>
-
-  <section class="card">
-    <h2>Student records</h2>
-    {% if students %}
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Number</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Course</th>
-              <th>Enrolment</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for student in students %}
-              <tr>
-                <td>{{ student.student_number }}</td>
-                <td>{{ student.first_name }} {{ student.last_name }}</td>
-                <td>{{ student.email }}</td>
-                <td>{{ student.course }}</td>
-                <td>{{ student.enrolment_date }}</td>
-                <td class="actions">
-                  <a href="{{ url_for('main.view_student', student_id=student.id) }}">View</a>
-                  <a href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit</a>
-                  <a href="{{ url_for('main.delete_student_confirm', student_id=student.id) }}">Delete</a>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+<section class="row g-4 align-items-start">
+  <div class="col-12 col-xl-8">
+    <div class="panel" id="student-records">
+      <div class="panel-header">
+        <div>
+          <h2>Recently updated students</h2>
+          <p>Latest changes across student records</p>
+        </div>
+        <a class="btn btn-outline-primary btn-sm" href="#student-form">Add student</a>
       </div>
-    {% else %}
-      <p>No student records yet. Add the first one.</p>
-    {% endif %}
-  </section>
+
+      {% if students %}
+        <div class="table-responsive">
+          <table class="table align-middle student-table mb-0">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Email</th>
+                <th>Enrolled</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+                <tr>
+                  <td class="fw-semibold">{{ student.student_number }}</td>
+                  <td>{{ student.first_name }} {{ student.last_name }}</td>
+                  <td>{{ student.course }}</td>
+                  <td>{{ student.email }}</td>
+                  <td>{{ student.enrolment_date }}</td>
+                  <td><span class="status-pill active">Active</span></td>
+                  <td>
+                    <div class="table-actions">
+                      <a href="{{ url_for('main.view_student', student_id=student.id) }}">View</a>
+                      <a href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit</a>
+                      <a class="danger-link" href="{{ url_for('main.delete_student_confirm', student_id=student.id) }}">Delete</a>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <span class="metric-icon">ST</span>
+          <h3>No student records yet.</h3>
+          <p>Add the first student record to populate the university database.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-4">
+    <div class="panel quick-actions mb-4">
+      <h2>Quick actions</h2>
+      <p>Common record-management tasks</p>
+      <a class="quick-action" href="#student-form">
+        <span class="metric-icon">ST</span>
+        <span><strong>Add new student</strong><small>Create a student profile</small></span>
+      </a>
+      <span class="quick-action disabled">
+        <span class="metric-icon">EN</span>
+        <span><strong>Create enrolment</strong><small>Assign student to modules</small></span>
+      </span>
+      <span class="quick-action disabled">
+        <span class="metric-icon">GR</span>
+        <span><strong>Record grades</strong><small>Update assessment outcomes</small></span>
+      </span>
+      <span class="quick-action disabled">
+        <span class="metric-icon">RP</span>
+        <span><strong>Generate report</strong><small>Export academic records</small></span>
+      </span>
+    </div>
+
+    <form class="panel student-form" id="student-form" method="post" action="{{ url_for('main.create_student') }}">
+      <h2>Add New Student</h2>
+      <p>Create a complete student record and initial course assignment.</p>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label" for="student_number">Student ID</label>
+          <input class="form-control" id="student_number" name="student_number" type="text" maxlength="20" placeholder="S10249" value="{{ form.student_number if form else '' }}" required />
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label" for="first_name">First name</label>
+          <input class="form-control" id="first_name" name="first_name" type="text" maxlength="80" placeholder="e.g. Amelia" value="{{ form.first_name if form else '' }}" required />
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label" for="last_name">Last name</label>
+          <input class="form-control" id="last_name" name="last_name" type="text" maxlength="80" placeholder="e.g. Morgan" value="{{ form.last_name if form else '' }}" required />
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="email">University email</label>
+          <input class="form-control" id="email" name="email" type="email" maxlength="255" placeholder="student@university.ac.uk" value="{{ form.email if form else '' }}" required />
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="course">Course</label>
+          <input class="form-control" id="course" name="course" type="text" maxlength="120" placeholder="BSc Computer Science" value="{{ form.course if form else '' }}" required />
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="enrolment_date">Start date</label>
+          <input class="form-control" id="enrolment_date" name="enrolment_date" type="date" value="{{ form.enrolment_date if form else '' }}" required />
+        </div>
+      </div>
+
+      <div class="validation-note">
+        Required fields are validated before the record is saved to PostgreSQL.
+      </div>
+      <div class="d-flex gap-2 justify-content-end">
+        <button class="btn btn-light" type="reset">Cancel</button>
+        <button class="btn btn-primary" type="submit">Create student</button>
+      </div>
+      <p id="form-status" class="form-status">Ready to save a student record.</p>
+    </form>
+  </div>
 </section>
 {% endblock %}

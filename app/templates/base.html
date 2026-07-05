@@ -4,25 +4,85 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Student Records{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9Oer+R8W1k5r5i4yR4mY4xvqI5CXR+8eIa7tFM0G4uK"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   </head>
   <body>
-    <main class="page">
-      <header class="hero">
-        <h1>Student Records Database</h1>
-        <p>Manage student enrolment details with PostgreSQL persistence.</p>
-      </header>
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <section class="messages" aria-live="polite">
-            {% for category, message in messages %}
-              <div class="message {{ category }}">{{ message }}</div>
-            {% endfor %}
-          </section>
-        {% endif %}
-      {% endwith %}
-      {% block content %}{% endblock %}
-    </main>
+    <div class="app-shell">
+      <aside class="app-sidebar">
+        <a class="brand-lockup" href="{{ url_for('main.index') }}" aria-label="UniRecords home">
+          <span class="brand-mark">UR</span>
+          <span>
+            <span class="brand-name">UniRecords</span>
+            <span class="brand-caption">Database Manager</span>
+          </span>
+        </a>
+
+        <nav class="nav flex-column sidebar-nav" aria-label="Primary navigation">
+          <a class="nav-link active" href="{{ url_for('main.index') }}">
+            <span class="nav-token">DB</span>
+            Dashboard
+          </a>
+          <a class="nav-link" href="{{ url_for('main.index') }}#student-records">
+            <span class="nav-token">ST</span>
+            Students
+          </a>
+          <span class="nav-link disabled"><span class="nav-token">CR</span>Courses</span>
+          <span class="nav-link disabled"><span class="nav-token">MD</span>Modules</span>
+          <span class="nav-link disabled"><span class="nav-token">EN</span>Enrolments</span>
+          <span class="nav-link disabled"><span class="nav-token">GR</span>Grades</span>
+          <span class="nav-link disabled"><span class="nav-token">RP</span>Reports</span>
+        </nav>
+
+        <div class="sidebar-profile">
+          <span class="profile-avatar">DC</span>
+          <span>
+            <span class="profile-name">Daniel Cho</span>
+            <span class="profile-role">Administrator</span>
+          </span>
+        </div>
+      </aside>
+
+      <main class="app-main">
+        <header class="app-topbar">
+          <div>
+            <h1>{% block page_title %}Student Records{% endblock %}</h1>
+            <p>{% block page_subtitle %}Search, create, update and manage university students{% endblock %}</p>
+          </div>
+          <div class="topbar-actions">
+            <label class="visually-hidden" for="global-search">Search records</label>
+            <input id="global-search" class="form-control form-control-sm" type="search" placeholder="Search records..." />
+            <button class="icon-button" type="button" aria-label="Help">?</button>
+            <button class="icon-button" type="button" aria-label="Notifications">N</button>
+          </div>
+        </header>
+
+        <section class="app-content">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <div class="toast-stack" aria-live="polite">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ 'danger' if category == 'error' else category }} mb-2" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+          {% block content %}{% endblock %}
+        </section>
+      </main>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>
 </html>

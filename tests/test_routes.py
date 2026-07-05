@@ -5,7 +5,8 @@ def test_index_page_renders(client):
     response = client.get("/")
 
     assert response.status_code == 200
-    assert b"Student Records Database" in response.data
+    assert b"UniRecords" in response.data
+    assert b"Student Records" in response.data
 
 
 def test_create_student_with_valid_data(client, student_data):
@@ -84,7 +85,7 @@ def test_delete_confirmation(client, student):
     response = client.get(f"/students/{student.id}/delete")
 
     assert response.status_code == 200
-    assert b"Delete student record" in response.data
+    assert b"Delete Student" in response.data
 
 
 def test_delete_student_success(client, student):

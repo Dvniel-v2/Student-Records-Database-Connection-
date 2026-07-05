@@ -1,22 +1,52 @@
 {% extends 'base.html' %}
 {% block title %}Student Details{% endblock %}
+{% block page_title %}{{ student.first_name }} {{ student.last_name }}{% endblock %}
+{% block page_subtitle %}Student profile and university record details{% endblock %}
 {% block content %}
-<section class="card narrow">
-  <h2>{{ student.first_name }} {{ student.last_name }}</h2>
-  <dl class="details">
-    <dt>Student number</dt>
-    <dd>{{ student.student_number }}</dd>
-    <dt>Email</dt>
-    <dd>{{ student.email }}</dd>
-    <dt>Course</dt>
-    <dd>{{ student.course }}</dd>
-    <dt>Enrolment date</dt>
-    <dd>{{ student.enrolment_date }}</dd>
-  </dl>
-  <div class="actions">
-    <a href="{{ url_for('main.index') }}">All students</a>
-    <a href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit</a>
-    <a href="{{ url_for('main.delete_student_confirm', student_id=student.id) }}">Delete</a>
+<section class="row g-4">
+  <div class="col-12 col-lg-7">
+    <article class="panel profile-panel">
+      <div class="student-avatar">{{ student.first_name[0] }}{{ student.last_name[0] }}</div>
+      <div>
+        <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+        <p>{{ student.course }}</p>
+      </div>
+      <dl class="detail-grid">
+        <dt>Student ID</dt>
+        <dd>{{ student.student_number }}</dd>
+        <dt>Email</dt>
+        <dd>{{ student.email }}</dd>
+        <dt>Course</dt>
+        <dd>{{ student.course }}</dd>
+        <dt>Enrolment date</dt>
+        <dd>{{ student.enrolment_date }}</dd>
+        <dt>Status</dt>
+        <dd><span class="status-pill active">Active</span></dd>
+      </dl>
+      <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-light" href="{{ url_for('main.index') }}">All students</a>
+        <a class="btn btn-primary" href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit student</a>
+        <a class="btn btn-outline-danger" href="{{ url_for('main.delete_student_confirm', student_id=student.id) }}">Delete</a>
+      </div>
+    </article>
+  </div>
+  <div class="col-12 col-lg-5">
+    <aside class="panel quick-actions">
+      <h2>Record tasks</h2>
+      <p>Common actions for this student profile</p>
+      <span class="quick-action disabled">
+        <span class="metric-icon">EN</span>
+        <span><strong>Create enrolment</strong><small>Assign student to modules</small></span>
+      </span>
+      <span class="quick-action disabled">
+        <span class="metric-icon">GR</span>
+        <span><strong>Record grades</strong><small>Update assessment outcomes</small></span>
+      </span>
+      <span class="quick-action disabled">
+        <span class="metric-icon">RP</span>
+        <span><strong>Generate report</strong><small>Export academic records</small></span>
+      </span>
+    </aside>
   </div>
 </section>
 {% endblock %}
