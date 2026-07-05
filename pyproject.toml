@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "student-records-database-connection"
+version = "0.1.0"
+description = "A three-layer Flask starter with PostgreSQL and SQLAlchemy"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Your Name"}]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

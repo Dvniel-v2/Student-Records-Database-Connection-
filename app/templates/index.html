@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="grid">
+  <form class="card" id="record-form" method="post" action="{{ url_for('main.create_record') }}">
+    <h2>Create a record</h2>
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" required />
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <button type="submit">Save record</button>
+    <p id="form-status" class="helper-text">Fill in the form to add a new record.</p>
+  </form>
+
+  <section class="card">
+    <h2>Existing records</h2>
+    {% if records %}
+      <ul class="record-list">
+        {% for record in records %}
+          <li>
+            <strong>{{ record.name }}</strong>
+            <p>{{ record.description }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No records yet. Add the first one.</p>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}
