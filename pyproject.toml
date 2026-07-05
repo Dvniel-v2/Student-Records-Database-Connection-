@@ -28,6 +28,10 @@ dev = [
     "black>=24.0,<25.0",
 ]
 
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = ["docs*", "logs*", "migrations*", "scripts*", "tests*"]
+
 [tool.black]
 line-length = 88
 target-version = ["py311"]
