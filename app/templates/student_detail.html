@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Student Details{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+  <dl class="details">
+    <dt>Student number</dt>
+    <dd>{{ student.student_number }}</dd>
+    <dt>Email</dt>
+    <dd>{{ student.email }}</dd>
+    <dt>Course</dt>
+    <dd>{{ student.course }}</dd>
+    <dt>Enrolment date</dt>
+    <dd>{{ student.enrolment_date }}</dd>
+  </dl>
+  <div class="actions">
+    <a href="{{ url_for('main.index') }}">All students</a>
+    <a href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit</a>
+    <a href="{{ url_for('main.delete_student_confirm', student_id=student.id) }}">Delete</a>
+  </div>
+</section>
+{% endblock %}

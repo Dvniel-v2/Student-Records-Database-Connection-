@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('record-form');
+  const form = document.getElementById('student-form');
   const status = document.getElementById('form-status');
 
   if (!form || !status) {
@@ -7,6 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   form.addEventListener('submit', () => {
-    status.textContent = 'Saving your record...';
+    status.textContent = 'Saving student record...';
   });
 });

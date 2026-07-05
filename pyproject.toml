@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "A three-layer Flask starter with PostgreSQL and SQLAlchemy"
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [{name = "Your Name"}]
+authors = [{name = "Daniel Cho"}]
 
 [tool.black]
 line-length = 88

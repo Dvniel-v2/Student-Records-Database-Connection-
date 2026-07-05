@@ -1,9 +1,43 @@
 # Architecture
 
-This project follows a three-layer architecture:
+The application follows a three-layer structure for the Student Records domain.
 
-1. Presentation layer: Flask templates, CSS, and JavaScript provide the user experience.
-2. Application layer: Flask routes and service objects contain business logic and validation.
-3. Data layer: SQLAlchemy models and repository functions manage database access.
+## Presentation Layer
 
-The application factory pattern keeps configuration and initialization centralized.
+Flask routes in `app/routes/main.py` receive HTTP requests and render templates.
+Templates display student fields, create and edit forms, detail pages, and delete
+confirmation screens. Static CSS and JavaScript stay in `app/static`.
+
+Routes do not query SQLAlchemy directly and do not contain business validation.
+They collect form data, call `StudentService`, and translate validation or
+database errors into user-friendly flash messages.
+
+## Service Layer
+
+`app/services/student_service.py` owns business rules for students:
+
+- required fields
+- email format
+- unique student number
+- unique email address
+- sensible first and last name lengths
+- valid enrolment dates
+
+The service commits successful changes and rolls back failed database writes.
+
+## Repository Layer
+
+`app/repositories/student_repository.py` is the only layer that performs direct
+database access. It supports student creation, listing, lookup by ID, lookup by
+student number, update, delete, and email lookup for validation.
+
+## Data Flow
+
+1. A user submits a form or opens a student page.
+2. The route calls `StudentService`.
+3. The service validates data and calls `StudentRepository`.
+4. The repository reads or writes SQLAlchemy models.
+5. The route renders a response with success or error messaging.
+
+PostgreSQL is the development and production database target. Tests use SQLite
+in memory through the testing configuration so test runs stay isolated.

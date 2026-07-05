@@ -1,123 +1,51 @@
 # Student Records Database Connection
 
-A complete starter repository for a three-layer, database-enabled Flask web application using PostgreSQL, SQLAlchemy, and a simple HTML/CSS/JavaScript frontend.
+A Flask application for managing student enrolment records with a clear
+presentation, service, and repository architecture backed by PostgreSQL.
 
-## Overview
+## Stack
 
-This project demonstrates a clean separation of concerns across three layers:
-
-- Presentation layer: Flask templates, CSS, and JavaScript
-- Application layer: Flask routes and service classes with validation and error handling
-- Data layer: SQLAlchemy models and repository functions backed by PostgreSQL
-
-## Technology stack
-
-- Flask
+- Flask and Jinja templates
 - Flask-SQLAlchemy
-- SQLAlchemy
-- psycopg
-- python-dotenv
-- PostgreSQL
-- pytest
-- Ruff
-- Black
+- Flask-Migrate and Alembic
+- PostgreSQL with psycopg
+- Faker seed data
+- pytest, pytest-cov, Ruff, and Black
 
-## Repository structure
+## Project Structure
 
 ```text
-project-root/
-├── app/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── extensions.py
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   └── main.py
-│   ├── models/
-│   │   ├── __init__.py
-│   │   └── example_model.py
-│   ├── services/
-│   │   ├── __init__.py
-│   │   └── example_service.py
-│   ├── repositories/
-│   │   ├── __init__.py
-│   │   └── example_repository.py
-│   ├── templates/
-│   │   ├── base.html
-│   │   └── index.html
-│   └── static/
-│       ├── css/
-│       │   └── style.css
-│       └── js/
-│           └── main.js
-├── tests/
-├── scripts/
-├── migrations/
-├── docs/
-├── .github/
-├── .env.example
-├── .gitignore
-├── pyproject.toml
-├── requirements.txt
-├── requirements-dev.txt
-├── pytest.ini
-├── README.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── run.py
-└── wsgi.py
+app/
+  models/student.py
+  repositories/student_repository.py
+  routes/main.py
+  services/student_service.py
+  static/css/style.css
+  static/js/main.js
+  templates/
+docs/
+migrations/
+scripts/seed_database.py
+tests/
 ```
 
-## Prerequisites
+## Setup
 
-- Python 3.11+
-- PostgreSQL installed and running
-- Optional: pgAdmin for database administration
-
-## PostgreSQL setup
-
-1. Create a database in PostgreSQL, for example:
-
-   ```sql
-   CREATE DATABASE student_records;
-   ```
-
-2. Update the connection string in `.env` to match your local setup.
-
-3. For local development, you can use pgAdmin to inspect the `records` table after running the app.
-
-## Virtual environment setup
-
-### Windows PowerShell
+Create and activate a virtual environment:
 
 ```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-### macOS/Linux terminal
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-## Dependency installation
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
 
-## Environment variable setup
-
-Copy the example file and update the values:
-
-```bash
-cp .env.example .env
-```
-
-Example values:
+Create `.env` from `.env.example` and update credentials if needed:
 
 ```env
 FLASK_APP=run.py
@@ -126,56 +54,65 @@ SECRET_KEY=replace-with-a-secure-key
 DATABASE_URL=postgresql+psycopg://postgres:password@localhost:5432/student_records
 ```
 
-## Run the application
+## PostgreSQL
+
+Create the development database:
+
+```sql
+CREATE DATABASE student_records;
+```
+
+pgAdmin can be used to inspect the `students` table and run local
+administration tasks, but schema changes should go through migrations.
+
+## Migrations
+
+Create and apply migrations with Flask-Migrate:
+
+```bash
+flask db migrate -m "create students table"
+flask db upgrade
+```
+
+For quick local setup without a migration history, create tables explicitly:
+
+```bash
+flask init-db
+```
+
+## Run
 
 ```bash
 python run.py
 ```
 
-The app will be available at `http://127.0.0.1:5000/`.
+The app runs at `http://127.0.0.1:5000/`.
 
-## Seed the database
+## Seed Data
+
+After tables exist, seed realistic student records:
 
 ```bash
 python scripts/seed_database.py
 ```
 
-## Run tests
+The script avoids duplicate student numbers and email addresses.
 
-```bash
-pytest
-```
-
-## Run formatting and linting
+## Quality Checks
 
 ```bash
 ruff check .
 black --check .
+pytest --cov=app --cov-report=term-missing
 ```
 
-To format code:
+Format code with:
 
 ```bash
 black .
 ```
 
-## Git and GitHub workflow
+## Testing
 
-1. Create a repository on GitHub.
-2. Initialise git locally.
-3. Commit and push your changes.
-
-```bash
-git init
-git add .
-git commit -m "Initial project structure"
-git branch -M main
-git remote add origin <repository-url>
-git push -u origin main
-```
-
-## Troubleshooting
-
-- If the database connection fails, confirm that PostgreSQL is running and the `DATABASE_URL` is correct.
-- If the app fails to start, ensure that the virtual environment is activated and dependencies are installed.
-- If tests fail, verify that `pytest` is using the application test configuration in `tests/conftest.py`.
+Tests use the Flask testing configuration and an in-memory SQLite database.
+They do not connect to the development PostgreSQL database.

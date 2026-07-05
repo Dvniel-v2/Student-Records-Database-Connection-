@@ -24,7 +24,7 @@ body {
 .grid {
   display: grid;
   gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
 }
 
 .card {
@@ -60,8 +60,72 @@ button:hover {
   background: #1d4ed8;
 }
 
-.record-list {
-  padding-left: 1rem;
+.danger {
+  background: #b91c1c;
+}
+
+.danger:hover {
+  background: #991b1b;
+}
+
+.button-link,
+.actions a {
+  color: #1d4ed8;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.button-link:hover,
+.actions a:hover {
+  text-decoration: underline;
+}
+
+.narrow {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+
+th {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.75rem 1rem;
+}
+
+.details dt {
+  color: #475569;
+  font-weight: 700;
+}
+
+.details dd {
+  margin: 0;
 }
 
 .message {
@@ -83,4 +147,10 @@ button:hover {
 .helper-text {
   color: #64748b;
   font-size: 0.95rem;
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

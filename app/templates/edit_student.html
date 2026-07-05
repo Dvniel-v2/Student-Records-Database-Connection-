@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Edit Student{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h2>Edit student record</h2>
+  <form id="student-form" method="post" action="{{ url_for('main.edit_student', student_id=student.id) }}">
+    <label for="student_number">Student number</label>
+    <input id="student_number" name="student_number" type="text" maxlength="20" value="{{ form.student_number if form else student.student_number }}" required />
+
+    <label for="first_name">First name</label>
+    <input id="first_name" name="first_name" type="text" maxlength="80" value="{{ form.first_name if form else student.first_name }}" required />
+
+    <label for="last_name">Last name</label>
+    <input id="last_name" name="last_name" type="text" maxlength="80" value="{{ form.last_name if form else student.last_name }}" required />
+
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" maxlength="255" value="{{ form.email if form else student.email }}" required />
+
+    <label for="course">Course</label>
+    <input id="course" name="course" type="text" maxlength="120" value="{{ form.course if form else student.course }}" required />
+
+    <label for="enrolment_date">Enrolment date</label>
+    <input id="enrolment_date" name="enrolment_date" type="date" value="{{ form.enrolment_date if form else student.enrolment_date.isoformat() }}" required />
+
+    <button type="submit">Update student</button>
+    <a class="button-link" href="{{ url_for('main.view_student', student_id=student.id) }}">Cancel</a>
+    <p id="form-status" class="helper-text">Update the student details.</p>
+  </form>
+</section>
+{% endblock %}

@@ -1,5 +1,5 @@
 """Database models for the application."""
 
-from app.models.example_model import Record
+from app.models.student import Student
 
-__all__ = ["Record"]
+__all__ = ["Student"]

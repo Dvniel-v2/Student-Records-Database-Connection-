@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Delete Student{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h2>Delete student record</h2>
+  <p>Delete {{ student.first_name }} {{ student.last_name }} from Student Records?</p>
+  <form method="post" action="{{ url_for('main.delete_student', student_id=student.id) }}">
+    <button type="submit" class="danger">Delete student</button>
+    <a class="button-link" href="{{ url_for('main.view_student', student_id=student.id) }}">Cancel</a>
+  </form>
+</section>
+{% endblock %}

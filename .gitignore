@@ -21,6 +21,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.sqlite3
+*.sqlite
 *.db
 *.log
 instance/
