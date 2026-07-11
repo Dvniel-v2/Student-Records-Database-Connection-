@@ -7,9 +7,7 @@ It is the first functional stage of a Student Records Management System. The
 interface branding uses the name UniRecords.
 
 The approved implementation database is the PostgreSQL
-`use_record_management` schema supplied in `sql/postgresql/`. The current Flask
-Student CRUD feature still uses an earlier simplified development model and
-should not be treated as the final normalised database design.
+`use_record_management` schema supplied in `sql/postgresql/`.
 
 PostgreSQL is the only supported implementation database. The SQL scripts in
 `sql/postgresql` are the approved database source of truth.
@@ -30,27 +28,31 @@ https://www.figma.com/design/9WqQOoMQ63DJAITQx6WDRU/University-Records-Database-
 
 ## What The App Does
 
-The current app lets an administrator create, view, edit and delete student
-records using the earlier simplified Student model. Each record stores:
+The current app lets an administrator view approved Student directory records
+from PostgreSQL.
 
-1. Student number
-2. First name
-3. Last name
-4. Email address
-5. Course
-6. Enrolment date
+The active Student read path is:
 
-The interface includes a dashboard layout, student record table, quick action
-cards, student forms, detail pages and delete confirmation.
+```text
+use_records
+  -> use_record_management
+  -> vw_student_directory_masked
+  -> ApprovedStudentRepository
+  -> ApprovedStudentService
+  -> Flask routes
+  -> Student Directory and Student Detail pages
+```
+
+Student create, edit and delete operations are not yet available for the
+normalised PostgreSQL schema.
 
 ## Current Development Status
 
 The project is currently being developed in stages.
 
 The Student section is the first functional part of the university records
-management system. It currently supports creating, viewing, editing and deleting
-student records through the Flask application and database connection using the
-earlier simplified model.
+management system. It currently supports read-only Student list and detail pages
+through the approved PostgreSQL Student directory view.
 
 Some interface elements are included as design placeholders to demonstrate the
 intended direction of the complete system. These currently include:
@@ -73,7 +75,7 @@ interface.
 As development continues, these areas will be connected to their own database
 models, service logic, repository functions, routes and tests.
 
-The approved PostgreSQL database separates student data across normalised tables
+The approved PostgreSQL database separates Student data across normalised tables
 including `person`, `student` and `programme`. The interface should not be read
 as evidence that every planned feature is already functional.
 
@@ -155,18 +157,20 @@ pip install -r requirements.txt
 
 Create your local environment file:
 
-```bash
-copy .env.example .env
+```powershell
+Copy-Item .env.example .env
 ```
 
 Then update `.env` if your PostgreSQL username, password or port is different.
+The `.env` file is local only and excluded from Git. Real passwords must never
+be committed.
 
 Example values:
 
 ```env
 FLASK_APP=run.py
-SECRET_KEY=replace-with-a-secure-key
-DATABASE_URL=postgresql+psycopg://postgres:password@localhost:5432/use_records
+SECRET_KEY=replace-with-a-secure-local-key
+DATABASE_URL=postgresql+psycopg://postgres:YOUR_LOCAL_PASSWORD@localhost:5432/use_records
 ```
 
 ## PostgreSQL Setup
@@ -192,14 +196,23 @@ against a database that contains work you need to keep.
 The PostgreSQL scripts are the current source of truth for the approved
 database. The application must not be configured to use MySQL.
 
+After the scripts have been run, Flask reads Student records from:
+
+```text
+use_records -> use_record_management -> vw_student_directory_masked
+```
+
+The application does not create the database, create the approved schema or run
+the SQL scripts automatically.
+
 ## Database Migrations
 
 The repository includes a Flask Migrate and Alembic scaffold, but it is not the
 source of truth for the approved 46-table PostgreSQL schema. The approved schema
 is created by the SQL files in `sql/postgresql/`.
 
-Do not run `db.create_all()` or generate Alembic revisions from the simplified
-Student model against the approved PostgreSQL database.
+Do not run `db.create_all()` or generate Alembic revisions to create the
+approved PostgreSQL database.
 
 Migration commands may be used later after the model strategy has been updated
 deliberately:
@@ -225,7 +238,8 @@ or modify database objects.
 
 For local development, use:
 
-```bash
+```powershell
+.\.venv\Scripts\Activate.ps1
 python run.py
 ```
 
@@ -237,17 +251,6 @@ http://127.0.0.1:5000/
 
 Deployment servers should import `app` from `wsgi.py`, which uses the production
 configuration class.
-
-## Legacy Prototype Seed Script
-
-The seed script is legacy local-development support for the simplified
-`students` table only. It is not for the approved PostgreSQL schema.
-
-```bash
-ALLOW_LEGACY_STUDENT_SEED=true python scripts/seed_database.py
-```
-
-Do not run the seed script against the approved `use_record_management` schema.
 
 ## Quality Checks
 
@@ -281,6 +284,8 @@ Tests use the Flask testing configuration and an in memory SQLite database. They
 do not prove PostgreSQL views, triggers, stored procedures or schema-specific
 constraints.
 
-PostgreSQL integration tests should be added later with a dedicated test
-database. They should cover the approved schema, the student read-only joins,
-dashboard counts and required report queries.
+Formal PostgreSQL validation belongs to the database/testing responsibility.
+Before expecting live Student records in the app, confirm locally that
+PostgreSQL is running, `.env` contains the correct `DATABASE_URL`, `use_records`
+exists, `use_record_management` exists, and
+`vw_student_directory_masked` can be queried.

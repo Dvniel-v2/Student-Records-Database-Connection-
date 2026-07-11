@@ -1,5 +1,4 @@
-"""Database models for the application."""
+"""Database model package.
 
-from app.models.student import Student
-
-__all__ = ["Student"]
+The approved PostgreSQL schema is created from SQL scripts, not ORM models.
+"""

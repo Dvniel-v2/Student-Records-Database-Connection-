@@ -17,8 +17,12 @@ def index() -> str:
     """Render approved read-only student records."""
     try:
         students = service.list_students()
-    except ApprovedStudentServiceError as exc:
-        flash(str(exc), "error")
+    except ApprovedStudentServiceError:
+        flash(
+            "Approved PostgreSQL student records are currently unavailable. "
+            "Check the local database connection and approved schema configuration.",
+            "error",
+        )
         students = []
     return render_template("index.html", students=students)
 
@@ -42,8 +46,12 @@ def view_student(student_id: int):
     except ApprovedStudentValidationError as exc:
         flash(str(exc), "error")
         return redirect(url_for("main.index")), 302
-    except ApprovedStudentServiceError as exc:
-        flash(str(exc), "error")
+    except ApprovedStudentServiceError:
+        flash(
+            "Approved PostgreSQL student records are currently unavailable. "
+            "Check the local database connection and approved schema configuration.",
+            "error",
+        )
         return redirect(url_for("main.index")), 302
 
     if student is None:
@@ -56,8 +64,7 @@ def view_student(student_id: int):
 def edit_student_form(student_id: int):
     """Keep editing unavailable until normalised PostgreSQL writes exist."""
     flash(
-        "Student editing is not yet available for the normalised "
-        "PostgreSQL schema.",
+        "Student editing is not yet available for the normalised " "PostgreSQL schema.",
         "error",
     )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
@@ -67,8 +74,7 @@ def edit_student_form(student_id: int):
 def edit_student(student_id: int):
     """Keep updates unavailable until normalised PostgreSQL writes exist."""
     flash(
-        "Student editing is not yet available for the normalised "
-        "PostgreSQL schema.",
+        "Student editing is not yet available for the normalised " "PostgreSQL schema.",
         "error",
     )
     return redirect(url_for("main.view_student", student_id=student_id)), 302

@@ -69,7 +69,7 @@ def test_view_missing_student_redirects(client, monkeypatch):
     assert b"Student not found." in response.data
 
 
-def test_create_student_is_disabled_during_postgresql_migration(client, monkeypatch):
+def test_create_student_is_not_yet_available_for_normalised_schema(client, monkeypatch):
     from app.routes import main
 
     monkeypatch.setattr(main, "service", FakeApprovedStudentService())
@@ -77,12 +77,10 @@ def test_create_student_is_disabled_during_postgresql_migration(client, monkeypa
     response = client.post("/students", data={}, follow_redirects=True)
 
     assert response.status_code == 200
-    assert b"Student record creation is disabled during PostgreSQL migration." in (
-        response.data
-    )
+    assert b"Student record creation is not yet available" in response.data
 
 
-def test_edit_student_is_disabled_during_postgresql_migration(client, monkeypatch):
+def test_edit_student_is_not_yet_available_for_normalised_schema(client, monkeypatch):
     from app.routes import main
 
     monkeypatch.setattr(main, "service", FakeApprovedStudentService())
@@ -90,10 +88,10 @@ def test_edit_student_is_disabled_during_postgresql_migration(client, monkeypatc
     response = client.post("/students/1/edit", data={}, follow_redirects=True)
 
     assert response.status_code == 200
-    assert b"Student editing is disabled during PostgreSQL migration." in response.data
+    assert b"Student editing is not yet available" in response.data
 
 
-def test_delete_student_is_disabled_during_postgresql_migration(client, monkeypatch):
+def test_delete_student_is_not_yet_available_for_normalised_schema(client, monkeypatch):
     from app.routes import main
 
     monkeypatch.setattr(main, "service", FakeApprovedStudentService())
@@ -101,4 +99,4 @@ def test_delete_student_is_disabled_during_postgresql_migration(client, monkeypa
     response = client.post("/students/1/delete", follow_redirects=True)
 
     assert response.status_code == 200
-    assert b"Student deletion is disabled during PostgreSQL migration." in response.data
+    assert b"Student deletion is not yet available" in response.data

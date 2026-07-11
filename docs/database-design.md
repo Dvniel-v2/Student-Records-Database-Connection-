@@ -6,27 +6,20 @@ The approved implementation database is the PostgreSQL
 PostgreSQL is the only supported implementation database. The SQL scripts in
 `sql/postgresql` are the approved database source of truth.
 
-The current Flask CRUD feature still uses an earlier simplified development
-model called `students`. This model is useful for the current functional Student
-slice and unit tests, but it is not the final normalised schema.
+The active Student interface reads from the approved masked view:
 
-## `students`
+```text
+use_record_management.vw_student_directory_masked
+```
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | Integer | Primary key |
-| `student_number` | String(20) | Required, unique, indexed |
-| `first_name` | String(80) | Required |
-| `last_name` | String(80) | Required |
-| `email` | String(255) | Required, unique, indexed |
-| `course` | String(120) | Required |
-| `enrolment_date` | Date | Required |
+The underlying approved Student structure is normalised across tables including
+`person`, `student` and `programme`.
 
-## Validation Responsibilities
+## Write Responsibilities
 
-The database enforces primary key, required, and unique constraints. The service
-layer validates required fields, email format, name lengths, duplicate student
-numbers, duplicate emails, and enrolment dates before committing changes.
+Student create, edit and delete workflows are future work. They should only be
+implemented after transaction-safe workflows are designed for the normalised
+PostgreSQL schema.
 
 ## PostgreSQL and pgAdmin
 
