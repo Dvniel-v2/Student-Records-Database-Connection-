@@ -56,7 +56,8 @@ def view_student(student_id: int):
 def edit_student_form(student_id: int):
     """Keep editing unavailable until normalised PostgreSQL writes exist."""
     flash(
-        "Student editing is not yet available for the normalised PostgreSQL schema.",
+        "Student editing is not yet available for the normalised "
+        "PostgreSQL schema.",
         "error",
     )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
@@ -66,7 +67,8 @@ def edit_student_form(student_id: int):
 def edit_student(student_id: int):
     """Keep updates unavailable until normalised PostgreSQL writes exist."""
     flash(
-        "Student editing is not yet available for the normalised PostgreSQL schema.",
+        "Student editing is not yet available for the normalised "
+        "PostgreSQL schema.",
         "error",
     )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
@@ -76,7 +78,8 @@ def edit_student(student_id: int):
 def delete_student_confirm(student_id: int):
     """Keep deletion unavailable until normalised PostgreSQL writes exist."""
     flash(
-        "Student deletion is not yet available for the normalised PostgreSQL schema.",
+        "Student deletion is not yet available for the normalised "
+        "PostgreSQL schema.",
         "error",
     )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
@@ -86,7 +89,8 @@ def delete_student_confirm(student_id: int):
 def delete_student(student_id: int):
     """Keep deletes unavailable until normalised PostgreSQL writes exist."""
     flash(
-        "Student deletion is not yet available for the normalised PostgreSQL schema.",
+        "Student deletion is not yet available for the normalised "
+        "PostgreSQL schema.",
         "error",
     )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
