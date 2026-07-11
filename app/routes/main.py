@@ -25,8 +25,12 @@ def index() -> str:
 
 @main_bp.post("/students")
 def create_student():
-    """Block legacy writes until normalised PostgreSQL write logic exists."""
-    flash("Student record creation is disabled during PostgreSQL migration.", "error")
+    """Keep creation unavailable until normalised PostgreSQL writes exist."""
+    flash(
+        "Student record creation is not yet available for the normalised "
+        "PostgreSQL schema.",
+        "error",
+    )
     return redirect(url_for("main.index"))
 
 
@@ -50,27 +54,39 @@ def view_student(student_id: int):
 
 @main_bp.get("/students/<int:student_id>/edit")
 def edit_student_form(student_id: int):
-    """Block legacy editing until normalised PostgreSQL writes exist."""
-    flash("Student editing is disabled during PostgreSQL migration.", "error")
+    """Keep editing unavailable until normalised PostgreSQL writes exist."""
+    flash(
+        "Student editing is not yet available for the normalised PostgreSQL schema.",
+        "error",
+    )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
 @main_bp.post("/students/<int:student_id>/edit")
 def edit_student(student_id: int):
-    """Block legacy updates until normalised PostgreSQL writes exist."""
-    flash("Student editing is disabled during PostgreSQL migration.", "error")
+    """Keep updates unavailable until normalised PostgreSQL writes exist."""
+    flash(
+        "Student editing is not yet available for the normalised PostgreSQL schema.",
+        "error",
+    )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
 @main_bp.get("/students/<int:student_id>/delete")
 def delete_student_confirm(student_id: int):
-    """Block legacy deletion until normalised PostgreSQL writes exist."""
-    flash("Student deletion is disabled during PostgreSQL migration.", "error")
+    """Keep deletion unavailable until normalised PostgreSQL writes exist."""
+    flash(
+        "Student deletion is not yet available for the normalised PostgreSQL schema.",
+        "error",
+    )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
 @main_bp.post("/students/<int:student_id>/delete")
 def delete_student(student_id: int):
-    """Block legacy deletes until normalised PostgreSQL writes exist."""
-    flash("Student deletion is disabled during PostgreSQL migration.", "error")
+    """Keep deletes unavailable until normalised PostgreSQL writes exist."""
+    flash(
+        "Student deletion is not yet available for the normalised PostgreSQL schema.",
+        "error",
+    )
     return redirect(url_for("main.view_student", student_id=student_id)), 302
