@@ -105,7 +105,6 @@ app/
 docs/
 logs/
 migrations/
-scripts/
 sql/
   postgresql/
 tests/
@@ -136,6 +135,12 @@ application does not currently configure file logging. Log files are ignored by
 Git.
 
 ## Setup
+
+For complete local installation and assessor setup instructions, see:
+
+```text
+docs/assessor-setup.md
+```
 
 Create a virtual environment:
 
