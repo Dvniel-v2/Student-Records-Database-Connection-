@@ -45,8 +45,8 @@
     <div class="panel" id="student-records">
       <div class="panel-header">
         <div>
-          <h2>Recently updated students</h2>
-          <p>Latest changes across student records</p>
+          <h2>Student Directory</h2>
+          <p>Students from the approved university records database</p>
         </div>
         <span class="badge text-bg-light">Read only</span>
       </div>
@@ -87,8 +87,8 @@
       {% else %}
         <div class="empty-state">
           <span class="metric-icon">ST</span>
-          <h3>No student records yet.</h3>
-          <p>Run the approved PostgreSQL SQL scripts, then refresh this page.</p>
+          <h3>No student records available.</h3>
+          <p>Confirm that the approved PostgreSQL database is configured and available, then refresh this page.</p>
         </div>
       {% endif %}
     </div>
@@ -96,8 +96,8 @@
 
   <div class="col-12 col-xl-4">
     <div class="panel quick-actions mb-4">
-      <h2>Quick actions</h2>
-      <p>Common record-management tasks</p>
+      <h2>Planned functions</h2>
+      <p>Record-management functions scheduled for later implementation</p>
       <span class="quick-action disabled">
         <span class="metric-icon">ST</span>
         <span><strong>Add new student</strong><small>Planned normalised write workflow</small></span>
@@ -117,10 +117,10 @@
     </div>
 
     <section class="panel student-form" id="student-form">
-      <h2>Student Writes</h2>
-      <p>Create, edit and delete workflows are paused while the Student section moves to the approved normalised PostgreSQL schema.</p>
+      <h2>Student Record Management</h2>
+      <p>Create, edit and delete functions are planned for the approved normalised PostgreSQL schema.</p>
       <div class="validation-note">
-        The current list reads from `use_record_management.vw_student_directory_masked`.
+        The current directory reads from <code>use_record_management.vw_student_directory_masked</code>.
       </div>
     </section>
   </div>
