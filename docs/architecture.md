@@ -40,7 +40,7 @@ student number, update, delete, and email lookup for validation.
 5. The route renders a response with success or error messaging.
 
 PostgreSQL is the development and production database target. Tests use SQLite
-in memory through the testing configuration so test runs stay isolated.
+in memory through the testing configuration so unit test runs stay isolated.
 
 ## Entry Points And Configuration
 
@@ -55,5 +55,14 @@ hardening should be added before a real deployment.
 
 ## Schema Management
 
-Flask Migrate and Alembic are the intended tools for tracked schema changes.
-The `flask init-db` command remains as a simple local setup convenience only.
+The approved database baseline is the PostgreSQL `use_record_management` schema
+in `sql/postgresql/`. Flask Migrate and Alembic remain as scaffolded tooling,
+but they are not currently the source of truth for the approved 46-table schema.
+
+The legacy simplified `Student` model supports the current CRUD slice only. It
+must not be used to create a second standalone `students` table in the approved
+PostgreSQL schema.
+
+The `/health/database` endpoint checks database connectivity, schema presence
+and whether the approved `student` table can be queried. It does not create or
+change database objects.

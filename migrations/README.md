@@ -1,10 +1,13 @@
 # Migrations
 
 This directory contains the Flask-Migrate and Alembic scaffold. Migrations are
-the intended source of truth for tracked schema changes once revision files are
-created.
+available for future tracked schema changes once the Flask model strategy has
+been deliberately aligned with the approved database.
 
 No migration revision is currently committed for the Student model.
+
+The approved database baseline is currently created from the SQL scripts in
+`sql/postgresql/`, not from Alembic autogeneration.
 
 Common commands:
 
@@ -14,9 +17,5 @@ flask db upgrade
 flask db downgrade
 ```
 
-For simple local setup without a migration history, use the explicit Flask
-command:
-
-```bash
-flask init-db
-```
+Do not generate migrations from the current simplified Student model against the
+approved `use_record_management` schema.

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from faker import Faker
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -14,6 +16,12 @@ STUDENT_COUNT = 10
 
 def seed_database() -> None:
     """Populate the database with realistic students safely."""
+    if os.getenv("ALLOW_LEGACY_STUDENT_SEED") != "true":
+        raise RuntimeError(
+            "This script seeds the legacy simplified students table only. "
+            "Set ALLOW_LEGACY_STUDENT_SEED=true for isolated local development."
+        )
+
     app = create_app("development")
     with app.app_context():
         fake = Faker()

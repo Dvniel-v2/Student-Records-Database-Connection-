@@ -6,6 +6,11 @@ access, and a Bootstrap based interface inspired by the linked Figma design.
 It is the first functional stage of a Student Records Management System. The
 interface branding uses the name UniRecords.
 
+The approved implementation database is the PostgreSQL
+`use_record_management` schema supplied in `sql/postgresql/`. The current Flask
+Student CRUD feature still uses an earlier simplified development model and
+should not be treated as the final normalised database design.
+
 The code is organised into three clear layers:
 
 1. Routes handle web requests and render pages.
@@ -23,7 +28,7 @@ https://www.figma.com/design/9WqQOoMQ63DJAITQx6WDRU/University-Records-Database-
 ## What The App Does
 
 The current app lets an administrator create, view, edit and delete student
-records. Each student record stores:
+records using the earlier simplified Student model. Each record stores:
 
 1. Student number
 2. First name
@@ -41,7 +46,8 @@ The project is currently being developed in stages.
 
 The Student section is the first functional part of the university records
 management system. It currently supports creating, viewing, editing and deleting
-student records through the Flask application and database connection.
+student records through the Flask application and database connection using the
+earlier simplified model.
 
 Some interface elements are included as design placeholders to demonstrate the
 intended direction of the complete system. These currently include:
@@ -63,6 +69,10 @@ interface.
 
 As development continues, these areas will be connected to their own database
 models, service logic, repository functions, routes and tests.
+
+The approved PostgreSQL database separates student data across normalised tables
+including `person`, `student` and `programme`. The interface should not be read
+as evidence that every planned feature is already functional.
 
 ## Main Technologies
 
@@ -91,6 +101,9 @@ docs/
 logs/
 migrations/
 scripts/
+sql/
+  postgresql/
+  mysql_archive/
 tests/
 .env.example
 pyproject.toml
@@ -151,45 +164,60 @@ Example values:
 ```env
 FLASK_APP=run.py
 SECRET_KEY=replace-with-a-secure-key
-DATABASE_URL=postgresql+psycopg://postgres:password@localhost:5432/student_records
+DATABASE_URL=postgresql+psycopg://postgres:password@localhost:5432/use_records
 ```
 
 ## PostgreSQL Setup
 
-Create the development database in PostgreSQL:
+Create a local PostgreSQL database. The database name may be local to your
+machine, but the supplied SQL creates and uses the `use_record_management`
+schema inside that database.
 
 ```sql
-CREATE DATABASE student_records;
+CREATE DATABASE use_records;
 ```
 
-pgAdmin can be used to inspect tables and records during development. Schema
-changes should be handled through migrations.
+Run the approved SQL scripts in this order from pgAdmin Query Tool or `psql`:
+
+1. `sql/postgresql/01_create_use_full_schema_postgresql.sql`
+2. `sql/postgresql/02_insert_use_master_data_postgresql.sql`
+3. `sql/postgresql/03_insert_use_activity_records_postgresql.sql`
+4. `sql/postgresql/04_use_validation_queries_postgresql.sql`
+
+File 01 drops and recreates the `use_record_management` schema. Do not run it
+against a database that contains work you need to keep.
+
+The PostgreSQL scripts are the current source of truth for the approved
+database. The application must not be configured to use MySQL.
 
 ## Database Migrations
 
-The repository includes a Flask Migrate and Alembic scaffold. Migrations are the
-preferred method for tracked schema changes once revision files are created.
+The repository includes a Flask Migrate and Alembic scaffold, but it is not the
+source of truth for the approved 46-table PostgreSQL schema. The approved schema
+is created by the SQL files in `sql/postgresql/`.
 
-Create a migration after changing models:
+Do not run `db.create_all()` or generate Alembic revisions from the simplified
+Student model against the approved PostgreSQL database.
+
+Migration commands may be used later after the model strategy has been updated
+deliberately:
 
 ```bash
 flask db migrate -m "describe the change"
-```
-
-Apply migrations:
-
-```bash
 flask db upgrade
 ```
 
-For quick local setup, you can create the tables directly:
+## Database Health Check
 
-```bash
-flask init-db
+The application includes a read-only database health endpoint:
+
+```text
+/health/database
 ```
 
-`flask init-db` is a convenience command for simple local setup. It is not a
-replacement for tracked migrations.
+It checks that SQLAlchemy can connect, that the `use_record_management` schema
+exists, and that the approved `student` table can be queried. It does not create
+or modify database objects.
 
 ## Run The App
 
@@ -210,13 +238,14 @@ configuration class.
 
 ## Seed Sample Data
 
-After the tables exist, add realistic student records:
+The seed script is legacy local-development support for the simplified
+`students` table only. It is not for the approved PostgreSQL schema.
 
 ```bash
-python scripts/seed_database.py
+ALLOW_LEGACY_STUDENT_SEED=true python scripts/seed_database.py
 ```
 
-The seed script avoids duplicate student numbers and email addresses.
+Do not run the seed script against the approved `use_record_management` schema.
 
 ## Quality Checks
 
@@ -247,4 +276,15 @@ black .
 ## Testing Notes
 
 Tests use the Flask testing configuration and an in memory SQLite database. They
-do not connect to the development PostgreSQL database.
+do not prove PostgreSQL views, triggers, stored procedures or schema-specific
+constraints.
+
+PostgreSQL integration tests should be added later with a dedicated test
+database. They should cover the approved schema, the student read-only joins,
+dashboard counts and required report queries.
+
+## MySQL Archive
+
+Original MySQL scripts may be stored in `sql/mysql_archive/` for migration
+history, comparison, reference and academic development evidence only. They are
+not part of the Flask runtime.
