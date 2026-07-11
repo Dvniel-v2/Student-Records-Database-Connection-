@@ -21,6 +21,15 @@ class DashboardMetrics:
     results_in_progress: int
 
 
+@dataclass(frozen=True)
+class DashboardBar:
+    """Single dashboard chart bar."""
+
+    label: str
+    value: int
+    percentage: int
+
+
 class DashboardRepository:
     """Read approved dashboard data without route-level SQL."""
 
@@ -80,3 +89,45 @@ class DashboardRepository:
             {"limit": limit},
         ).mappings()
         return [ApprovedStudentRecord(**dict(row)) for row in rows]
+
+    def get_student_status_bars(self) -> list[DashboardBar]:
+        """Return Student status distribution bars from approved data."""
+        rows = db.session.execute(
+            text(
+                f"""
+                SELECT student_status AS label, COUNT(*) AS value
+                FROM {self.schema_name}.vw_student_directory_masked
+                GROUP BY student_status
+                ORDER BY value DESC, student_status
+                """
+            )
+        ).mappings()
+        return self._to_bars(rows)
+
+    def get_result_status_bars(self) -> list[DashboardBar]:
+        """Return enrolment result status distribution bars from approved data."""
+        rows = db.session.execute(
+            text(
+                f"""
+                SELECT result_status AS label, COUNT(*) AS value
+                FROM {self.schema_name}.enrolment
+                GROUP BY result_status
+                ORDER BY value DESC, result_status
+                """
+            )
+        ).mappings()
+        return self._to_bars(rows)
+
+    def _to_bars(self, rows) -> list[DashboardBar]:
+        values = [(str(row["label"]), int(row["value"])) for row in rows]
+        max_value = max((value for _, value in values), default=0)
+        if max_value == 0:
+            return []
+        return [
+            DashboardBar(
+                label=label,
+                value=value,
+                percentage=max(4, round((value / max_value) * 100)),
+            )
+            for label, value in values
+        ]

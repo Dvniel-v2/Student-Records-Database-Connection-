@@ -1,7 +1,7 @@
 """Tests for the main routes."""
 
 from app.repositories.approved_student_repository import ApprovedStudentRecord
-from app.repositories.dashboard_repository import DashboardMetrics
+from app.repositories.dashboard_repository import DashboardBar, DashboardMetrics
 from app.services.dashboard_service import DashboardData
 
 
@@ -72,6 +72,8 @@ class FakeDashboardService:
                 results_in_progress=1,
             ),
             students=[_approved_student()],
+            student_status_bars=[DashboardBar("Active", 1, 100)],
+            result_status_bars=[DashboardBar("In progress", 1, 100)],
         )
 
 

@@ -37,6 +37,60 @@
   </article>
 </section>
 
+<section class="chart-grid" aria-label="Database distributions">
+  <article class="panel chart-panel">
+    <div class="panel-header">
+      <div>
+        <h2>Student status</h2>
+        <p>Distribution from approved Student records</p>
+      </div>
+    </div>
+    {% if dashboard and dashboard.student_status_bars %}
+      <div class="bar-list">
+        {% for bar in dashboard.student_status_bars %}
+          <div class="bar-row">
+            <div class="bar-meta">
+              <span>{{ bar.label }}</span>
+              <strong>{{ bar.value }}</strong>
+            </div>
+            <div class="bar-track" aria-label="{{ bar.label }} {{ bar.value }}">
+              <span class="bar-fill blue" style="width: {{ bar.percentage }}%"></span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="chart-empty">Student status data is unavailable.</p>
+    {% endif %}
+  </article>
+
+  <article class="panel chart-panel">
+    <div class="panel-header">
+      <div>
+        <h2>Result status</h2>
+        <p>Distribution from approved enrolment records</p>
+      </div>
+    </div>
+    {% if dashboard and dashboard.result_status_bars %}
+      <div class="bar-list">
+        {% for bar in dashboard.result_status_bars %}
+          <div class="bar-row">
+            <div class="bar-meta">
+              <span>{{ bar.label }}</span>
+              <strong>{{ bar.value }}</strong>
+            </div>
+            <div class="bar-track" aria-label="{{ bar.label }} {{ bar.value }}">
+              <span class="bar-fill {{ 'green' if loop.index == 1 else 'purple' if loop.index == 2 else 'orange' }}" style="width: {{ bar.percentage }}%"></span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="chart-empty">Result status data is unavailable.</p>
+    {% endif %}
+  </article>
+</section>
+
 <section class="dashboard-layout">
   <article class="panel">
     <div class="panel-header">

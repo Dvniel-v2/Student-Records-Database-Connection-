@@ -7,7 +7,11 @@ from dataclasses import dataclass
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.repositories.approved_student_repository import ApprovedStudentRecord
-from app.repositories.dashboard_repository import DashboardMetrics, DashboardRepository
+from app.repositories.dashboard_repository import (
+    DashboardBar,
+    DashboardMetrics,
+    DashboardRepository,
+)
 
 
 class DashboardServiceError(RuntimeError):
@@ -20,6 +24,8 @@ class DashboardData:
 
     metrics: DashboardMetrics
     students: list[ApprovedStudentRecord]
+    student_status_bars: list[DashboardBar]
+    result_status_bars: list[DashboardBar]
 
 
 class DashboardService:
@@ -34,6 +40,8 @@ class DashboardService:
             return DashboardData(
                 metrics=self.repository.get_metrics(),
                 students=self.repository.get_student_overview(),
+                student_status_bars=self.repository.get_student_status_bars(),
+                result_status_bars=self.repository.get_result_status_bars(),
             )
         except SQLAlchemyError as exc:
             raise DashboardServiceError("Unable to read dashboard data.") from exc
