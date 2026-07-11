@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Student Details{% endblock %}
 {% block page_title %}{{ student.first_name }} {{ student.last_name }}{% endblock %}
-{% block page_subtitle %}Student profile and university record details{% endblock %}
+{% block page_subtitle %}Approved PostgreSQL student directory record{% endblock %}
 {% block content %}
 <section class="row g-4">
   <div class="col-12 col-lg-7">
@@ -9,24 +9,26 @@
       <div class="student-avatar">{{ student.first_name[0] }}{{ student.last_name[0] }}</div>
       <div>
         <h2>{{ student.first_name }} {{ student.last_name }}</h2>
-        <p>{{ student.course }}</p>
+        <p>{{ student.programme_code }} {{ student.programme_name }}</p>
       </div>
       <dl class="detail-grid">
         <dt>Student Number</dt>
         <dd>{{ student.student_number }}</dd>
-        <dt>Email</dt>
-        <dd>{{ student.email }}</dd>
-        <dt>Course</dt>
-        <dd>{{ student.course }}</dd>
-        <dt>Enrolment date</dt>
-        <dd>{{ student.enrolment_date }}</dd>
+        <dt>Masked email</dt>
+        <dd>{{ student.masked_email }}</dd>
+        <dt>Programme</dt>
+        <dd>{{ student.programme_name }}</dd>
+        <dt>Enrolment year</dt>
+        <dd>{{ student.enrolment_year }}</dd>
+        <dt>Year of study</dt>
+        <dd>{{ student.year_of_study }}</dd>
         <dt>Status</dt>
-        <dd><span class="status-pill active">Active</span></dd>
+        <dd><span class="status-pill active">{{ student.student_status }}</span></dd>
+        <dt>Graduation</dt>
+        <dd>{{ student.graduation_status }}</dd>
       </dl>
       <div class="d-flex gap-2 flex-wrap">
         <a class="btn btn-light" href="{{ url_for('main.index') }}">All students</a>
-        <a class="btn btn-primary" href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit student</a>
-        <a class="btn btn-outline-danger" href="{{ url_for('main.delete_student_confirm', student_id=student.id) }}">Delete</a>
       </div>
     </article>
   </div>

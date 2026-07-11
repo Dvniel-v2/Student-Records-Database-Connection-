@@ -1,4 +1,9 @@
-"""Repository for student persistence."""
+"""Legacy repository for simplified student persistence.
+
+The approved read-only Student path uses ApprovedStudentRepository against the
+normalised PostgreSQL schema. Keep this repository only until legacy writes are
+removed.
+"""
 
 from __future__ import annotations
 
@@ -9,7 +14,7 @@ from app.models.student import Student
 
 
 class StudentRepository:
-    """Handle direct database access for students."""
+    """Handle direct database access for legacy simplified students."""
 
     def create(
         self,

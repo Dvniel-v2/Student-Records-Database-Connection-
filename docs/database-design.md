@@ -3,6 +3,9 @@
 The approved implementation database is the PostgreSQL
 `use_record_management` schema in `sql/postgresql/`.
 
+PostgreSQL is the only supported implementation database. The SQL scripts in
+`sql/postgresql` are the approved database source of truth.
+
 The current Flask CRUD feature still uses an earlier simplified development
 model called `students`. This model is useful for the current functional Student
 slice and unit tests, but it is not the final normalised schema.

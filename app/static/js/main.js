@@ -7,6 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   form.addEventListener('submit', () => {
-    status.textContent = 'Saving student record to PostgreSQL...';
+    status.textContent = 'Preparing student record...';
   });
 });

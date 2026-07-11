@@ -7093,7 +7093,7 @@ INSERT INTO tmp_course_seed VALUES
     ('UCHE899', 'Ph.D. Dissertation in Chemical Engineering', 'USE course catalogue 2026/27: Ph.D. Dissertation in Chemical Engineering', 'CHE', 800, 14, 'Dissertation', TRUE);
 -- Load the course catalogue while excluding accidental duplicate course-code seed rows.
 -- UMAT301 is kept as Numerical Methods; UCSC102 is kept as Programming for Engineers.
--- The filtering is done in the INSERT statement rather than DELETE, so it works with MySQL Safe Update Mode enabled.
+-- The filtering is done in the INSERT statement rather than deleting seed rows.
 INSERT INTO course (course_code, course_name, description, department_id, course_level, credit_hours, course_type, is_active)
 SELECT t.course_code, t.course_name, t.description, d.department_id, t.course_level, t.credit_hours, t.course_type, t.is_active
 FROM tmp_course_seed t

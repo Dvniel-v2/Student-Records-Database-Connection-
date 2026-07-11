@@ -3,10 +3,10 @@
 These files are the approved PostgreSQL implementation scripts for the
 University Record Management System.
 
-The earlier MySQL database was converted into a PostgreSQL schema named
-`use_record_management`. The schema is created inside the PostgreSQL database
-that you are already connected to. The local database name can vary, but the
-application and validation queries expect the `use_record_management` schema.
+PostgreSQL is the only supported implementation database. The schema is named
+`use_record_management` and is created inside the PostgreSQL database that you
+are already connected to. The local database name can vary, but the application
+and validation queries expect the `use_record_management` schema.
 
 ## Execution Order
 

@@ -1,4 +1,9 @@
-"""Student SQLAlchemy model."""
+"""Legacy simplified Student SQLAlchemy model.
+
+The approved PostgreSQL implementation uses the normalised
+use_record_management.person, student and programme tables. Keep this model only
+until the legacy prototype write path is fully replaced.
+"""
 
 from __future__ import annotations
 
@@ -8,7 +13,7 @@ from app.extensions import db
 
 
 class Student(db.Model):
-    """Student record persisted to the database."""
+    """Legacy student record persisted to the simplified prototype table."""
 
     __tablename__ = "students"
 

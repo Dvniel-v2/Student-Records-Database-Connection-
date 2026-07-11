@@ -1,103 +1,104 @@
 """Tests for the main routes."""
 
+from app.repositories.approved_student_repository import ApprovedStudentRecord
 
-def test_index_page_renders(client):
+
+def _approved_student() -> ApprovedStudentRecord:
+    return ApprovedStudentRecord(
+        student_id=1,
+        student_number="USE1001",
+        first_name="Ada",
+        last_name="Lovelace",
+        masked_email="ad***@use.edu",
+        programme_code="UB-CSC",
+        programme_name="B.Sc. Computer Science",
+        enrolment_year=2024,
+        year_of_study=1,
+        student_status="Active",
+        graduation_status="Not eligible",
+    )
+
+
+class FakeApprovedStudentService:
+    """Fake approved service for route tests."""
+
+    def list_students(self):
+        return [_approved_student()]
+
+    def get_student(self, student_id: int):
+        if student_id == 1:
+            return _approved_student()
+        return None
+
+
+def test_index_page_renders_approved_students(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "service", FakeApprovedStudentService())
+
     response = client.get("/")
 
     assert response.status_code == 200
     assert b"UniRecords" in response.data
     assert b"Student Records" in response.data
+    assert b"USE1001" in response.data
+    assert b"B.Sc. Computer Science" in response.data
 
 
-def test_create_student_with_valid_data(client, student_data):
-    response = client.post(
-        "/students",
-        data=student_data,
-        follow_redirects=True,
-    )
+def test_view_student_renders_approved_detail(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "service", FakeApprovedStudentService())
+
+    response = client.get("/students/1")
 
     assert response.status_code == 200
-    assert b"Student created successfully." in response.data
     assert b"Ada Lovelace" in response.data
+    assert b"ad***@use.edu" in response.data
+    assert b"UB-CSC" in response.data
 
 
-def test_create_student_with_invalid_data(client, student_data):
-    student_data["email"] = "invalid"
-    response = client.post(
-        "/students",
-        data=student_data,
-        follow_redirects=True,
-    )
+def test_view_missing_student_redirects(client, monkeypatch):
+    from app.routes import main
 
-    assert response.status_code == 400
-    assert b"Email address is invalid." in response.data
+    monkeypatch.setattr(main, "service", FakeApprovedStudentService())
 
-
-def test_view_student(client, student):
-    response = client.get(f"/students/{student.id}")
-
-    assert response.status_code == 200
-    assert b"ada@example.com" in response.data
-
-
-def test_view_missing_student_redirects(client):
     response = client.get("/students/999", follow_redirects=True)
 
     assert response.status_code == 200
     assert b"Student not found." in response.data
 
 
-def test_edit_student_success(client, student, student_data):
-    response = client.post(
-        f"/students/{student.id}/edit",
-        data=student_data | {"course": "Software Engineering"},
-        follow_redirects=True,
+def test_create_student_is_disabled_during_postgresql_migration(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "service", FakeApprovedStudentService())
+
+    response = client.post("/students", data={}, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Student record creation is disabled during PostgreSQL migration." in (
+        response.data
     )
 
-    assert response.status_code == 200
-    assert b"Student updated successfully." in response.data
-    assert b"Software Engineering" in response.data
 
+def test_edit_student_is_disabled_during_postgresql_migration(client, monkeypatch):
+    from app.routes import main
 
-def test_edit_student_invalid_data(client, student, student_data):
-    response = client.post(
-        f"/students/{student.id}/edit",
-        data=student_data | {"first_name": "A"},
-        follow_redirects=True,
-    )
+    monkeypatch.setattr(main, "service", FakeApprovedStudentService())
 
-    assert response.status_code == 400
-    assert b"First name must be at least 2 characters long." in response.data
-
-
-def test_edit_missing_student_redirects(client, student_data):
-    response = client.post(
-        "/students/999/edit",
-        data=student_data,
-        follow_redirects=True,
-    )
+    response = client.post("/students/1/edit", data={}, follow_redirects=True)
 
     assert response.status_code == 200
-    assert b"Student not found." in response.data
+    assert b"Student editing is disabled during PostgreSQL migration." in response.data
 
 
-def test_delete_confirmation(client, student):
-    response = client.get(f"/students/{student.id}/delete")
+def test_delete_student_is_disabled_during_postgresql_migration(client, monkeypatch):
+    from app.routes import main
 
-    assert response.status_code == 200
-    assert b"Delete Student" in response.data
+    monkeypatch.setattr(main, "service", FakeApprovedStudentService())
 
-
-def test_delete_student_success(client, student):
-    response = client.post(f"/students/{student.id}/delete", follow_redirects=True)
+    response = client.post("/students/1/delete", follow_redirects=True)
 
     assert response.status_code == 200
-    assert b"Student deleted successfully." in response.data
-    assert b"No student records yet." in response.data
-
-
-def test_delete_missing_student_redirects(client):
-    response = client.post("/students/999/delete", follow_redirects=True)
-
-    assert response.status_code == 200
-    assert b"Student not found." in response.data
+    assert b"Student deletion is disabled during PostgreSQL migration." in response.data

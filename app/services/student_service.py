@@ -1,4 +1,9 @@
-"""Service layer for student management."""
+"""Legacy service layer for simplified student management.
+
+The approved Student implementation reads from the normalised PostgreSQL schema
+through ApprovedStudentService. Keep this service only until prototype write
+operations are replaced with transaction-safe normalised workflows.
+"""
 
 from __future__ import annotations
 
@@ -25,7 +30,7 @@ class StudentServiceError(RuntimeError):
 
 
 class StudentService:
-    """Encapsulate business logic and validation for students."""
+    """Encapsulate legacy prototype validation for simplified students."""
 
     def __init__(self, repository: StudentRepository | None = None) -> None:
         self.repository = repository or StudentRepository()

@@ -11,6 +11,9 @@ The approved implementation database is the PostgreSQL
 Student CRUD feature still uses an earlier simplified development model and
 should not be treated as the final normalised database design.
 
+PostgreSQL is the only supported implementation database. The SQL scripts in
+`sql/postgresql` are the approved database source of truth.
+
 The code is organised into three clear layers:
 
 1. Routes handle web requests and render pages.
@@ -103,7 +106,6 @@ migrations/
 scripts/
 sql/
   postgresql/
-  mysql_archive/
 tests/
 .env.example
 pyproject.toml
@@ -236,7 +238,7 @@ http://127.0.0.1:5000/
 Deployment servers should import `app` from `wsgi.py`, which uses the production
 configuration class.
 
-## Seed Sample Data
+## Legacy Prototype Seed Script
 
 The seed script is legacy local-development support for the simplified
 `students` table only. It is not for the approved PostgreSQL schema.
@@ -282,9 +284,3 @@ constraints.
 PostgreSQL integration tests should be added later with a dedicated test
 database. They should cover the approved schema, the student read-only joins,
 dashboard counts and required report queries.
-
-## MySQL Archive
-
-Original MySQL scripts may be stored in `sql/mysql_archive/` for migration
-history, comparison, reference and academic development evidence only. They are
-not part of the Flask runtime.

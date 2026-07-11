@@ -1,4 +1,7 @@
-"""Seed the database with realistic student records."""
+"""Legacy seed script for the simplified Student prototype.
+
+Do not use this against the approved PostgreSQL use_record_management schema.
+"""
 
 from __future__ import annotations
 
