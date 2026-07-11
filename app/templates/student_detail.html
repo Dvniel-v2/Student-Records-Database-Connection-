@@ -28,26 +28,19 @@
         <dd>{{ student.graduation_status }}</dd>
       </dl>
       <div class="d-flex gap-2 flex-wrap">
-        <a class="btn btn-light" href="{{ url_for('main.index') }}">All students</a>
+        <a class="btn btn-light" href="{{ url_for('main.students') }}">All students</a>
       </div>
     </article>
   </div>
   <div class="col-12 col-lg-5">
     <aside class="panel quick-actions">
-      <h2>Record tasks</h2>
-      <p>Common actions for this student profile</p>
-      <span class="quick-action disabled">
-        <span class="metric-icon">EN</span>
-        <span><strong>Create enrolment</strong><small>Assign student to modules</small></span>
-      </span>
-      <span class="quick-action disabled">
-        <span class="metric-icon">GR</span>
-        <span><strong>Record grades</strong><small>Update assessment outcomes</small></span>
-      </span>
-      <span class="quick-action disabled">
-        <span class="metric-icon">RP</span>
-        <span><strong>Generate report</strong><small>Export academic records</small></span>
-      </span>
+      <h2>Directory record</h2>
+      <p>This read-only profile is sourced from the approved Student Directory.</p>
+      <div class="info-list">
+        <span><strong>Student status</strong>{{ student.student_status }}</span>
+        <span><strong>Programme code</strong>{{ student.programme_code }}</span>
+        <span><strong>Graduation</strong>{{ student.graduation_status }}</span>
+      </div>
     </aside>
   </div>
 </section>

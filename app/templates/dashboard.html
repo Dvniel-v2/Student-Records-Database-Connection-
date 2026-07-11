@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}University Records Dashboard{% endblock %}
+{% block page_subtitle %}Academic records overview{% endblock %}
+{% block topbar_actions %}
+  <span class="db-status {{ 'connected' if database_connected else 'unavailable' }}">
+    <span aria-hidden="true"></span>
+    {{ 'Database connected' if database_connected else 'Database unavailable' }}
+  </span>
+{% endblock %}
+{% block content %}
+{% set metrics = dashboard.metrics if dashboard else none %}
+<section class="metric-grid" aria-label="University record metrics">
+  <article class="metric-card">
+    <div class="metric-icon">ST</div>
+    <span class="metric-badge">Live</span>
+    <p>Total students</p>
+    <strong>{{ metrics.total_students if metrics else 'Unavailable' }}</strong>
+  </article>
+  <article class="metric-card">
+    <div class="metric-icon">PR</div>
+    <span class="metric-badge">Current</span>
+    <p>Active programmes</p>
+    <strong>{{ metrics.active_programmes if metrics else 'Unavailable' }}</strong>
+  </article>
+  <article class="metric-card">
+    <div class="metric-icon">EN</div>
+    <span class="metric-badge">Live</span>
+    <p>Current enrolments</p>
+    <strong>{{ metrics.current_enrolments if metrics else 'Unavailable' }}</strong>
+  </article>
+  <article class="metric-card">
+    <div class="metric-icon">RS</div>
+    <span class="metric-badge">Database</span>
+    <p>Results in progress</p>
+    <strong>{{ metrics.results_in_progress if metrics else 'Unavailable' }}</strong>
+  </article>
+</section>
+
+<section class="dashboard-layout">
+  <article class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Student overview</h2>
+        <p>A small sample from the approved Student Directory</p>
+      </div>
+      <a class="btn btn-outline-primary btn-sm" href="{{ url_for('main.students') }}">Browse Student Directory</a>
+    </div>
+
+    {% if dashboard and dashboard.students %}
+      <div class="table-responsive">
+        <table class="table align-middle student-table compact mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Student Number</th>
+              <th scope="col">Student</th>
+              <th scope="col">Programme</th>
+              <th scope="col">Year</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in dashboard.students %}
+              <tr>
+                <td class="fw-semibold">{{ student.student_number }}</td>
+                <td>{{ student.first_name }} {{ student.last_name }}</td>
+                <td>{{ student.programme_code }}</td>
+                <td>{{ student.year_of_study }}</td>
+                <td><span class="status-pill">{{ student.student_status }}</span></td>
+                <td><a class="table-link" href="{{ url_for('main.view_student', student_id=student.id) }}">View</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <span class="metric-icon">ST</span>
+        <h3>No Student overview available.</h3>
+        <p>Check that PostgreSQL is running and the approved SQL scripts have been executed.</p>
+      </div>
+    {% endif %}
+  </article>
+
+  <aside class="panel quick-actions">
+    <h2>Quick access</h2>
+    <p>Available application actions</p>
+    <a class="quick-action" href="{{ url_for('main.students') }}">
+      <span class="metric-icon">ST</span>
+      <span><strong>Browse Student Directory</strong><small>Search and view approved Student records</small></span>
+    </a>
+    <a class="quick-action" href="{{ url_for('main.students') }}#student-search">
+      <span class="metric-icon">SR</span>
+      <span><strong>Search Student records</strong><small>Filter by name, number, programme or status</small></span>
+    </a>
+    <a class="quick-action" href="{{ url_for('health.database_health') }}">
+      <span class="metric-icon">DB</span>
+      <span><strong>View database status</strong><small>Check PostgreSQL connectivity</small></span>
+    </a>
+  </aside>
+</section>
+{% endblock %}

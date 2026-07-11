@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Student Records{% endblock %}
+{% block page_title %}Student Records{% endblock %}
+{% block page_subtitle %}Search and browse approved Student Directory records{% endblock %}
+{% block topbar_actions %}
+  <span class="page-chip">Read only</span>
+{% endblock %}
+{% block content %}
+<section class="summary-strip" aria-label="Student summary">
+  <article>
+    <span>Total</span>
+    <strong>{{ summary.total if summary else 'Unavailable' }}</strong>
+  </article>
+  {% if summary %}
+    {% for status, count in summary.by_status.items() %}
+      <article>
+        <span>{{ status }}</span>
+        <strong>{{ count }}</strong>
+      </article>
+    {% endfor %}
+  {% endif %}
+</section>
+
+<section class="panel directory-panel">
+  <div class="panel-header">
+    <div>
+      <h2>Student Directory</h2>
+      <p>
+        {% if result %}
+          {{ result.total_records }} matching records, page {{ result.page }} of {{ result.total_pages }}
+        {% else %}
+          Records unavailable
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  <form class="filter-bar" id="student-search" method="get" action="{{ url_for('main.students') }}">
+    <div class="filter-field search-field">
+      <label class="form-label" for="q">Search</label>
+      <input class="form-control" id="q" name="q" type="search" value="{{ filters.q }}" placeholder="Student number, name or programme" />
+    </div>
+    <div class="filter-field">
+      <label class="form-label" for="programme">Programme</label>
+      <select class="form-select" id="programme" name="programme">
+        <option value="">All programmes</option>
+        {% for programme in programmes %}
+          <option value="{{ programme.programme_code }}" {% if filters.programme == programme.programme_code %}selected{% endif %}>
+            {{ programme.programme_code }} {{ programme.programme_name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-field">
+      <label class="form-label" for="status">Status</label>
+      <select class="form-select" id="status" name="status">
+        <option value="">All statuses</option>
+        {% for status in statuses %}
+          <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-field compact-field">
+      <label class="form-label" for="per_page">Rows</label>
+      <select class="form-select" id="per_page" name="per_page">
+        {% for option in per_page_options %}
+          <option value="{{ option }}" {% if filters.per_page == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <input type="hidden" name="page" value="1" />
+    <div class="filter-actions">
+      <button class="btn btn-primary" type="submit">Search</button>
+      <a class="btn btn-light" href="{{ url_for('main.students') }}">Clear filters</a>
+    </div>
+  </form>
+
+  {% if result and result.students %}
+    <div class="table-responsive">
+      <table class="table align-middle student-table mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Student Number</th>
+            <th scope="col">Student</th>
+            <th scope="col">Programme</th>
+            <th scope="col">Masked email</th>
+            <th scope="col">Year</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in result.students %}
+            <tr>
+              <td class="fw-semibold">{{ student.student_number }}</td>
+              <td>{{ student.first_name }} {{ student.last_name }}</td>
+              <td><strong>{{ student.programme_code }}</strong> {{ student.programme_name }}</td>
+              <td>{{ student.masked_email }}</td>
+              <td>{{ student.year_of_study }}</td>
+              <td><span class="status-pill">{{ student.student_status }}</span></td>
+              <td><a class="table-link" href="{{ url_for('main.view_student', student_id=student.id) }}">View</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <nav class="pagination-bar" aria-label="Student Directory pages">
+      <span>Page {{ result.page }} of {{ result.total_pages }}</span>
+      <div>
+        {% set previous_page = result.page - 1 %}
+        {% set next_page = result.page + 1 %}
+        <a
+          class="btn btn-light {% if result.page <= 1 %}disabled{% endif %}"
+          href="{{ url_for('main.students', q=filters.q, programme=filters.programme, status=filters.status, per_page=result.per_page, page=previous_page) }}"
+          aria-disabled="{{ 'true' if result.page <= 1 else 'false' }}"
+        >Previous</a>
+        <a
+          class="btn btn-light {% if result.page >= result.total_pages %}disabled{% endif %}"
+          href="{{ url_for('main.students', q=filters.q, programme=filters.programme, status=filters.status, per_page=result.per_page, page=next_page) }}"
+          aria-disabled="{{ 'true' if result.page >= result.total_pages else 'false' }}"
+        >Next</a>
+      </div>
+    </nav>
+  {% else %}
+    <div class="empty-state">
+      <span class="metric-icon">ST</span>
+      <h3>No matching Student records.</h3>
+      <p>Adjust the search filters or confirm that the approved PostgreSQL database is available.</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

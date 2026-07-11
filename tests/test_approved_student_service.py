@@ -29,8 +29,29 @@ class FakeApprovedStudentRepository:
             )
         ]
 
+    def search_students(self, **kwargs):
+        self.last_search = kwargs
+
+        class Result:
+            students = []
+            total_records = 0
+            page = kwargs["page"]
+            per_page = kwargs["per_page"]
+            total_pages = 1
+
+        return Result()
+
     def get_student(self, student_id: int):
         return self.list_students()[0] if student_id == 1 else None
+
+    def list_programmes(self):
+        return []
+
+    def list_statuses(self):
+        return ["Active"]
+
+    def get_status_summary(self):
+        return {"Active": 1}
 
 
 def test_approved_student_service_lists_students():
@@ -49,6 +70,23 @@ def test_approved_student_service_gets_student():
 
     assert student is not None
     assert student.masked_email == "ad***@use.edu"
+
+
+def test_approved_student_service_sanitises_search_options():
+    repository = FakeApprovedStudentRepository()
+    service = ApprovedStudentService(repository)
+
+    result = service.search_students(
+        search_term=" Ada ",
+        programme_code="UB-CSC",
+        status="Active",
+        page=-2,
+        per_page=999,
+    )
+
+    assert result.page == 1
+    assert repository.last_search["search_term"] == "Ada"
+    assert repository.last_search["per_page"] == 25
 
 
 def test_approved_student_service_rejects_invalid_id():

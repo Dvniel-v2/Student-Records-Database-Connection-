@@ -22,19 +22,22 @@
         </a>
 
         <nav class="nav flex-column sidebar-nav" aria-label="Primary navigation">
-          <a class="nav-link active" href="{{ url_for('main.index') }}">
+          <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}">
             <span class="nav-token">DB</span>
             Dashboard
           </a>
-          <a class="nav-link" href="{{ url_for('main.index') }}#student-records">
+          <a class="nav-link {% if request.endpoint in ['main.students', 'main.view_student'] %}active{% endif %}" href="{{ url_for('main.students') }}">
             <span class="nav-token">ST</span>
             Students
           </a>
-          <span class="nav-link disabled"><span class="nav-token">CR</span>Courses</span>
-          <span class="nav-link disabled"><span class="nav-token">MD</span>Modules</span>
-          <span class="nav-link disabled"><span class="nav-token">EN</span>Enrolments</span>
-          <span class="nav-link disabled"><span class="nav-token">GR</span>Grades</span>
-          <span class="nav-link disabled"><span class="nav-token">RP</span>Reports</span>
+          <div class="future-modules" aria-label="Future modules">
+            <span class="future-label">Future modules</span>
+            <span>Courses</span>
+            <span>Modules</span>
+            <span>Enrolments</span>
+            <span>Grades</span>
+            <span>Reports</span>
+          </div>
         </nav>
 
         <div class="sidebar-profile">
@@ -53,10 +56,7 @@
             <p>{% block page_subtitle %}Create, update and manage student records{% endblock %}</p>
           </div>
           <div class="topbar-actions">
-            <label class="visually-hidden" for="global-search">Search records</label>
-            <input id="global-search" class="form-control form-control-sm" type="search" placeholder="Search placeholder" disabled />
-            <button class="icon-button" type="button" aria-label="Help placeholder" disabled>?</button>
-            <button class="icon-button" type="button" aria-label="Notifications placeholder" disabled>N</button>
+            {% block topbar_actions %}{% endblock %}
           </div>
         </header>
 
