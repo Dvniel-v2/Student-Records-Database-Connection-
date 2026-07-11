@@ -12,6 +12,12 @@ The approved implementation database is the PostgreSQL
 PostgreSQL is the only supported implementation database. The SQL scripts in
 `sql/postgresql` are the approved database source of truth.
 
+The PostgreSQL database runs locally on the computer where PostgreSQL is
+installed, normally at `localhost:5432`. `localhost` means the current computer
+only. Other users, group members and assessors cannot access another
+developer's local PostgreSQL database; they reproduce the database on their own
+computer from the repository or submission package.
+
 The code is organised into three clear layers:
 
 1. Routes handle web requests and render pages.
@@ -142,6 +148,20 @@ For complete local installation and assessor setup instructions, see:
 docs/assessor-setup.md
 ```
 
+Reproducible setup flow:
+
+```text
+GitHub repository or submission ZIP
+  -> install Python dependencies
+  -> install PostgreSQL
+  -> create use_records
+  -> run approved SQL scripts
+  -> create local .env
+  -> add local PostgreSQL credentials
+  -> run Flask
+  -> use the frontend
+```
+
 Create a virtual environment:
 
 ```powershell
@@ -207,8 +227,41 @@ After the scripts have been run, Flask reads Student records from:
 use_records -> use_record_management -> vw_student_directory_masked
 ```
 
+Database structure:
+
+```text
+PostgreSQL 18
+  -> database: use_records
+  -> schema: use_record_management
+  -> tables, views, procedures and approved data
+```
+
+The PostgreSQL database is live locally while the PostgreSQL service is running.
+It is not publicly hosted and is not accessible through the internet. The
+repository provides all approved SQL scripts needed to reproduce the database on
+another computer.
+
 The application does not create the database, create the approved schema or run
 the SQL scripts automatically.
+
+Credential rules:
+
+1. Do not commit `.env`.
+2. Do not commit real PostgreSQL passwords.
+3. Do not hard-code credentials.
+4. Do not share the developer's local PostgreSQL password.
+5. Each user supplies their own local PostgreSQL credentials.
+6. `.env.example` remains a safe template.
+
+## Assessor Handover
+
+The submitted repository or full ZIP package contains the Flask application,
+frontend files, approved PostgreSQL SQL scripts, `requirements.txt`,
+`.env.example` and the assessor setup guide.
+
+The package does not contain the developer's live local PostgreSQL server, the
+developer's `.env`, the developer's PostgreSQL password or the developer's local
+`.venv`.
 
 ## Database Migrations
 

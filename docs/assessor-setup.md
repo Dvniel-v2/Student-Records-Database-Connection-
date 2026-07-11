@@ -6,6 +6,21 @@ System on a Windows computer using PowerShell, pgAdmin and PostgreSQL.
 PostgreSQL is the only supported implementation database. The approved SQL
 scripts in `sql/postgresql/` are the database source of truth.
 
+The PostgreSQL server runs locally on the computer where it is installed,
+normally at `localhost:5432`. `localhost` means the current computer only. Other
+users, group members and assessors cannot access another developer's local
+PostgreSQL database.
+
+Each user recreates the database locally by downloading or cloning the
+repository, installing PostgreSQL, creating `use_records`, running the approved
+SQL scripts, creating their own private `.env`, and supplying their own
+PostgreSQL username and password.
+
+The PostgreSQL database is live locally while the PostgreSQL service is running.
+It is not publicly hosted and is not accessible through the internet. The
+repository provides all approved SQL scripts needed to reproduce the database on
+another computer.
+
 ## Expected Flow
 
 ```text
@@ -13,9 +28,11 @@ Browser
   -> Flask
   -> ApprovedStudentService
   -> ApprovedStudentRepository
-  -> use_records
-  -> use_record_management
-  -> vw_student_directory_masked
+  -> PostgreSQL 18
+  -> database: use_records
+  -> schema: use_record_management
+  -> tables, views, procedures and approved data
+  -> view: vw_student_directory_masked
 ```
 
 The frontend is served through Flask. Do not open the HTML files directly in a
@@ -23,6 +40,47 @@ browser. The Student Directory requires PostgreSQL to be running and the
 approved SQL scripts to have been executed.
 
 The application does not create the PostgreSQL database automatically.
+
+## Reproducibility Flow
+
+```text
+GitHub repository or submission ZIP
+  -> install Python dependencies
+  -> install PostgreSQL
+  -> create use_records
+  -> run approved SQL scripts
+  -> create local .env
+  -> add local PostgreSQL credentials
+  -> run Flask
+  -> use the frontend
+```
+
+## Handover Package
+
+The submitted repository or full ZIP package contains:
+
+1. Flask application
+2. Frontend files
+3. Approved PostgreSQL SQL scripts
+4. `requirements.txt`
+5. `.env.example`
+6. Assessor setup guide
+
+The package does not contain:
+
+1. The developer's live local PostgreSQL server
+2. The developer's `.env`
+3. The developer's PostgreSQL password
+4. The developer's `.venv`
+
+Credential rules:
+
+1. Do not commit `.env`.
+2. Do not commit real PostgreSQL passwords.
+3. Do not hard-code credentials.
+4. Do not share the developer's local PostgreSQL password.
+5. Each user supplies their own local PostgreSQL credentials.
+6. `.env.example` remains a safe template.
 
 ## Local Setup
 
@@ -77,7 +135,9 @@ Copy-Item .env.example .env
 DATABASE_URL=postgresql+psycopg://postgres:YOUR_PASSWORD@localhost:5432/use_records
 ```
 
-Do not commit `.env`. It contains local credentials and is ignored by Git.
+Replace `YOUR_PASSWORD` with the local PostgreSQL password for the current
+computer. Do not use or share another developer's local PostgreSQL password.
+Do not commit `.env`; it contains local credentials and is ignored by Git.
 
 11. Start the application:
 
