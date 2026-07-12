@@ -2,6 +2,11 @@
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
+from app.services.academic_record_service import (
+    AcademicRecordService,
+    AcademicRecordServiceError,
+    RecordPage,
+)
 from app.services.approved_student_service import (
     ApprovedStudentService,
     ApprovedStudentServiceError,
@@ -12,6 +17,7 @@ from app.services.dashboard_service import DashboardService, DashboardServiceErr
 main_bp = Blueprint("main", __name__)
 student_service = ApprovedStudentService()
 dashboard_service = DashboardService()
+academic_service = AcademicRecordService()
 
 DATABASE_UNAVAILABLE_MESSAGE = (
     "Approved PostgreSQL student records are currently unavailable. "
@@ -73,6 +79,41 @@ def students() -> str:
         filters=filters,
         per_page_options=student_service.PER_PAGE_OPTIONS,
     )
+
+
+@main_bp.get("/courses")
+def courses() -> str:
+    """Render approved course catalogue records."""
+    return _render_record_page("courses_page", "Course records are unavailable.")
+
+
+@main_bp.get("/modules")
+def modules() -> str:
+    """Render approved module offering records."""
+    return _render_record_page("modules_page", "Module records are unavailable.")
+
+
+@main_bp.get("/enrolments")
+def enrolments() -> str:
+    """Render approved enrolment records."""
+    return _render_record_page("enrolments_page", "Enrolment records are unavailable.")
+
+
+@main_bp.get("/grades")
+def grades() -> str:
+    """Render approved grade records."""
+    return _render_record_page("grades_page", "Grade records are unavailable.")
+
+
+@main_bp.get("/reports")
+def reports() -> str:
+    """Render approved reporting view samples."""
+    try:
+        report_data = academic_service.reports()
+    except AcademicRecordServiceError:
+        flash("Approved reporting records are unavailable.", "error")
+        report_data = {}
+    return render_template("reports.html", reports=report_data)
 
 
 @main_bp.post("/students")
@@ -152,3 +193,19 @@ def _int_arg(name: str, default: int) -> int:
         return max(int(request.args.get(name, default)), 1)
     except (TypeError, ValueError):
         return default
+
+
+def _render_record_page(service_method: str, error_message: str) -> str:
+    """Render one read-only approved academic record page."""
+    try:
+        page = getattr(academic_service, service_method)()
+    except AcademicRecordServiceError:
+        flash(error_message, "error")
+        page = RecordPage(
+            title="Records unavailable",
+            subtitle="Approved PostgreSQL records could not be read",
+            description="Check the local database connection and approved schema.",
+            columns=[],
+            rows=[],
+        )
+    return render_template("records.html", page=page)

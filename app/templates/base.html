@@ -30,14 +30,26 @@
             <span class="nav-token">ST</span>
             Students
           </a>
-          <div class="future-modules" aria-label="Future modules">
-            <span class="future-label">Future modules</span>
-            <span>Courses</span>
-            <span>Modules</span>
-            <span>Enrolments</span>
-            <span>Grades</span>
-            <span>Reports</span>
-          </div>
+          <a class="nav-link {% if request.endpoint == 'main.courses' %}active{% endif %}" href="{{ url_for('main.courses') }}">
+            <span class="nav-token">CR</span>
+            Courses
+          </a>
+          <a class="nav-link {% if request.endpoint == 'main.modules' %}active{% endif %}" href="{{ url_for('main.modules') }}">
+            <span class="nav-token">MD</span>
+            Modules
+          </a>
+          <a class="nav-link {% if request.endpoint == 'main.enrolments' %}active{% endif %}" href="{{ url_for('main.enrolments') }}">
+            <span class="nav-token">EN</span>
+            Enrolments
+          </a>
+          <a class="nav-link {% if request.endpoint == 'main.grades' %}active{% endif %}" href="{{ url_for('main.grades') }}">
+            <span class="nav-token">GR</span>
+            Grades
+          </a>
+          <a class="nav-link {% if request.endpoint == 'main.reports' %}active{% endif %}" href="{{ url_for('main.reports') }}">
+            <span class="nav-token">RP</span>
+            Reports
+          </a>
         </nav>
 
         <div class="sidebar-profile">

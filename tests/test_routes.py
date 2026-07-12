@@ -2,6 +2,7 @@
 
 from app.repositories.approved_student_repository import ApprovedStudentRecord
 from app.repositories.dashboard_repository import DashboardBar, DashboardMetrics
+from app.services.academic_record_service import RecordPage
 from app.services.dashboard_service import DashboardData
 
 
@@ -75,6 +76,38 @@ class FakeDashboardService:
             student_status_bars=[DashboardBar("Active", 1, 100)],
             result_status_bars=[DashboardBar("In progress", 1, 100)],
         )
+
+
+class FakeAcademicRecordService:
+    """Fake academic service for read-only record route tests."""
+
+    def _page(self, title: str) -> RecordPage:
+        return RecordPage(
+            title=title,
+            subtitle=f"Approved {title.lower()}",
+            description=f"Read-only {title.lower()} from approved PostgreSQL records.",
+            columns=[("Code", "code"), ("Name", "name")],
+            rows=[{"code": "USE101", "name": f"{title} sample"}],
+        )
+
+    def courses_page(self) -> RecordPage:
+        return self._page("Courses")
+
+    def modules_page(self) -> RecordPage:
+        return self._page("Modules")
+
+    def enrolments_page(self) -> RecordPage:
+        return self._page("Enrolments")
+
+    def grades_page(self) -> RecordPage:
+        return self._page("Grades")
+
+    def reports(self):
+        return {
+            "course_enrolment": [{"course_code": "USE101", "enrolled_students": 12}],
+            "programme_credit": [{"programme_code": "UB-CSC", "total_credits": 360}],
+            "student_results": [{"student_number": "USE1001", "average_grade": 72}],
+        }
 
 
 def test_dashboard_page_renders_metrics_and_overview(client, monkeypatch):
@@ -161,3 +194,34 @@ def test_delete_student_is_not_yet_available_for_normalised_schema(client, monke
 
     assert response.status_code == 200
     assert b"Student deletion is not yet available" in response.data
+
+
+def test_academic_record_pages_render_read_only_data(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "academic_service", FakeAcademicRecordService())
+
+    for path, expected in [
+        ("/courses", b"Courses sample"),
+        ("/modules", b"Modules sample"),
+        ("/enrolments", b"Enrolments sample"),
+        ("/grades", b"Grades sample"),
+    ]:
+        response = client.get(path)
+
+        assert response.status_code == 200
+        assert b"Read only" in response.data
+        assert expected in response.data
+
+
+def test_reports_page_renders_approved_report_sections(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "academic_service", FakeAcademicRecordService())
+
+    response = client.get("/reports")
+
+    assert response.status_code == 200
+    assert b"Course enrolment summary" in response.data
+    assert b"USE101" in response.data
+    assert b"UB-CSC" in response.data

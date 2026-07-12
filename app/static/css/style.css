@@ -125,24 +125,6 @@ body {
   text-align: center;
 }
 
-.future-modules {
-  display: grid;
-  gap: 0.35rem;
-  margin-top: 0.75rem;
-  padding: 0.85rem 0.75rem;
-  border: 1px dashed rgba(220, 230, 247, 0.2);
-  border-radius: 12px;
-  color: var(--ur-sidebar-muted);
-  font-size: 0.84rem;
-  font-weight: 700;
-}
-
-.future-label {
-  color: #dce6f7;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-}
-
 .sidebar-profile {
   display: flex;
   align-items: center;
@@ -469,6 +451,11 @@ body {
   min-width: 680px;
 }
 
+.record-table,
+.report-table {
+  min-width: 980px;
+}
+
 .student-table th {
   padding: 0.8rem;
   color: #64748b;
@@ -529,6 +516,35 @@ body {
 .pagination-bar div {
   display: flex;
   gap: 0.5rem;
+}
+
+.records-panel {
+  min-height: 420px;
+}
+
+.record-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--ur-border);
+  border-radius: 999px;
+  color: var(--ur-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.report-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.report-section {
+  min-width: 0;
+}
+
+.compact-empty {
+  padding: 2rem 1rem;
 }
 
 .quick-actions {
@@ -709,13 +725,6 @@ body {
     flex-direction: row !important;
     overflow-x: auto;
     padding-bottom: 0.25rem;
-  }
-
-  .future-modules {
-    min-width: 190px;
-    grid-auto-flow: column;
-    grid-auto-columns: max-content;
-    overflow-x: auto;
   }
 
   .sidebar-profile {

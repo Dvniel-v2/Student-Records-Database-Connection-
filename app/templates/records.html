@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block page_title %}{{ page.title }}{% endblock %}
+{% block page_subtitle %}{{ page.subtitle }}{% endblock %}
+{% block topbar_actions %}
+  <span class="page-chip">Read only</span>
+{% endblock %}
+{% block content %}
+<section class="panel records-panel">
+  <div class="panel-header">
+    <div>
+      <h2>{{ page.title }}</h2>
+      <p>{{ page.description }}</p>
+    </div>
+    <span class="record-count">{{ page.rows|length }} records</span>
+  </div>
+
+  {% if page.rows %}
+    <div class="table-responsive">
+      <table class="table align-middle student-table record-table mb-0">
+        <thead>
+          <tr>
+            {% for heading, field in page.columns %}
+              <th scope="col">{{ heading }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in page.rows %}
+            <tr>
+              {% for heading, field in page.columns %}
+                <td>
+                  {% if row[field] is none %}
+                    <span class="text-muted">Not recorded</span>
+                  {% else %}
+                    {{ row[field] }}
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <span class="metric-icon">DB</span>
+      <h3>No records available.</h3>
+      <p>Check that PostgreSQL is running and the approved SQL scripts have been executed.</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
