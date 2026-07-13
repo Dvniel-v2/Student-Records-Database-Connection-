@@ -13,6 +13,11 @@ from app.services.approved_student_service import (
     ApprovedStudentServiceError,
     ApprovedStudentValidationError,
 )
+from app.services.assignment_report_service import (
+    AssignmentReportService,
+    AssignmentReportServiceError,
+    AssignmentReportValidationError,
+)
 from app.services.dashboard_service import DashboardService, DashboardServiceError
 from app.services.student_write_service import (
     StudentWriteConflictError,
@@ -26,11 +31,18 @@ student_service = ApprovedStudentService()
 dashboard_service = DashboardService()
 academic_service = AcademicRecordService()
 student_write_service = StudentWriteService()
+assignment_report_service = AssignmentReportService()
 
 DATABASE_UNAVAILABLE_MESSAGE = (
     "Approved PostgreSQL student records are currently unavailable. "
     "Check the local database connection and approved schema configuration."
 )
+
+
+@main_bp.app_context_processor
+def inject_assignment_reports() -> dict[str, list]:
+    """Expose report definitions to shared navigation."""
+    return {"navigation_reports": assignment_report_service.catalogue()}
 
 
 @main_bp.get("/")
@@ -131,13 +143,27 @@ def grades() -> str:
 
 @main_bp.get("/reports")
 def reports() -> str:
-    """Render approved reporting view samples."""
+    """Render the assignment report catalogue."""
+    return render_template(
+        "reports.html", reports=assignment_report_service.catalogue()
+    )
+
+
+@main_bp.get("/reports/<report_key>")
+def report_detail(report_key: str) -> str:
+    """Render and optionally run one assignment report."""
+    has_run = request.args.get("run") == "1"
     try:
-        report_data = academic_service.reports()
-    except AcademicRecordServiceError:
-        flash("Approved reporting records are unavailable.", "error")
-        report_data = {}
-    return render_template("reports.html", reports=report_data)
+        report = assignment_report_service.build_report(
+            report_key, request.args.to_dict(), has_run=has_run
+        )
+    except AssignmentReportValidationError:
+        flash("Report not found.", "error")
+        return redirect(url_for("main.reports")), 302
+    except AssignmentReportServiceError:
+        flash("Report data is currently unavailable.", "error")
+        return redirect(url_for("main.reports")), 302
+    return render_template("report_detail.html", report=report)
 
 
 @main_bp.post("/students")

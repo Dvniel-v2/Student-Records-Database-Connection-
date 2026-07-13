@@ -66,3 +66,22 @@ The SQL scripts are the current database baseline.
 The interface includes read-only pages for Courses, Modules, Enrolments, Grades
 and Reports. Future development may add write workflows for those entities once
 their transaction rules are defined.
+
+## Assignment Reports
+
+The application implements eight database-backed report functions:
+
+1. Students registered on a selected course taught by a selected lecturer.
+2. Final-year Students with an average overall grade above a threshold.
+3. Active Students with no registration in the current approved term.
+4. Academic adviser lookup for a selected Student.
+5. Lecturers by expertise area.
+6. Staff by department or administrative unit.
+7. Research project summary.
+8. Programme credit summary.
+
+Reports use approved tables and views such as `enrolment`, `course_offering`,
+`offering_lecturer`, `advisor_assignment`, `lecturer_expertise`,
+`non_academic_staff`, `vw_research_project_summary` and
+`vw_programme_credit_summary`. Report SQL is kept in repository classes and uses
+parameterised values for user filters.

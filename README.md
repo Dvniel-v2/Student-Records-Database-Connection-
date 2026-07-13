@@ -34,8 +34,8 @@ https://www.figma.com/design/9WqQOoMQ63DJAITQx6WDRU/University-Records-Database-
 
 ## What The App Does
 
-The current app lets an administrator view approved Student directory records
-from PostgreSQL.
+The current app lets an administrator manage Student records and run assignment
+reports from the approved local PostgreSQL database.
 
 The active Student read path is:
 
@@ -82,6 +82,12 @@ interface.
 Courses, Modules, Enrolments, Grades and Reports currently have read-only
 database-backed pages. Future development may add write workflows for those
 areas when their transaction rules are defined.
+
+The Reports section implements the assignment query centre. It includes
+database-backed filters and result tables for Students by course and lecturer,
+final-year high achievers, Students without current registration, academic
+advisers, lecturer expertise, staff location, research project summaries and
+programme credit summaries.
 
 The approved PostgreSQL database separates Student data across normalised tables
 including `person`, `student`, `person_contact` and `programme`. Student writes
@@ -143,6 +149,9 @@ server entry point.
 `logs/` is reserved for local runtime logs if file logging is added later. The
 application does not currently configure file logging. Log files are ignored by
 Git.
+
+`docs/requirement-coverage.md` maps assignment requirements to implemented
+routes, services, repositories and database objects.
 
 ## Setup
 

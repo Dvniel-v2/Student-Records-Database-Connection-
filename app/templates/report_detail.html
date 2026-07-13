@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block title %}{{ report.definition.name }}{% endblock %}
+{% block page_title %}{{ report.definition.name }}{% endblock %}
+{% block page_subtitle %}{{ report.definition.purpose }}{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-light btn-sm" href="{{ url_for('main.reports') }}">Back to Reports</a>
+{% endblock %}
+{% block content %}
+<section class="panel records-panel">
+  <div class="panel-header">
+    <div>
+      <h2>Report filters</h2>
+      <p>Run this report using approved PostgreSQL data.</p>
+    </div>
+    {% if report.has_run %}
+      <span class="record-count">{{ report.rows|length }} results</span>
+    {% endif %}
+  </div>
+
+  {% if report.errors %}
+    <div class="filter-error-summary" role="alert">
+      Check the highlighted filter before running the report.
+    </div>
+  {% endif %}
+
+  <form class="report-filter-form" method="get" action="{{ url_for('main.report_detail', report_key=report.definition.key) }}">
+    <input type="hidden" name="run" value="1" />
+    <p class="report-filter-help">
+      Required filters are marked. Use the search boxes to narrow long approved data lists.
+    </p>
+    <div class="report-filter-fields">
+    {% if report.definition.key == 'students-by-course-lecturer' %}
+      <div class="form-field">
+        <label class="form-label" for="lecturer_id">Lecturer <span class="required-chip">Required</span></label>
+        <input class="form-control form-control-sm select-search" type="search" placeholder="Search lecturer name, number or department" data-select-filter="lecturer_id" aria-label="Search lecturer options" />
+        <select class="form-select {% if report.errors.lecturer_id %}is-invalid{% endif %}" id="lecturer_id" name="lecturer_id">
+          <option value="">Select lecturer</option>
+          {% for lecturer in report.choices.lecturers %}
+            <option value="{{ lecturer.lecturer_id }}" {% if report.filters.lecturer_id == lecturer.lecturer_id|string %}selected{% endif %}>{{ lecturer.lecturer_name }} | {{ lecturer.lecturer_number }} | {{ lecturer.department_code }}</option>
+          {% endfor %}
+        </select>
+        {% if report.errors.lecturer_id %}<div class="invalid-feedback">{{ report.errors.lecturer_id }}</div>{% endif %}
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="course_code">Taught course <span class="required-chip">Required</span></label>
+        <input class="form-control form-control-sm select-search" type="search" placeholder="Search this lecturer's courses" data-select-filter="course_code" aria-label="Search course options" />
+        <select class="form-select {% if report.errors.course_code %}is-invalid{% endif %}" id="course_code" name="course_code" data-dependent-select data-controller-select="lecturer_id" data-empty-label="Select lecturer first" data-no-results-label="No course found for this lecturer">
+          <option value="">Select lecturer first</option>
+          {% for course in report.choices.courses %}
+            <option value="{{ course.course_code }}" data-controller-value="{{ course.lecturer_id }}" {% if report.filters.course_code == course.course_code %}selected{% endif %}>{{ course.course_code }} | {{ course.course_name }} | {{ course.enrolled_student_count }} students</option>
+          {% endfor %}
+        </select>
+        <p class="field-hint">Only valid course records for the selected lecturer are shown.</p>
+        {% if report.errors.course_code %}<div class="invalid-feedback">{{ report.errors.course_code }}</div>{% endif %}
+      </div>
+    {% elif report.definition.key == 'final-year-high-achievers' %}
+      <div class="form-field">
+        <label class="form-label" for="minimum_grade">Minimum average grade <span class="optional-chip">Optional</span></label>
+        <input class="form-control {% if report.errors.minimum_grade %}is-invalid{% endif %}" id="minimum_grade" name="minimum_grade" type="number" min="0" max="100" step="0.01" value="{{ report.filters.minimum_grade or '70' }}" />
+        {% if report.errors.minimum_grade %}<div class="invalid-feedback">{{ report.errors.minimum_grade }}</div>{% endif %}
+      </div>
+    {% elif report.definition.key == 'academic-adviser' %}
+      <div class="form-field">
+        <label class="form-label" for="student_id">Student <span class="required-chip">Required</span></label>
+        <input class="form-control form-control-sm select-search" type="search" placeholder="Search student name or number" data-select-filter="student_id" aria-label="Search student options" />
+        <select class="form-select {% if report.errors.student_id %}is-invalid{% endif %}" id="student_id" name="student_id">
+          <option value="">Select Student</option>
+          {% for student in report.choices.students %}
+            <option value="{{ student.student_id }}" {% if report.filters.student_id == student.student_id|string %}selected{% endif %}>{{ student.student_name }} | {{ student.student_number }}</option>
+          {% endfor %}
+        </select>
+        {% if report.errors.student_id %}<div class="invalid-feedback">{{ report.errors.student_id }}</div>{% endif %}
+      </div>
+    {% elif report.definition.key == 'lecturer-expertise' %}
+      <div class="form-field">
+        <label class="form-label" for="expertise_area">Expertise area <span class="required-chip">Required</span></label>
+        <input class="form-control {% if report.errors.expertise_area %}is-invalid{% endif %}" id="expertise_area" name="expertise_area" value="{{ report.filters.expertise_area or '' }}" placeholder="Start typing, for example Data" list="expertise-options" />
+        <datalist id="expertise-options">
+          {% for expertise in report.choices.expertise_areas %}
+            <option value="{{ expertise.expertise_area }}"></option>
+          {% endfor %}
+        </datalist>
+        {% if report.errors.expertise_area %}<div class="invalid-feedback">{{ report.errors.expertise_area }}</div>{% endif %}
+      </div>
+    {% elif report.definition.key == 'staff-by-location' %}
+      <div class="form-field">
+        <label class="form-label" for="location">Department or unit <span class="required-chip">Required</span></label>
+        <input class="form-control form-control-sm select-search" type="search" placeholder="Search department or unit" data-select-filter="location" aria-label="Search location options" />
+        <select class="form-select {% if report.errors.location %}is-invalid{% endif %}" id="location" name="location">
+          <option value="">Select location</option>
+          {% for location in report.choices.locations %}
+            {% set value = location.location_type ~ ':' ~ location.location_code %}
+            <option value="{{ value }}" {% if report.filters.location == value %}selected{% endif %}>{{ 'Department' if location.location_type == 'department' else 'Unit' }} | {{ location.location_code }} | {{ location.location_name }}</option>
+          {% endfor %}
+        </select>
+        {% if report.errors.location %}<div class="invalid-feedback">{{ report.errors.location }}</div>{% endif %}
+      </div>
+    {% elif report.definition.key == 'research-project-summary' %}
+      <div class="form-field">
+        <label class="form-label" for="project_code">Project <span class="optional-chip">Optional</span></label>
+        <input class="form-control form-control-sm select-search" type="search" placeholder="Search project code or title" data-select-filter="project_code" aria-label="Search project options" />
+        <select class="form-select" id="project_code" name="project_code">
+          <option value="">All projects</option>
+          {% for project in report.choices.projects %}
+            <option value="{{ project.project_code }}" {% if report.filters.project_code == project.project_code %}selected{% endif %}>{{ project.project_code }} | {{ project.project_title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="group_code">Research group <span class="optional-chip">Optional</span></label>
+        <input class="form-control form-control-sm select-search" type="search" placeholder="Search group code or name" data-select-filter="group_code" aria-label="Search research group options" />
+        <select class="form-select" id="group_code" name="group_code">
+          <option value="">All groups</option>
+          {% for group in report.choices.groups %}
+            <option value="{{ group.group_code }}" {% if report.filters.group_code == group.group_code %}selected{% endif %}>{{ group.group_code }} | {{ group.group_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% elif report.definition.key == 'programme-credit-summary' %}
+      <div class="form-field">
+        <label class="form-label" for="programme_code">Programme <span class="optional-chip">Optional</span></label>
+        <input class="form-control form-control-sm select-search" type="search" placeholder="Search programme code or name" data-select-filter="programme_code" aria-label="Search programme options" />
+        <select class="form-select" id="programme_code" name="programme_code">
+          <option value="">All programmes</option>
+          {% for programme in report.choices.programmes %}
+            <option value="{{ programme.programme_code }}" {% if report.filters.programme_code == programme.programme_code %}selected{% endif %}>{{ programme.programme_code }} | {{ programme.programme_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% else %}
+      <p class="form-status">No filters required. Run Report to list approved records.</p>
+    {% endif %}
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-primary" type="submit">Run Report</button>
+      <a class="btn btn-light" href="{{ url_for('main.report_detail', report_key=report.definition.key) }}">Clear Filters</a>
+    </div>
+  </form>
+
+  {% if report.has_run and not report.errors %}
+    {% if report.rows %}
+      <div class="table-responsive">
+        <table class="table align-middle student-table report-table mb-0">
+          <thead>
+            <tr>
+              {% for heading, field in report.definition.columns %}
+                <th scope="col">{{ heading }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in report.rows %}
+              <tr>
+                {% for heading, field in report.definition.columns %}
+                  <td>{{ row[field] if row[field] is not none else 'Not recorded' }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state compact-empty">
+        <span class="metric-icon">RP</span>
+        <h3>No matching report rows.</h3>
+        <p>Adjust the filters and run the report again.</p>
+      </div>
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

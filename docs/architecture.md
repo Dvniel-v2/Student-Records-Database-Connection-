@@ -35,6 +35,11 @@ with parameterised SQL. It writes to `person`, `student` and primary
 `person_contact` records. Multi-table create and update operations commit only
 after all related records succeed and roll back on failure.
 
+`app/services/assignment_report_service.py` and
+`app/repositories/assignment_report_repository.py` implement the assignment query
+centre. The service validates report filters and the repository keeps all SQL in
+the data layer.
+
 ## Data Flow
 
 1. A user opens the Student Directory or a Student Detail page.
@@ -58,6 +63,15 @@ after all related records succeed and roll back on failure.
 The approved schema does not define an `Archived` Student status or a Student
 delete procedure. The frontend therefore uses Withdraw Student, which sets
 `student.student_status` to `Withdrawn` and preserves academic history.
+
+## Report Query Flow
+
+1. A user opens `/reports`.
+2. The route displays the report catalogue from `AssignmentReportService`.
+3. A user opens a report and submits filters.
+4. The service validates the filters.
+5. The repository runs parameterised SQL against approved tables or views.
+6. The template displays result counts, empty states and responsive tables.
 
 PostgreSQL is the sole supported implementation database. Unit tests do not
 perform formal live PostgreSQL validation.

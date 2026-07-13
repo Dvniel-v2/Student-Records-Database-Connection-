@@ -6,6 +6,10 @@ from app.repositories.approved_student_repository import ApprovedStudentRecord
 from app.repositories.dashboard_repository import DashboardBar, DashboardMetrics
 from app.repositories.student_write_repository import EditableStudentRecord
 from app.services.academic_record_service import RecordPage
+from app.services.assignment_report_service import (
+    AssignmentReportService,
+    AssignmentReportServiceError,
+)
 from app.services.dashboard_service import DashboardData
 from app.services.student_write_service import (
     StudentFormChoices,
@@ -117,6 +121,41 @@ class FakeAcademicRecordService:
             "programme_credit": [{"programme_code": "UB-CSC", "total_credits": 360}],
             "student_results": [{"student_number": "USE1001", "average_grade": 72}],
         }
+
+
+class FakeAssignmentReportService:
+    """Fake report service for route tests."""
+
+    def __init__(self):
+        self.error = None
+
+    def catalogue(self):
+        return AssignmentReportService.DEFINITIONS[:2]
+
+    def build_report(self, report_key, filters, *, has_run):
+        if self.error:
+            raise self.error
+
+        definition = AssignmentReportService().get_definition(report_key)
+
+        class Result:
+            rows = [{"student_number": "USE1001", "student_name": "Ada Lovelace"}]
+            choices = {
+                "students": [
+                    {
+                        "student_id": 1,
+                        "student_number": "USE1001",
+                        "student_name": "Ada Lovelace",
+                    }
+                ]
+            }
+            errors = {}
+
+        result = Result()
+        result.definition = definition
+        result.filters = filters
+        result.has_run = has_run
+        return result
 
 
 def _editable_student() -> EditableStudentRecord:
@@ -469,11 +508,41 @@ def test_academic_record_pages_render_read_only_data(client, monkeypatch):
 def test_reports_page_renders_approved_report_sections(client, monkeypatch):
     from app.routes import main
 
-    monkeypatch.setattr(main, "academic_service", FakeAcademicRecordService())
+    monkeypatch.setattr(
+        main, "assignment_report_service", FakeAssignmentReportService()
+    )
 
     response = client.get("/reports")
 
     assert response.status_code == 200
-    assert b"Course enrolment summary" in response.data
-    assert b"USE101" in response.data
-    assert b"UB-CSC" in response.data
+    assert b"Students by Course and Lecturer" in response.data
+    assert b"Open Filters" in response.data
+
+
+def test_report_detail_runs_with_filters(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(
+        main, "assignment_report_service", FakeAssignmentReportService()
+    )
+
+    response = client.get("/reports/academic-adviser?run=1&student_id=1")
+
+    assert response.status_code == 200
+    assert b"Academic Adviser Lookup" in response.data
+    assert b"USE1001" in response.data
+
+
+def test_report_detail_handles_service_error(client, monkeypatch):
+    from app.routes import main
+
+    fake_service = FakeAssignmentReportService()
+    fake_service.error = AssignmentReportServiceError("database unavailable")
+    monkeypatch.setattr(main, "assignment_report_service", fake_service)
+
+    response = client.get(
+        "/reports/academic-adviser?run=1&student_id=1", follow_redirects=True
+    )
+
+    assert response.status_code == 200
+    assert b"Report data is currently unavailable." in response.data

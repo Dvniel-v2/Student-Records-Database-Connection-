@@ -128,6 +128,8 @@ class ApprovedStudentRepository:
                     student_number ILIKE :search_pattern
                     OR first_name ILIKE :search_pattern
                     OR last_name ILIKE :search_pattern
+                    OR CONCAT(first_name, ' ', last_name) ILIKE :search_pattern
+                    OR CONCAT(last_name, ' ', first_name) ILIKE :search_pattern
                     OR programme_code ILIKE :search_pattern
                     OR programme_name ILIKE :search_pattern
                 )

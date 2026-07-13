@@ -41,6 +41,25 @@ approved SQL scripts to have been executed.
 
 The application does not create the PostgreSQL database automatically.
 
+## Start Here
+
+Use this sequence for a clean local run:
+
+1. Install PostgreSQL and pgAdmin.
+2. Create a PostgreSQL database named `use_records`.
+3. Run the approved SQL scripts in numbered order from `sql/postgresql/`.
+4. Create a private local `.env` from `.env.example`.
+5. Add the local PostgreSQL username and password to `.env`.
+6. Create and activate a Python virtual environment.
+7. Install `requirements.txt`.
+8. Run `python run.py`.
+9. Open the URL printed in the terminal.
+10. Check `/health/database`.
+
+Expected success indicators are a running Flask server, a successful database
+health response and visible records in the dashboard, Student Directory and
+Reports section.
+
 ## Reproducibility Flow
 
 ```text
@@ -173,6 +192,45 @@ Successful local setup means:
 6. The database health endpoint reports success.
 
 These checks must be confirmed on the local computer running the project.
+
+## Handover Evidence Checklist
+
+Use this checklist to collect evidence for final assessment. Do not commit
+screenshots unless image files are intentionally added by the team.
+
+Application screenshots:
+
+- Dashboard
+- Student Directory
+- Student create, edit and withdraw screens
+- Courses, Modules, Enrolments and Grades pages
+- Reports landing page
+- Each assignment report page
+- Database health endpoint
+
+Database evidence:
+
+- PostgreSQL server running locally
+- `use_records` database
+- `use_record_management` schema
+- Approved SQL scripts shown in numbered order
+- Validation query output
+
+Test evidence:
+
+- `ruff check .`
+- `black --check .`
+- `pytest --cov=app --cov-report=term-missing`
+- Coverage percentage
+
+Handover checks:
+
+- Final ZIP package opens correctly
+- `.env` is excluded
+- `.venv` is excluded
+- No PostgreSQL password is included
+- Assessor setup guide is included
+- Approved SQL scripts are included
 
 ## Common Errors
 

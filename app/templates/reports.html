@@ -1,61 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Reports{% endblock %}
 {% block page_title %}Reports{% endblock %}
-{% block page_subtitle %}Approved PostgreSQL reporting views{% endblock %}
+{% block page_subtitle %}Assignment query centre{% endblock %}
 {% block topbar_actions %}
   <span class="page-chip">Read only</span>
 {% endblock %}
 {% block content %}
-{% set sections = [
-  ('Course enrolment summary', 'course_enrolment'),
-  ('Programme credit summary', 'programme_credit'),
-  ('Student result summary', 'student_results')
-] %}
-<section class="report-grid" aria-label="Approved reports">
-  {% for title, key in sections %}
-    {% set rows = reports.get(key, []) %}
-    <article class="panel report-section">
-      <div class="panel-header">
-        <div>
-          <h2>{{ title }}</h2>
-          <p>{{ rows|length }} rows from the approved reporting view</p>
+<section class="report-catalogue" aria-label="Assignment reports">
+  {% for report in reports %}
+    <article class="panel report-card">
+      <div class="report-card-body">
+        <span class="metric-icon">RP</span>
+        <div class="report-card-copy">
+          <span class="report-card-index">Report {{ loop.index }}</span>
+          <h2>{{ report.name }}</h2>
+          <p>{{ report.purpose }}</p>
         </div>
       </div>
-
-      {% if rows %}
-        <div class="table-responsive">
-          <table class="table align-middle student-table report-table mb-0">
-            <thead>
-              <tr>
-                {% for field in rows[0].keys() %}
-                  <th scope="col">{{ field|replace('_', ' ')|title }}</th>
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              {% for row in rows %}
-                <tr>
-                  {% for value in row.values() %}
-                    <td>
-                      {% if value is none %}
-                        <span class="text-muted">Not recorded</span>
-                      {% else %}
-                        {{ value }}
-                      {% endif %}
-                    </td>
-                  {% endfor %}
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      {% else %}
-        <div class="empty-state compact-empty">
-          <span class="metric-icon">RP</span>
-          <h3>No report rows available.</h3>
-          <p>Check the approved PostgreSQL reporting views.</p>
-        </div>
-      {% endif %}
+      <div class="report-card-footer">
+        <span class="report-filter-note">
+          {{ 'No required filters' if report.required_filters == 'None' else 'Filter by ' ~ report.required_filters }}
+        </span>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('main.report_detail', report_key=report.key) }}">Open Filters</a>
+      </div>
     </article>
   {% endfor %}
 </section>
