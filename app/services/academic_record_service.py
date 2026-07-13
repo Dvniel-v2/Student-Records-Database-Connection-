@@ -36,8 +36,8 @@ class AcademicRecordService:
         try:
             return RecordPage(
                 title="Courses",
-                subtitle="Approved course catalogue",
-                description="Read-only records from the approved PostgreSQL schema.",
+                subtitle="University course catalogue",
+                description="View course details, credits and scheduled offerings.",
                 columns=[
                     ("Course code", "course_code"),
                     ("Course name", "course_name"),
@@ -56,9 +56,11 @@ class AcademicRecordService:
         """Return approved module offering page data."""
         try:
             return RecordPage(
-                title="Modules and Course Offerings",
-                subtitle="Course offerings by academic term",
-                description="Approved course offering records shown as modules.",
+                title="Modules",
+                subtitle="Scheduled course offerings by academic term",
+                description=(
+                    "View scheduled classes, delivery mode, capacity and status."
+                ),
                 columns=[
                     ("Course code", "course_code"),
                     ("Course name", "course_name"),
@@ -79,8 +81,10 @@ class AcademicRecordService:
         try:
             return RecordPage(
                 title="Enrolments",
-                subtitle="Approved student course registrations",
-                description="Read-only records from the approved PostgreSQL schema.",
+                subtitle="Student course registrations",
+                description=(
+                    "View enrolment status, result status and registration dates."
+                ),
                 columns=[
                     ("Student number", "student_number"),
                     ("Student", "student_name"),
@@ -103,8 +107,8 @@ class AcademicRecordService:
         try:
             return RecordPage(
                 title="Grades",
-                subtitle="Approved assessment records",
-                description="Read-only records from the approved PostgreSQL schema.",
+                subtitle="Assessment records",
+                description="View recorded grades and assessment outcomes.",
                 columns=[
                     ("Student number", "student_number"),
                     ("Student", "student_name"),

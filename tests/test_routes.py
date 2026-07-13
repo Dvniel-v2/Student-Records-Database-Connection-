@@ -256,7 +256,7 @@ def test_students_page_renders_searchable_directory(client, monkeypatch):
     response = client.get("/students?q=Ada&status=Active&per_page=50")
 
     assert response.status_code == 200
-    assert b"Student Records" in response.data
+    assert b"Students" in response.data
     assert b"USE1001" in response.data
     assert fake_service.last_search["search_term"] == "Ada"
     assert fake_service.last_search["status"] == "Active"
@@ -522,8 +522,8 @@ def test_reports_page_renders_approved_report_sections(client, monkeypatch):
     response = client.get("/reports")
 
     assert response.status_code == 200
-    assert b"Students by Course and Lecturer" in response.data
-    assert b"Open Filters" in response.data
+    assert b"Students by course and lecturer" in response.data
+    assert b"Open report" in response.data
 
 
 def test_report_detail_runs_with_filters(client, monkeypatch):
@@ -536,7 +536,7 @@ def test_report_detail_runs_with_filters(client, monkeypatch):
     response = client.get("/reports/academic-adviser?run=1&student_id=1")
 
     assert response.status_code == 200
-    assert b"Academic Adviser Lookup" in response.data
+    assert b"Academic adviser lookup" in response.data
     assert b"USE1001" in response.data
 
 

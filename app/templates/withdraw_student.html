@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Withdraw Student{% endblock %}
 {% block page_title %}Withdraw Student{% endblock %}
-{% block page_subtitle %}Change the Student lifecycle status without deleting records{% endblock %}
+{% block page_subtitle %}Change the student lifecycle status without deleting records{% endblock %}
 {% block content %}
 <section class="panel form-panel danger-panel">
   <div class="panel-header">
     <div>
       <h2>{{ student.first_name }} {{ student.last_name }}</h2>
-      <p>{{ student.student_number }} · {{ student.programme_code }} {{ student.programme_name }}</p>
+      <p>{{ student.student_number }} - {{ student.programme_code }} {{ student.programme_name }}</p>
     </div>
   </div>
   <div class="warning-box">
-    <strong>This action will set the Student status to Withdrawn.</strong>
-    <p>Academic history, enrolments, grades and linked records are preserved. The Student will remain searchable as a withdrawn record.</p>
+    <strong>This action will set the student status to Withdrawn.</strong>
+    <p>Academic history, enrolments, grades and linked records are preserved. The student will remain searchable as a withdrawn record.</p>
   </div>
   <form method="post" action="{{ url_for('main.withdraw_student', student_id=student.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />

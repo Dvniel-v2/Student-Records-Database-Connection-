@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Edit Student{% endblock %}
 {% block page_title %}Edit Student{% endblock %}
-{% block page_subtitle %}Update approved Student and person records{% endblock %}
+{% block page_subtitle %}Update student details and contact information{% endblock %}
 {% block content %}
 <section class="panel form-panel">
   <div class="panel-header">
     <div>
       <h2>{{ student.first_name }} {{ student.last_name }}</h2>
-      <p>{{ student.student_number }} · {{ student.masked_email }}</p>
+      <p>{{ student.student_number }} - {{ student.masked_email }}</p>
     </div>
   </div>
   <form method="post" action="{{ url_for('main.edit_student', student_id=student.student_id) }}" novalidate>

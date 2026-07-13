@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a problem in the Student Records application
+about: Report a problem in UniRecords
 title: ''
 labels: bug
 assignees: ''
@@ -10,30 +10,28 @@ assignees: ''
 
 Briefly explain the problem in the university records application.
 
-## Affected Area
+## Affected area
 
-State the affected entity or layer, such as Student, routes, services,
-repositories, templates, SQL scripts or tests.
+State the page, workflow or code area affected.
 
-## Steps To Reproduce
+## Steps to reproduce
 
 1. Describe the first action.
 2. Describe the next action.
 3. Describe the result seen.
 
-## Expected Behaviour
+## Expected behaviour
 
 Explain what should happen.
 
-## Actual Behaviour
+## Actual behaviour
 
 Explain what happened instead.
 
-## Database Or Migration Impact
+## Database impact
 
-State whether the issue affects database tables, approved SQL scripts or local
-environment configuration.
+State whether this affects tables, SQL scripts, local setup or data shown in the app.
 
-## Checks Completed
+## Checks completed
 
 List any checks run, such as Ruff, Black, pytest or manual browser testing.

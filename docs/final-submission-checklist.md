@@ -13,7 +13,7 @@ evidence to the repository.
 - [ ] Edit Student
 - [ ] Withdraw Student
 - [ ] Courses
-- [ ] Modules and Course Offerings
+- [ ] Modules
 - [ ] Enrolments
 - [ ] Grades
 - [ ] Reports
@@ -22,7 +22,7 @@ evidence to the repository.
 ## Assignment Reports
 
 - [ ] Students by course and lecturer
-- [ ] Final-year Students above 70%
+- [ ] Final-year students above 70%
 - [ ] Students without current registration
 - [ ] Academic adviser lookup
 - [ ] Lecturers by expertise
@@ -55,7 +55,7 @@ evidence to the repository.
 - [ ] Edit screenshot
 - [ ] Withdrawal screenshot
 - [ ] Courses screenshot
-- [ ] Modules and Course Offerings screenshot
+- [ ] Modules screenshot
 - [ ] Enrolments screenshot
 - [ ] Grades screenshot
 - [ ] Reports catalogue screenshot

@@ -34,8 +34,8 @@ student_write_service = StudentWriteService()
 assignment_report_service = AssignmentReportService()
 
 DATABASE_UNAVAILABLE_MESSAGE = (
-    "Approved PostgreSQL student records are currently unavailable. "
-    "Check the local database connection and approved schema configuration."
+    "Student records are currently unavailable. "
+    "Check the local database connection and PostgreSQL setup."
 )
 
 
@@ -349,8 +349,8 @@ def _render_record_page(service_method: str, error_message: str) -> str:
         flash(error_message, "error")
         page = RecordPage(
             title="Records unavailable",
-            subtitle="Approved PostgreSQL records could not be read",
-            description="Check the local database connection and approved schema.",
+            subtitle="Records could not be read",
+            description="Check the local database connection and PostgreSQL setup.",
             columns=[],
             rows=[],
         )

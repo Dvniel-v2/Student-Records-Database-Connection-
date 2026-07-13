@@ -3,16 +3,17 @@
 The approved implementation database is the PostgreSQL
 `use_record_management` schema in `sql/postgresql/`.
 
-PostgreSQL is the only supported implementation database. The SQL scripts in
-`sql/postgresql` are the approved database source of truth.
+PostgreSQL is the only supported implementation database. The SQL files in
+`sql/postgresql` create the database structure and sample data used by
+UniRecords.
 
-The active Student interface reads from the approved masked view:
+The active student interface reads from the approved masked view:
 
 ```text
 use_record_management.vw_student_directory_masked
 ```
 
-The underlying approved Student structure is normalised across tables including
+The underlying approved student structure is normalised across tables including
 `person`, `student` and `programme`.
 
 ## Write Responsibilities
@@ -67,14 +68,14 @@ The Modules page displays scheduled course offerings by academic term. The page
 uses the module wording expected by the interface while reading the approved
 `course_offering`, `course` and `academic_term` tables.
 
-## Assignment Reports
+## Reports
 
 The application implements eight database-backed report functions:
 
 1. Students registered on a selected course taught by a selected lecturer.
-2. Final-year Students with an average overall grade above a threshold.
-3. Active Students with no registration in the current approved term.
-4. Academic adviser lookup for a selected Student.
+2. Final-year students with an average overall grade above a threshold.
+3. Active students with no registration in the current approved term.
+4. Academic adviser lookup for a selected student.
 5. Lecturers by expertise area.
 6. Staff by department or administrative unit.
 7. Research project summary.

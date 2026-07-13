@@ -2,17 +2,17 @@
 
 UniRecords is the product name for the University Records Management System. It
 is a three-layer Flask and PostgreSQL university records application for working
-with approved university record data through a browser.
+with university record data through a browser.
 
 ## What You Can Do
 
 Use UniRecords to:
 
 1. View dashboard metrics and charts.
-2. Search, filter and page through Student records.
-3. View, create, edit and withdraw Student records.
-4. Read Courses, Modules and Course Offerings, Enrolments and Grades.
-5. Run eight assignment reports with filters and result tables.
+2. Search, filter and page through student records.
+3. View, create, edit and withdraw student records.
+4. Read Courses, Modules, Enrolments and Grades.
+5. Run eight reports with filters and result tables.
 6. Check the local PostgreSQL connection from the browser.
 
 ## What Is Already Implemented
@@ -21,15 +21,15 @@ Use UniRecords to:
 | --- | --- |
 | Dashboard | Database-backed metrics and distribution charts |
 | Students | Search, filtering, pagination, detail, create, edit and withdrawal |
-| Courses | Read-only approved course catalogue |
-| Modules and Course Offerings | Read-only scheduled course offerings by academic term |
-| Enrolments | Read-only approved enrolment records |
-| Grades | Read-only approved grade records |
-| Reports | Eight assignment report functions |
+| Courses | Read-only university course catalogue |
+| Modules | Read-only scheduled course offerings by academic term |
+| Enrolments | Read-only student course registrations |
+| Grades | Read-only assessment records |
+| Reports | Eight report functions |
 | Database health | Read-only PostgreSQL connection and schema check |
 
 Student withdrawal is a lifecycle action, not a hard delete. The application
-sets the Student status to `Withdrawn` and preserves academic history.
+sets the student status to `Withdrawn` and preserves academic history.
 
 ## Start Here
 
@@ -69,7 +69,8 @@ SQL is kept in repository classes. Routes do not query SQLAlchemy directly.
 
 ## Database And Data
 
-The approved SQL scripts are the database source of truth:
+The SQL files in `sql/postgresql/` create the database structure and sample data
+used by UniRecords:
 
 ```text
 sql/postgresql/
@@ -113,7 +114,7 @@ Planning references:
 
 - Authentication is not implemented.
 - Role-based application authorisation is not implemented.
-- Non-Student entities are read-only.
+- Non-student entities are read-only.
 - PostgreSQL runs locally and must be recreated on each computer from the
   approved SQL scripts.
 - Tests use the Flask testing configuration and an in-memory SQLite database;

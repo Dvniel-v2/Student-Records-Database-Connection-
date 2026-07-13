@@ -7,7 +7,7 @@ System.
 
 Flask routes in `app/routes/main.py` receive HTTP requests and render templates.
 Templates display the dashboard, Student Directory, Student Detail, Student
-write pages, read-only academic records and assignment reports. Static CSS and
+write pages, read-only academic records and reports. Static CSS and
 JavaScript stay in `app/static`.
 
 Routes do not query SQLAlchemy directly. They call `ApprovedStudentService` and
@@ -38,9 +38,9 @@ with parameterised SQL. It writes to `person`, `student` and primary
 after all related records succeed and roll back on failure.
 
 `app/services/assignment_report_service.py` and
-`app/repositories/assignment_report_repository.py` implement the assignment query
-centre. The service validates report filters and the repository keeps all SQL in
-the data layer.
+`app/repositories/assignment_report_repository.py` implement the report pages.
+The service validates report filters and the repository keeps all SQL in the
+data layer.
 
 ## Data Flow
 
@@ -91,15 +91,12 @@ hardening should be added before a real deployment.
 
 ## Schema Management
 
-The approved database baseline is the PostgreSQL `use_record_management` schema
-in `sql/postgresql/`. The approved SQL scripts create the schema. Flask connects
-to that schema through SQLAlchemy and repositories query or update it.
+The SQL files in `sql/postgresql/` create the PostgreSQL
+`use_record_management` schema. Flask connects to that schema through SQLAlchemy
+and repositories read or update its objects.
 
 Alembic migrations are not used in this project because the approved SQL package
 is the source of truth.
-
-The simplified Student prototype model, repository, service, write templates and
-seed script have been removed from the supported application path.
 
 The `/health/database` endpoint checks database connectivity, schema presence
 and whether the approved `student` table can be queried. It does not create or

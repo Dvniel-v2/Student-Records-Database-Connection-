@@ -10,26 +10,22 @@ assignees: ''
 
 Briefly explain the proposed university records feature.
 
-## Affected Entity Or Area
+## Why is this needed?
 
-State whether this affects Students, Courses, Modules and Course Offerings,
-Enrolments, Grades, Reports, dashboard data, database design, planned
-authentication, global search, notifications, help controls or another part of
-the app.
+Explain the problem, requirement or user need.
 
-## Why This Is Needed
+## Expected behaviour
 
-Explain the problem, coursework requirement or user need.
+Explain what should happen when complete.
 
-## Expected Behaviour
+## Affected area
 
-Explain what the feature should do when complete.
+State the page, workflow or code area affected.
 
-## Database Or Migration Impact
+## Database impact
 
-State whether approved SQL changes, repository queries or service logic are
-expected.
+State whether this needs SQL, repository or service changes.
 
-## Test Notes
+## Test notes
 
 Describe the tests that should be added or updated.

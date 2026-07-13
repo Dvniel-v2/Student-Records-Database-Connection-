@@ -51,8 +51,8 @@ class AssignmentReportService:
     DEFINITIONS: tuple[ReportDefinition, ...] = (
         ReportDefinition(
             "students-by-course-lecturer",
-            "Students by Course and Lecturer",
-            "Find Students registered on a selected course taught by a lecturer.",
+            "Students by course and lecturer",
+            "Find students registered on a selected course taught by a lecturer.",
             "Course and lecturer",
             [
                 ("Student number", "student_number"),
@@ -67,8 +67,11 @@ class AssignmentReportService:
         ),
         ReportDefinition(
             "final-year-high-achievers",
-            "Final-year Students Above 70%",
-            "List final-year Students with an average overall grade above 70%.",
+            "Final-year students by average grade",
+            (
+                "Find final-year students whose average grade is above the "
+                "selected threshold."
+            ),
             "Minimum average grade",
             [
                 ("Student number", "student_number"),
@@ -81,8 +84,8 @@ class AssignmentReportService:
         ),
         ReportDefinition(
             "students-without-current-registration",
-            "Students Without Current Registration",
-            "Find active Students without an enrolment in the current approved term.",
+            "Students without current registration",
+            "Find active students without an enrolment in the selected current term.",
             "None",
             [
                 ("Student number", "student_number"),
@@ -96,8 +99,8 @@ class AssignmentReportService:
         ),
         ReportDefinition(
             "academic-adviser",
-            "Academic Adviser Lookup",
-            "Show current and recent adviser details for a selected Student.",
+            "Academic adviser lookup",
+            "Show current and recent adviser details for a selected student.",
             "Student",
             [
                 ("Student number", "student_number"),
@@ -160,7 +163,7 @@ class AssignmentReportService:
         ReportDefinition(
             "programme-credit-summary",
             "Programme Credit Summary",
-            "Compare required programme credits with approved curriculum credits.",
+            "Compare required programme credits with curriculum credits.",
             "Optional programme",
             [
                 ("Programme", "programme_code"),
@@ -246,7 +249,7 @@ class AssignmentReportService:
         if report_key == "students-without-current-registration":
             return self.repository.students_without_current_registration()
         if report_key == "academic-adviser":
-            student_id = self._required_int(filters, "student_id", "Select a Student.")
+            student_id = self._required_int(filters, "student_id", "Select a student.")
             return self.repository.adviser_for_student(student_id)
         if report_key == "lecturer-expertise":
             expertise = self._required(

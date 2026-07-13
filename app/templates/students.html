@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}Student Records{% endblock %}
-{% block page_title %}Student Records{% endblock %}
-{% block page_subtitle %}Search and browse approved Student Directory records{% endblock %}
+{% block title %}Students{% endblock %}
+{% block page_title %}Students{% endblock %}
+{% block page_subtitle %}Search and browse student records{% endblock %}
 {% block topbar_actions %}
   <a class="btn btn-primary btn-sm" href="{{ url_for('main.new_student_form') }}">Add Student</a>
 {% endblock %}
@@ -130,8 +130,8 @@
   {% else %}
     <div class="empty-state">
       <span class="metric-icon">ST</span>
-      <h3>No matching Student records.</h3>
-      <p>Adjust the search filters or confirm that the approved PostgreSQL database is available.</p>
+      <h3>No students found.</h3>
+      <p>Try changing or clearing the filters.</p>
     </div>
   {% endif %}
 </section>

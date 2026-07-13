@@ -26,7 +26,7 @@
   <article class="metric-card">
     <div class="metric-icon">EN</div>
     <span class="metric-badge">Live</span>
-    <p>Current enrolments</p>
+    <p>Active enrolments</p>
     <strong>{{ metrics.current_enrolments if metrics else 'Unavailable' }}</strong>
   </article>
   <article class="metric-card">
@@ -42,7 +42,7 @@
     <div class="panel-header">
       <div>
         <h2>Student status</h2>
-        <p>Distribution from approved Student records</p>
+        <p>Students by status</p>
       </div>
     </div>
     {% if dashboard and dashboard.student_status_bars %}
@@ -68,7 +68,7 @@
     <div class="panel-header">
       <div>
         <h2>Result status</h2>
-        <p>Distribution from approved enrolment records</p>
+        <p>Results by status</p>
       </div>
     </div>
     {% if dashboard and dashboard.result_status_bars %}
@@ -96,7 +96,7 @@
     <div class="panel-header">
       <div>
         <h2>Student overview</h2>
-        <p>A small sample from the approved Student Directory</p>
+        <p>A small sample from the Student Directory</p>
       </div>
       <a class="btn btn-outline-primary btn-sm" href="{{ url_for('main.students') }}">Browse Student Directory</a>
     </div>
@@ -131,8 +131,8 @@
     {% else %}
       <div class="empty-state">
         <span class="metric-icon">ST</span>
-        <h3>No Student overview available.</h3>
-        <p>Check that PostgreSQL is running and the approved SQL scripts have been executed.</p>
+        <h3>No student overview available.</h3>
+        <p>No students are available for this overview.</p>
       </div>
     {% endif %}
   </article>
@@ -142,11 +142,11 @@
     <p>Available application actions</p>
     <a class="quick-action" href="{{ url_for('main.students') }}">
       <span class="metric-icon">ST</span>
-      <span><strong>Browse Student Directory</strong><small>Search and view approved Student records</small></span>
+      <span><strong>Browse Student Directory</strong><small>Search and view student records</small></span>
     </a>
     <a class="quick-action" href="{{ url_for('main.students') }}#student-search">
       <span class="metric-icon">SR</span>
-      <span><strong>Search Student records</strong><small>Filter by name, number, programme or status</small></span>
+      <span><strong>Search student records</strong><small>Filter by name, number, programme or status</small></span>
     </a>
     <a class="quick-action" href="{{ url_for('health.database_health') }}">
       <span class="metric-icon">DB</span>

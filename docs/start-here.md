@@ -5,12 +5,24 @@ System, on a local computer.
 
 UniRecords needs two things before it can show records in the browser:
 
-1. A local PostgreSQL database containing the approved university data.
+1. A local PostgreSQL database containing the university records data.
 2. A local Python environment that can run the Flask application.
 
 PostgreSQL normally listens on `localhost:5432`. `localhost` means the current
 computer only. Each person running the project creates their own local database
 and uses their own private PostgreSQL password.
+
+## Before You Start
+
+You need:
+
+1. Python 3.11 or later
+2. PostgreSQL
+3. pgAdmin
+4. Git, or the downloaded project ZIP
+
+On Windows, install Python 3.11 or later and enable `Add Python to PATH` during
+installation.
 
 ## Setup Flow
 
@@ -69,6 +81,19 @@ Create a database named:
 use_records
 ```
 
+In pgAdmin:
+
+```text
+Servers
+  -> PostgreSQL
+  -> Databases
+  -> right-click Databases
+  -> Create
+  -> Database
+  -> enter use_records
+  -> Save
+```
+
 After creating it, pgAdmin should show a structure like:
 
 ```text
@@ -81,6 +106,18 @@ Databases
 In pgAdmin, select the `use_records` database and open Query Tool.
 
 The approved SQL files must be run while connected to `use_records`.
+
+In pgAdmin:
+
+```text
+select use_records
+  -> Tools
+  -> Query Tool
+  -> Open File
+  -> choose SQL file 01
+  -> Execute or press F5
+  -> repeat for 02, 03 and 04
+```
 
 ## 6. Run The Approved SQL Scripts
 
@@ -201,8 +238,8 @@ Confirm these pages load:
 Expected visual result:
 
 1. Dashboard shows metrics and charts.
-2. Students shows approved Student records.
-3. Reports shows the assignment report catalogue.
+2. Students shows student records.
+3. Reports shows the report catalogue.
 
 ## Project Handover
 
@@ -228,7 +265,7 @@ running. It is not publicly hosted and is not accessible through the internet.
 
 ## Common Errors
 
-### Unable To Read Approved Student Records
+### Unable To Read Student Records
 
 Likely causes:
 

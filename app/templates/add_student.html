@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Add Student{% endblock %}
 {% block page_title %}Add Student{% endblock %}
-{% block page_subtitle %}Create a Student in the approved PostgreSQL schema{% endblock %}
+{% block page_subtitle %}Create a student record and contact details{% endblock %}
 {% block content %}
 <section class="panel form-panel">
   <div class="panel-header">
     <div>
       <h2>Student details</h2>
-      <p>Creates linked records in person, student and primary contact tables.</p>
+      <p>Add the student details used by the Student Directory.</p>
     </div>
   </div>
   <form method="post" action="{{ url_for('main.create_student') }}" novalidate>

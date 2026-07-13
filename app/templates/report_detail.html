@@ -3,14 +3,14 @@
 {% block page_title %}{{ report.definition.name }}{% endblock %}
 {% block page_subtitle %}{{ report.definition.purpose }}{% endblock %}
 {% block topbar_actions %}
-  <a class="btn btn-light btn-sm" href="{{ url_for('main.reports') }}">Back to Reports</a>
+  <a class="btn btn-light btn-sm" href="{{ url_for('main.reports') }}">Back to reports</a>
 {% endblock %}
 {% block content %}
 <section class="panel records-panel">
   <div class="panel-header">
     <div>
       <h2>Report filters</h2>
-      <p>Run this report using approved PostgreSQL data.</p>
+      <p>Choose the filters, then run the report.</p>
     </div>
     {% if report.has_run %}
       <span class="record-count">{{ report.rows|length }} results</span>
@@ -25,7 +25,7 @@
 
   <form class="report-filter-form" method="get" action="{{ url_for('main.report_detail', report_key=report.definition.key) }}">
     <p class="report-filter-help">
-      Required filters are marked. Use the search boxes to narrow long approved data lists.
+      Required filters are marked. Use the search boxes to narrow long lists.
     </p>
     <div class="report-filter-fields">
     {% if report.definition.key == 'students-by-course-lecturer' %}
@@ -62,12 +62,12 @@
       <div class="form-field">
         <label class="form-label" for="student_search">Student search <span class="optional-chip">Search first</span></label>
         <input class="form-control" id="student_search" name="student_search" type="search" value="{{ report.filters.student_search or '' }}" placeholder="Student number, first name, surname or full name" />
-        <p class="field-hint">Search returns a limited list of matching approved Student records.</p>
+        <p class="field-hint">Search returns a limited list of matching students.</p>
       </div>
       <div class="form-field">
-        <label class="form-label" for="student_id">Selected Student <span class="required-chip">Required</span></label>
+        <label class="form-label" for="student_id">Selected student <span class="required-chip">Required</span></label>
         <select class="form-select {% if report.errors.student_id %}is-invalid{% endif %}" id="student_id" name="student_id">
-          <option value="">{{ 'Select a matching Student' if report.choices.students else 'Enter a search term first' }}</option>
+          <option value="">{{ 'Select a matching student' if report.choices.students else 'Enter a search term first' }}</option>
           {% for student in report.choices.students %}
             <option value="{{ student.student_id }}" {% if report.filters.student_id == student.student_id|string %}selected{% endif %}>{{ student.student_name }} | {{ student.student_number }}</option>
           {% endfor %}
@@ -131,15 +131,15 @@
         </select>
       </div>
     {% else %}
-      <p class="form-status">No filters required. Run Report to list approved records.</p>
+      <p class="form-status">No filters required. Run the report to list records.</p>
     {% endif %}
     </div>
     <div class="filter-actions">
       {% if report.definition.key == 'academic-adviser' %}
-        <button class="btn btn-light" type="submit">Find Students</button>
+        <button class="btn btn-light" type="submit">Find students</button>
       {% endif %}
-      <button class="btn btn-primary" type="submit" name="run" value="1">Run Report</button>
-      <a class="btn btn-light" href="{{ url_for('main.report_detail', report_key=report.definition.key) }}">Clear Filters</a>
+      <button class="btn btn-primary" type="submit" name="run" value="1">Run report</button>
+      <a class="btn btn-light" href="{{ url_for('main.report_detail', report_key=report.definition.key) }}">Clear filters</a>
     </div>
   </form>
 
@@ -168,8 +168,8 @@
     {% else %}
       <div class="empty-state compact-empty">
         <span class="metric-icon">RP</span>
-        <h3>No matching report rows.</h3>
-        <p>Adjust the filters and run the report again.</p>
+        <h3>No results found.</h3>
+        <p>Change the filters and run the report again.</p>
       </div>
     {% endif %}
   {% endif %}

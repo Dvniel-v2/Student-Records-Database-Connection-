@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Student Details{% endblock %}
 {% block page_title %}{{ student.first_name }} {{ student.last_name }}{% endblock %}
-{% block page_subtitle %}Approved PostgreSQL student directory record{% endblock %}
+{% block page_subtitle %}Student Directory record{% endblock %}
 {% block content %}
 <section class="row g-4">
   <div class="col-12 col-lg-7">
@@ -37,7 +37,7 @@
   <div class="col-12 col-lg-5">
     <aside class="panel quick-actions">
       <h2>Directory record</h2>
-      <p>This profile is sourced from the approved Student Directory.</p>
+      <p>This profile is sourced from the Student Directory.</p>
       <div class="info-list">
         <span><strong>Student status</strong>{{ student.student_status }}</span>
         <span><strong>Programme code</strong>{{ student.programme_code }}</span>

@@ -71,7 +71,6 @@ h3,
 }
 
 .brand-mark,
-.profile-avatar,
 .metric-icon,
 .student-avatar {
   display: inline-flex;
@@ -100,19 +99,13 @@ h3,
   stroke-linejoin: round;
 }
 
-.brand-name,
-.profile-name {
+.brand-name {
   display: block;
   font-weight: 800;
   line-height: 1.1;
 }
 
-.profile-name {
-  font-family: var(--ur-font-body);
-}
-
-.brand-caption,
-.profile-role {
+.brand-caption {
   display: block;
   margin-top: 0.2rem;
   color: var(--ur-sidebar-muted);
@@ -189,22 +182,6 @@ h3,
   stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.sidebar-profile {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(220, 230, 247, 0.18);
-  color: #ffffff;
-}
-
-.profile-avatar {
-  width: 36px;
-  height: 36px;
-  font-size: 0.75rem;
 }
 
 .app-main {
@@ -1038,10 +1015,6 @@ h3,
     grid-auto-columns: max-content;
     overflow-x: auto;
     padding: 0.2rem 0;
-  }
-
-  .sidebar-profile {
-    display: none;
   }
 
   .app-topbar {

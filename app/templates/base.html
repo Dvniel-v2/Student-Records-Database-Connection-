@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}Student Records{% endblock %}</title>
+    <title>{% block title %}UniRecords{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -30,7 +30,7 @@
           </span>
           <span>
             <span class="brand-name">UniRecords</span>
-            <span class="brand-caption">Database Manager</span>
+            <span class="brand-caption">University Records</span>
           </span>
         </a>
 
@@ -87,21 +87,13 @@
             </div>
           </div>
         </nav>
-
-        <div class="sidebar-profile">
-          <span class="profile-avatar">GA</span>
-          <span>
-            <span class="profile-name">Admin User</span>
-            <span class="profile-role">General Admin</span>
-          </span>
-        </div>
       </aside>
 
       <main class="app-main">
         <header class="app-topbar">
           <div>
-            <h1>{% block page_title %}Student Records{% endblock %}</h1>
-            <p>{% block page_subtitle %}Create, update and manage student records{% endblock %}</p>
+            <h1>{% block page_title %}University Records{% endblock %}</h1>
+            <p>{% block page_subtitle %}University records and reporting{% endblock %}</p>
           </div>
           <div class="topbar-actions">
             {% block topbar_actions %}{% endblock %}

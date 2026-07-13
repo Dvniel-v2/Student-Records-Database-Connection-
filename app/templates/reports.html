@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Reports{% endblock %}
 {% block page_title %}Reports{% endblock %}
-{% block page_subtitle %}Assignment query centre{% endblock %}
+{% block page_subtitle %}Explore student, staff, research and programme data{% endblock %}
 {% block topbar_actions %}
   <span class="page-chip">Read only</span>
 {% endblock %}
 {% block content %}
-<section class="report-catalogue" aria-label="Assignment reports">
+<section class="report-catalogue" aria-label="Reports">
   {% for report in reports %}
     <article class="panel report-card">
       <div class="report-card-body">
@@ -21,7 +21,7 @@
         <span class="report-filter-note">
           {{ 'No required filters' if report.required_filters == 'None' else 'Filter by ' ~ report.required_filters }}
         </span>
-        <a class="btn btn-primary btn-sm" href="{{ url_for('main.report_detail', report_key=report.key) }}">Open Filters</a>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('main.report_detail', report_key=report.key) }}">Open report</a>
       </div>
     </article>
   {% endfor %}
