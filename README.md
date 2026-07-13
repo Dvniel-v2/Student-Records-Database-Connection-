@@ -96,7 +96,7 @@ use Alembic migrations to build the approved schema.
 | Document | Purpose |
 | --- | --- |
 | `docs/README.md` | Suggested reading order for new developers and reviewers |
-| `docs/start-here.md` | Install PostgreSQL, configure Flask, run the app and verify it works |
+| `docs/start-here.md` | Install PostgreSQL, configure local settings, run UniRecords and verify it works |
 | `docs/how-unirecords-works.md` | Browser flow, routes, services, repositories and PostgreSQL |
 | `docs/database-and-data.md` | Database name, schema, approved SQL scripts, writes and report logic |
 | `docs/assignment-requirements.md` | Assignment requirements mapped to implementation evidence |

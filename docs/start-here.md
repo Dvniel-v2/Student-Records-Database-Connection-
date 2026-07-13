@@ -23,7 +23,7 @@ Download or clone the repository
   -> install Python dependencies
   -> create local .env
   -> add local PostgreSQL credentials
-  -> run Flask
+  -> run UniRecords
   -> use the frontend
 ```
 

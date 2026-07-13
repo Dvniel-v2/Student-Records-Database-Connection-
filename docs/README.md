@@ -3,7 +3,7 @@
 Read these files in this order if you are new to the project:
 
 1. `start-here.md`
-   Install PostgreSQL, create the database, configure `.env`, run Flask and
+   Install PostgreSQL, create the database, configure `.env`, run UniRecords and
    verify the browser pages.
 
 2. `how-unirecords-works.md`
