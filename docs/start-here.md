@@ -162,7 +162,7 @@ Credential rules:
 4. Do not share another developer's local PostgreSQL password.
 5. Each user supplies their own local PostgreSQL credentials.
 
-## 13. Run Flask
+## 13. Run UniRecords
 
 ```powershell
 python run.py
@@ -178,7 +178,7 @@ Open the exact URL printed in the terminal.
 The frontend is served through Flask. Do not open the HTML files directly in a
 browser.
 
-## 15. Check Database Health
+## 15. Check That UniRecords Can Reach PostgreSQL
 
 Add `/health/database` to the printed base URL.
 
