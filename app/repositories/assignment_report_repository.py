@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Any
 
 from sqlalchemy import text
@@ -84,6 +85,53 @@ class AssignmentReportRepository:
             ORDER BY student_number
             LIMIT 300
             """
+        )
+
+    def search_student_options(
+        self,
+        search_term: str = "",
+        selected_student_id: int | None = None,
+        limit: int = 25,
+    ) -> list[dict[str, Any]]:
+        """Return a limited Student option list for report lookups."""
+        where = []
+        params: dict[str, Any] = {"limit": limit}
+        if search_term:
+            where.append(
+                """
+                (
+                    student_number ILIKE :search_pattern
+                    OR first_name ILIKE :search_pattern
+                    OR last_name ILIKE :search_pattern
+                    OR CONCAT(first_name, ' ', last_name) ILIKE :search_pattern
+                    OR CONCAT(last_name, ' ', first_name) ILIKE :search_pattern
+                )
+                """
+            )
+            params["search_pattern"] = f"%{search_term}%"
+        if selected_student_id is not None:
+            where.append("student_id = :selected_student_id")
+            params["selected_student_id"] = selected_student_id
+
+        if not where:
+            return []
+
+        selected_order = (
+            "CASE WHEN student_id = :selected_student_id THEN 0 ELSE 1 END,"
+            if selected_student_id is not None
+            else ""
+        )
+
+        return self._rows(
+            f"""
+            SELECT student_id, student_number,
+                   CONCAT(first_name, ' ', last_name) AS student_name
+            FROM {self.schema_name}.vw_student_directory_masked
+            WHERE {' OR '.join(where)}
+            ORDER BY {selected_order} student_number
+            LIMIT :limit
+            """,
+            params,
         )
 
     def list_programmes(self) -> list[dict[str, Any]]:
@@ -210,12 +258,7 @@ class AssignmentReportRepository:
             WITH current_term AS (
                 SELECT term_id, academic_year, term_name
                 FROM {self.schema_name}.academic_term
-                ORDER BY
-                    CASE
-                        WHEN CURRENT_DATE BETWEEN start_date AND end_date THEN 0
-                        ELSE 1
-                    END,
-                    start_date DESC
+                {self.current_term_order_sql()}
                 LIMIT 1
             )
             SELECT
@@ -244,6 +287,35 @@ class AssignmentReportRepository:
             LIMIT 500
             """
         )
+
+    @staticmethod
+    def current_term_order_sql() -> str:
+        """Return the approved current-term fallback ordering."""
+        return """
+                ORDER BY
+                    CASE
+                        WHEN CURRENT_DATE BETWEEN start_date AND end_date THEN 0
+                        WHEN start_date <= CURRENT_DATE THEN 1
+                        ELSE 2
+                    END,
+                    CASE
+                        WHEN start_date <= CURRENT_DATE THEN start_date
+                    END DESC,
+                    CASE
+                        WHEN start_date > CURRENT_DATE THEN start_date
+                    END ASC
+        """
+
+    @staticmethod
+    def current_term_sort_key(
+        start_date: date, end_date: date, today: date
+    ) -> tuple[int, int]:
+        """Mirror the SQL fallback order for unit tests and review."""
+        if start_date <= today <= end_date:
+            return (0, -start_date.toordinal())
+        if start_date <= today:
+            return (1, -start_date.toordinal())
+        return (2, start_date.toordinal())
 
     def adviser_for_student(self, student_id: int) -> list[dict[str, Any]]:
         """Return current academic adviser details for a Student."""
@@ -345,6 +417,26 @@ class AssignmentReportRepository:
         where_sql = f"WHERE {' AND '.join(where)}" if where else ""
         return self._rows(
             f"""
+            WITH funding_totals AS (
+                SELECT project_id, COALESCE(SUM(amount), 0) AS funding_amount
+                FROM {self.schema_name}.project_funding
+                GROUP BY project_id
+            ),
+            member_counts AS (
+                SELECT project_id, COUNT(*) AS team_member_count
+                FROM {self.schema_name}.research_project_member
+                GROUP BY project_id
+            ),
+            publication_counts AS (
+                SELECT project_id, COUNT(*) AS publication_count
+                FROM {self.schema_name}.project_publication
+                GROUP BY project_id
+            ),
+            outcome_counts AS (
+                SELECT project_id, COUNT(*) AS outcome_count
+                FROM {self.schema_name}.project_outcome
+                GROUP BY project_id
+            )
             SELECT
                 rp.project_code,
                 rp.project_title,
@@ -355,10 +447,10 @@ class AssignmentReportRepository:
                 rp.project_status,
                 rp.start_date,
                 rp.end_date,
-                COUNT(DISTINCT rpm.project_member_id) AS team_member_count,
-                COALESCE(SUM(DISTINCT pf.amount), 0) AS funding_amount,
-                COUNT(DISTINCT pp.publication_id) AS publication_count,
-                COUNT(DISTINCT po.outcome_id) AS outcome_count
+                COALESCE(mc.team_member_count, 0) AS team_member_count,
+                COALESCE(ft.funding_amount, 0) AS funding_amount,
+                COALESCE(pc.publication_count, 0) AS publication_count,
+                COALESCE(oc.outcome_count, 0) AS outcome_count
             FROM {self.schema_name}.research_project rp
             JOIN {self.schema_name}.research_group rg
                 ON rg.research_group_id = rp.research_group_id
@@ -366,26 +458,11 @@ class AssignmentReportRepository:
                 ON pi.lecturer_id = rp.principal_investigator_id
             JOIN {self.schema_name}.person pi_person
                 ON pi_person.person_id = pi.person_id
-            LEFT JOIN {self.schema_name}.research_project_member rpm
-                ON rpm.project_id = rp.project_id
-            LEFT JOIN {self.schema_name}.project_funding pf
-                ON pf.project_id = rp.project_id
-            LEFT JOIN {self.schema_name}.project_publication pp
-                ON pp.project_id = rp.project_id
-            LEFT JOIN {self.schema_name}.project_outcome po
-                ON po.project_id = rp.project_id
+            LEFT JOIN member_counts mc ON mc.project_id = rp.project_id
+            LEFT JOIN funding_totals ft ON ft.project_id = rp.project_id
+            LEFT JOIN publication_counts pc ON pc.project_id = rp.project_id
+            LEFT JOIN outcome_counts oc ON oc.project_id = rp.project_id
             {where_sql}
-            GROUP BY
-                rp.project_id,
-                rp.project_code,
-                rp.project_title,
-                rg.group_code,
-                rg.group_name,
-                pi_person.first_name,
-                pi_person.last_name,
-                rp.project_status,
-                rp.start_date,
-                rp.end_date
             ORDER BY rp.project_status, rp.project_code
             LIMIT 500
             """,

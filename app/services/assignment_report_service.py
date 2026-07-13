@@ -195,10 +195,10 @@ class AssignmentReportService:
         """Return report page data and run the report when requested."""
         definition = self.get_definition(report_key)
         try:
-            choices = self._choices(report_key)
             rows: list[dict[str, Any]] = []
             errors: dict[str, str] = {}
             cleaned = self._clean_filters(filters)
+            choices = self._choices(report_key, cleaned)
             if has_run:
                 try:
                     rows = self._run(report_key, cleaned)
@@ -208,13 +208,18 @@ class AssignmentReportService:
         except SQLAlchemyError as exc:
             raise AssignmentReportServiceError("Unable to read report data.") from exc
 
-    def _choices(self, report_key: str) -> dict[str, list[dict[str, Any]]]:
+    def _choices(
+        self, report_key: str, filters: dict[str, str]
+    ) -> dict[str, list[dict[str, Any]]]:
         choices: dict[str, list[dict[str, Any]]] = {}
         if report_key == "students-by-course-lecturer":
             choices["lecturers"] = self.repository.list_lecturers()
             choices["courses"] = self.repository.list_lecturer_course_options()
         elif report_key == "academic-adviser":
-            choices["students"] = self.repository.list_students()
+            choices["students"] = self.repository.search_student_options(
+                filters.get("student_search", ""),
+                self._optional_int(filters.get("student_id", "")),
+            )
         elif report_key == "lecturer-expertise":
             choices["expertise_areas"] = self.repository.list_expertise_areas()
         elif report_key == "staff-by-location":
@@ -277,6 +282,14 @@ class AssignmentReportService:
             return int(value)
         except ValueError as exc:
             raise AssignmentReportValidationError({field: message}) from exc
+
+    def _optional_int(self, value: str) -> int | None:
+        if not value:
+            return None
+        try:
+            return int(value)
+        except ValueError:
+            return None
 
     def _optional_float(
         self, filters: dict[str, str], field: str, default: float

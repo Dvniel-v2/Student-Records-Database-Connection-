@@ -13,7 +13,8 @@ Briefly explain the proposed university records feature.
 ## Affected Entity Or Area
 
 State whether this affects Students, Courses, Modules, Enrolments, Grades,
-Reports, dashboard placeholders, database design or another part of the app.
+Reports, dashboard data, database design, planned authentication, global search,
+notifications, help controls or another part of the app.
 
 ## Why This Is Needed
 

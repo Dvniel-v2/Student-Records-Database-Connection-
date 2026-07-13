@@ -7,12 +7,12 @@ Briefly explain what changed and why.
 State the affected entity or layer, such as Student, routes, services,
 repositories, models, templates, migrations, tests or documentation.
 
-## Placeholder Impact
+## Completion Status
 
-Confirm whether any placeholder interface elements were changed. Courses,
-Modules, Enrolments, Grades, Reports, dashboard statistics, search,
-notifications and help controls are currently visual placeholders unless linked
-to working backend code.
+Confirm whether this change affects completed functionality, read-only
+database-backed pages, Student write workflows, assignment reports or planned
+future items such as authentication, role-based authorisation, global search,
+notifications or help controls.
 
 ## Database Or Migration Impact
 

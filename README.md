@@ -55,33 +55,13 @@ deleting academic history.
 
 ## Current Development Status
 
-The project is currently being developed in stages.
+The project is currently being developed in stages. The Student section supports
+Student list, detail, create, edit and withdrawal workflows through the approved
+PostgreSQL schema.
 
-The Student section is the first functional part of the university records
-management system. It currently supports Student list, detail, create, edit and
-withdrawal workflows through the approved PostgreSQL schema.
-
-Some interface elements are included as design placeholders to demonstrate the
-intended direction of the complete system. These currently include:
-
-1. Courses
-2. Modules
-3. Enrolments
-4. Grades
-5. Reports
-6. Dashboard statistics
-7. Global search
-8. Notifications
-9. Help controls
-
-These placeholder elements are not intended to represent completed
-functionality. They provide a visual structure for future development and show
-how additional university record entities may be incorporated into the
-interface.
-
-Courses, Modules, Enrolments, Grades and Reports currently have read-only
-database-backed pages. Future development may add write workflows for those
-areas when their transaction rules are defined.
+Courses, Modules, Enrolments and Grades have database-backed read-only pages
+using the approved PostgreSQL tables and views. Future development may add write
+workflows for those areas when their transaction rules are defined.
 
 The Reports section implements the assignment query centre. It includes
 database-backed filters and result tables for Students by course and lecturer,
@@ -89,11 +69,14 @@ final-year high achievers, Students without current registration, academic
 advisers, lecturer expertise, staff location, research project summaries and
 programme credit summaries.
 
+The remaining planned interface ideas are not yet implemented as functional
+features. These include authentication, role-based authorisation, write
+workflows for non-Student entities, global search, notifications and help
+controls.
+
 The approved PostgreSQL database separates Student data across normalised tables
 including `person`, `student`, `person_contact` and `programme`. Student writes
-use repository transactions and do not write to the masked directory view. The
-interface should not be read as evidence that every planned feature is already
-functional.
+use repository transactions and do not write to the masked directory view.
 
 ## Main Technologies
 
@@ -152,6 +135,9 @@ Git.
 
 `docs/requirement-coverage.md` maps assignment requirements to implemented
 routes, services, repositories and database objects.
+
+`docs/submission-checklist.md` lists the final application, report, security and
+evidence checks for submission.
 
 ## Setup
 

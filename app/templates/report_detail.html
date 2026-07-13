@@ -24,7 +24,6 @@
   {% endif %}
 
   <form class="report-filter-form" method="get" action="{{ url_for('main.report_detail', report_key=report.definition.key) }}">
-    <input type="hidden" name="run" value="1" />
     <p class="report-filter-help">
       Required filters are marked. Use the search boxes to narrow long approved data lists.
     </p>
@@ -61,10 +60,14 @@
       </div>
     {% elif report.definition.key == 'academic-adviser' %}
       <div class="form-field">
-        <label class="form-label" for="student_id">Student <span class="required-chip">Required</span></label>
-        <input class="form-control form-control-sm select-search" type="search" placeholder="Search student name or number" data-select-filter="student_id" aria-label="Search student options" />
+        <label class="form-label" for="student_search">Student search <span class="optional-chip">Search first</span></label>
+        <input class="form-control" id="student_search" name="student_search" type="search" value="{{ report.filters.student_search or '' }}" placeholder="Student number, first name, surname or full name" />
+        <p class="field-hint">Search returns a limited list of matching approved Student records.</p>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="student_id">Selected Student <span class="required-chip">Required</span></label>
         <select class="form-select {% if report.errors.student_id %}is-invalid{% endif %}" id="student_id" name="student_id">
-          <option value="">Select Student</option>
+          <option value="">{{ 'Select a matching Student' if report.choices.students else 'Enter a search term first' }}</option>
           {% for student in report.choices.students %}
             <option value="{{ student.student_id }}" {% if report.filters.student_id == student.student_id|string %}selected{% endif %}>{{ student.student_name }} | {{ student.student_number }}</option>
           {% endfor %}
@@ -132,7 +135,10 @@
     {% endif %}
     </div>
     <div class="filter-actions">
-      <button class="btn btn-primary" type="submit">Run Report</button>
+      {% if report.definition.key == 'academic-adviser' %}
+        <button class="btn btn-light" type="submit">Find Students</button>
+      {% endif %}
+      <button class="btn btn-primary" type="submit" name="run" value="1">Run Report</button>
       <a class="btn btn-light" href="{{ url_for('main.report_detail', report_key=report.definition.key) }}">Clear Filters</a>
     </div>
   </form>
