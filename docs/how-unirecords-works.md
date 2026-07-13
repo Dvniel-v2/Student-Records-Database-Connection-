@@ -1,12 +1,14 @@
-# Architecture
+# How UniRecords Works
 
-The application follows a three-layer structure for the Student Records domain.
+UniRecords follows a three-layer structure for the University Records Management
+System.
 
-## Presentation Layer
+## Browser And Presentation Layer
 
 Flask routes in `app/routes/main.py` receive HTTP requests and render templates.
-Templates display the Student Directory, Student Detail and Student write pages.
-Static CSS and JavaScript stay in `app/static`.
+Templates display the dashboard, Student Directory, Student Detail, Student
+write pages, read-only academic records and assignment reports. Static CSS and
+JavaScript stay in `app/static`.
 
 Routes do not query SQLAlchemy directly. They call `ApprovedStudentService` and
 `StudentWriteService`, then translate unavailable database operations into safe
@@ -78,8 +80,8 @@ perform formal live PostgreSQL validation.
 
 ## Entry Points And Configuration
 
-`run.py` is the local development entry point and creates the app with the
-development configuration.
+`run.py` is the local entry point and creates the app with the development
+configuration.
 
 `wsgi.py` is the deployment entry point and creates the app with the production
 configuration.
@@ -90,8 +92,11 @@ hardening should be added before a real deployment.
 ## Schema Management
 
 The approved database baseline is the PostgreSQL `use_record_management` schema
-in `sql/postgresql/`. Flask Migrate and Alembic remain as scaffolded tooling,
-but they are not currently the source of truth for the approved 46-table schema.
+in `sql/postgresql/`. The approved SQL scripts create the schema. Flask connects
+to that schema through SQLAlchemy and repositories query or update it.
+
+Alembic migrations are not used in this project because the approved SQL package
+is the source of truth.
 
 The simplified Student prototype model, repository, service, write templates and
 seed script have been removed from the supported application path.

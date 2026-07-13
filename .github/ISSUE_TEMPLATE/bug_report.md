@@ -13,7 +13,7 @@ Briefly explain the problem in the university records application.
 ## Affected Area
 
 State the affected entity or layer, such as Student, routes, services,
-repositories, models, templates, migrations or tests.
+repositories, templates, SQL scripts or tests.
 
 ## Steps To Reproduce
 
@@ -31,7 +31,7 @@ Explain what happened instead.
 
 ## Database Or Migration Impact
 
-State whether the issue affects database tables, seed data, migrations or local
+State whether the issue affects database tables, approved SQL scripts or local
 environment configuration.
 
 ## Checks Completed

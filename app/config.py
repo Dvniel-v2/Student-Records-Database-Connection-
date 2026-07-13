@@ -16,7 +16,7 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "replace-with-a-secure-key")
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
-        "postgresql+psycopg://postgres:password@localhost:5432/use_records",
+        "postgresql+psycopg://postgres:YOUR_LOCAL_PASSWORD@localhost:5432/use_records",
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

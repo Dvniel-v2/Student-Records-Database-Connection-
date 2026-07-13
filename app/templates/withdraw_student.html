@@ -14,7 +14,7 @@
     <strong>This action will set the Student status to Withdrawn.</strong>
     <p>Academic history, enrolments, grades and linked records are preserved. The Student will remain searchable as a withdrawn record.</p>
   </div>
-  <form method="post" action="{{ url_for('main.delete_student', student_id=student.id) }}">
+  <form method="post" action="{{ url_for('main.withdraw_student', student_id=student.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="form-footer">
       <a class="btn btn-light" href="{{ url_for('main.view_student', student_id=student.id) }}">Cancel</a>

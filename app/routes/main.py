@@ -287,8 +287,8 @@ def edit_student(student_id: int):
     return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
-@main_bp.get("/students/<int:student_id>/delete")
-def delete_student_confirm(student_id: int):
+@main_bp.get("/students/<int:student_id>/withdraw")
+def withdraw_student_confirm(student_id: int):
     """Render Student withdrawal confirmation."""
     try:
         student = student_service.get_student(student_id)
@@ -298,11 +298,11 @@ def delete_student_confirm(student_id: int):
     if student is None:
         flash("Student not found.", "error")
         return redirect(url_for("main.students")), 302
-    return render_template("delete_student.html", student=student)
+    return render_template("withdraw_student.html", student=student)
 
 
-@main_bp.post("/students/<int:student_id>/delete")
-def delete_student(student_id: int):
+@main_bp.post("/students/<int:student_id>/withdraw")
+def withdraw_student(student_id: int):
     """Withdraw a Student without deleting academic history."""
     validate_csrf()
     try:
@@ -316,6 +316,21 @@ def delete_student(student_id: int):
 
     flash("Student record withdrawn.", "success")
     return redirect(url_for("main.view_student", student_id=student_id)), 302
+
+
+@main_bp.get("/students/<int:student_id>/delete")
+def legacy_withdraw_student_confirm_redirect(student_id: int):
+    """Redirect legacy delete URLs to the withdrawal confirmation route."""
+    return (
+        redirect(url_for("main.withdraw_student_confirm", student_id=student_id)),
+        301,
+    )
+
+
+@main_bp.post("/students/<int:student_id>/delete")
+def legacy_withdraw_student_redirect(student_id: int):
+    """Redirect legacy delete submissions to the withdrawal route."""
+    return redirect(url_for("main.withdraw_student", student_id=student_id)), 308
 
 
 def _int_arg(name: str, default: int) -> int:

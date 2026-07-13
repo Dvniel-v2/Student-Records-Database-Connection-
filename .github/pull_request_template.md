@@ -5,7 +5,7 @@ Briefly explain what changed and why.
 ## Affected Area
 
 State the affected entity or layer, such as Student, routes, services,
-repositories, models, templates, migrations, tests or documentation.
+repositories, templates, tests, SQL scripts or documentation.
 
 ## Completion Status
 
@@ -16,7 +16,7 @@ notifications or help controls.
 
 ## Database Or Migration Impact
 
-Describe any model, migration, seed data or database configuration changes.
+Describe any approved SQL, repository query or database configuration changes.
 
 ## Testing Completed
 

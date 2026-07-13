@@ -30,7 +30,7 @@
       <div class="d-flex gap-2 flex-wrap">
         <a class="btn btn-light" href="{{ url_for('main.students') }}">All students</a>
         <a class="btn btn-primary" href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit Student</a>
-        <a class="btn btn-outline-danger" href="{{ url_for('main.delete_student_confirm', student_id=student.id) }}">Withdraw Student</a>
+        <a class="btn btn-outline-danger" href="{{ url_for('main.withdraw_student_confirm', student_id=student.id) }}">Withdraw Student</a>
       </div>
     </article>
   </div>

@@ -1,33 +1,44 @@
+# Environment and credentials
 .env
-.envrc
-.agent/
-.agents/
+
+# Python environments
 .venv/
 venv/
 env/
 ENV/
+
+# Python cache
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+
+# Testing and coverage
 .pytest_cache/
 .ruff_cache/
 .coverage
 .coverage.*
 htmlcov/
+
+# Build output
 *.egg-info/
 build/
 dist/
+
+# Editors and operating systems
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+
+# Local databases
 *.sqlite3
 *.sqlite
 *.db
+
+# Logs and runtime files
 *.log
-logs/*
-!logs/README.md
+logs/
 instance/
 tmp/
 temp/

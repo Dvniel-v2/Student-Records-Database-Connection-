@@ -433,7 +433,7 @@ def test_withdraw_student_confirmation_loads(client, monkeypatch):
 
     monkeypatch.setattr(main, "student_service", FakeApprovedStudentService())
 
-    response = client.get("/students/1/delete")
+    response = client.get("/students/1/withdraw")
 
     assert response.status_code == 200
     assert b"Withdraw Student" in response.data
@@ -446,9 +446,9 @@ def test_successful_withdraw_student(client, monkeypatch):
     fake_write_service = FakeStudentWriteService()
     monkeypatch.setattr(main, "student_service", FakeApprovedStudentService())
     monkeypatch.setattr(main, "student_write_service", fake_write_service)
-    token = _csrf_token(client.get("/students/1/delete"))
+    token = _csrf_token(client.get("/students/1/withdraw"))
 
-    response = client.post("/students/1/delete", data={"csrf_token": token})
+    response = client.post("/students/1/withdraw", data={"csrf_token": token})
 
     assert response.status_code == 302
     assert response.headers["Location"].endswith("/students/1")
@@ -468,13 +468,20 @@ def test_blocked_withdraw_student_shows_safe_message(client, monkeypatch):
         session["_csrf_token"] = "known-token"
 
     response = client.post(
-        "/students/1/delete",
+        "/students/1/withdraw",
         data={"csrf_token": "known-token"},
         follow_redirects=True,
     )
 
     assert response.status_code == 200
     assert b"Student could not be withdrawn." in response.data
+
+
+def test_legacy_withdraw_student_url_redirects_to_withdraw(client):
+    response = client.get("/students/1/delete")
+
+    assert response.status_code == 301
+    assert response.headers["Location"].endswith("/students/1/withdraw")
 
 
 def test_student_post_requires_csrf_token(client, monkeypatch):

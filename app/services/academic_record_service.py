@@ -56,7 +56,7 @@ class AcademicRecordService:
         """Return approved module offering page data."""
         try:
             return RecordPage(
-                title="Modules",
+                title="Modules and Course Offerings",
                 subtitle="Course offerings by academic term",
                 description="Approved course offering records shown as modules.",
                 columns=[

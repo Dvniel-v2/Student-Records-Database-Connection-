@@ -1,4 +1,4 @@
-# Submission Checklist
+# Final Submission Checklist
 
 Use this checklist before creating the final repository ZIP or submitting the
 GitHub link. Do not commit screenshots unless the team intentionally adds image
@@ -13,7 +13,7 @@ evidence to the repository.
 - [ ] Edit Student
 - [ ] Withdraw Student
 - [ ] Courses
-- [ ] Modules
+- [ ] Modules and Course Offerings
 - [ ] Enrolments
 - [ ] Grades
 - [ ] Reports
@@ -55,7 +55,7 @@ evidence to the repository.
 - [ ] Edit screenshot
 - [ ] Withdrawal screenshot
 - [ ] Courses screenshot
-- [ ] Modules screenshot
+- [ ] Modules and Course Offerings screenshot
 - [ ] Enrolments screenshot
 - [ ] Grades screenshot
 - [ ] Reports catalogue screenshot
@@ -69,7 +69,7 @@ evidence to the repository.
 ## Submission Package
 
 - [ ] README checked
-- [ ] Assessor guide checked
+- [ ] Start Here guide checked
 - [ ] SQL scripts included
 - [ ] `requirements.txt` included
 - [ ] `.env.example` included

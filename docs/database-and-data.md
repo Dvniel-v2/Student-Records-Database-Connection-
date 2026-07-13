@@ -1,4 +1,4 @@
-# Database Design
+# Database And Data
 
 The approved implementation database is the PostgreSQL
 `use_record_management` schema in `sql/postgresql/`.
@@ -42,9 +42,9 @@ The schema includes approved procedures for enrolment and grade workflows, but
 not for Student create or update. Student writes are implemented in the Flask
 repository layer with parameterised SQL and SQLAlchemy transactions.
 
-## PostgreSQL and pgAdmin
+## PostgreSQL And pgAdmin
 
-Local development uses PostgreSQL through SQLAlchemy and psycopg. The database
+Local development uses PostgreSQL 18 through SQLAlchemy and psycopg. The database
 name can vary locally, but the application expects the approved
 `use_record_management` schema.
 
@@ -61,11 +61,11 @@ and validation query results.
 Do not run Flask `db.create_all()` against the approved PostgreSQL database.
 The SQL scripts are the current database baseline.
 
-## Planned Entities
+## Modules / Course Offerings
 
-The interface includes read-only pages for Courses, Modules, Enrolments, Grades
-and Reports. Future development may add write workflows for those entities once
-their transaction rules are defined.
+The Modules page displays scheduled course offerings by academic term. The page
+uses the module wording expected by the interface while reading the approved
+`course_offering`, `course` and `academic_term` tables.
 
 ## Assignment Reports
 
@@ -82,6 +82,8 @@ The application implements eight database-backed report functions:
 
 Reports use approved tables and views such as `enrolment`, `course_offering`,
 `offering_lecturer`, `advisor_assignment`, `lecturer_expertise`,
-`non_academic_staff`, `vw_research_project_summary` and
-`vw_programme_credit_summary`. Report SQL is kept in repository classes and uses
-parameterised values for user filters.
+`non_academic_staff` and `vw_programme_credit_summary`.
+
+The Research Project Summary report uses parameterised repository SQL with
+separate aggregated common table expressions for funding, members, publications
+and outcomes. This avoids multiplying totals across one-to-many joins.

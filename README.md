@@ -1,109 +1,151 @@
-# Student Records Database Connection
+# UniRecords
 
-This project is a Flask web application for managing student records in a
-university database. It uses PostgreSQL for data storage, SQLAlchemy for database
-access, and a Bootstrap based interface inspired by the linked Figma design.
-It is the first functional stage of a Student Records Management System. The
-interface branding uses the name UniRecords.
+UniRecords is the product name for the University Records Management System. It
+is a three-layer Flask and PostgreSQL university records application for working
+with approved university record data through a browser.
 
-The approved implementation database is the PostgreSQL
-`use_record_management` schema supplied in `sql/postgresql/`.
+## What You Can Do
 
-PostgreSQL is the only supported implementation database. The SQL scripts in
-`sql/postgresql` are the approved database source of truth.
+Use UniRecords to:
 
-The PostgreSQL database runs locally on the computer where PostgreSQL is
-installed, normally at `localhost:5432`. `localhost` means the current computer
-only. Other users, group members and assessors cannot access another
-developer's local PostgreSQL database; they reproduce the database on their own
-computer from the repository or submission package.
+1. View dashboard metrics and charts.
+2. Search, filter and page through Student records.
+3. View, create, edit and withdraw Student records.
+4. Read Courses, Modules and Course Offerings, Enrolments and Grades.
+5. Run eight assignment reports with filters and result tables.
+6. Check the local PostgreSQL connection from the browser.
 
-The code is organised into three clear layers:
+## What Is Already Implemented
 
-1. Routes handle web requests and render pages.
-2. Services hold validation and business rules.
-3. Repositories handle direct database access.
+| Area | Current status |
+| --- | --- |
+| Dashboard | Database-backed metrics and distribution charts |
+| Students | Search, filtering, pagination, detail, create, edit and withdrawal |
+| Courses | Read-only approved course catalogue |
+| Modules and Course Offerings | Read-only scheduled course offerings by academic term |
+| Enrolments | Read-only approved enrolment records |
+| Grades | Read-only approved grade records |
+| Reports | Eight assignment report functions |
+| Database health | Read-only PostgreSQL connection and schema check |
 
-## Design And Planning Links
+Student withdrawal is a lifecycle action, not a hard delete. The application
+sets the Student status to `Withdrawn` and preserves academic history.
 
-Lucidchart database diagram:
-https://lucid.app/lucidchart/ad06d20a-3336-4adb-add4-77f31ad7f94c/edit?invitationId=inv_6f6bd50f-0f97-40bd-8323-8ab224c53b49&page=page1#
+## Start Here
 
-Figma interface design:
-https://www.figma.com/design/9WqQOoMQ63DJAITQx6WDRU/University-Records-Database-Management-System?node-id=0-1&p=f&t=ZcNWLZ92BzlOmx4i-0
-
-## What The App Does
-
-The current app lets an administrator manage Student records and run assignment
-reports from the approved local PostgreSQL database.
-
-The active Student read path is:
+For the complete beginner-friendly setup, use:
 
 ```text
-use_records
-  -> use_record_management
-  -> vw_student_directory_masked
-  -> ApprovedStudentRepository
-  -> ApprovedStudentService
-  -> Flask routes
-  -> Student Directory and Student Detail pages
+docs/start-here.md
 ```
 
-Student create and edit operations write to the approved normalised PostgreSQL
-tables. The withdrawal action changes the Student lifecycle status without
-deleting academic history.
+Short flow:
 
-## Current Development Status
+```text
+Download or clone the repository
+  -> install PostgreSQL and pgAdmin
+  -> create use_records
+  -> run the approved SQL scripts in order
+  -> create and activate .venv
+  -> install requirements
+  -> copy .env.example to .env
+  -> add local PostgreSQL credentials
+  -> run python run.py
+  -> open the exact URL printed in the terminal
+```
 
-The project is currently being developed in stages. The Student section supports
-Student list, detail, create, edit and withdrawal workflows through the approved
-PostgreSQL schema.
+Port `5000` is the default. If it is unavailable, `python run.py` selects the
+next available local port and prints the correct URL.
 
-Courses, Modules, Enrolments and Grades have database-backed read-only pages
-using the approved PostgreSQL tables and views. Future development may add write
-workflows for those areas when their transaction rules are defined.
+## How UniRecords Works
 
-The Reports section implements the assignment query centre. It includes
-database-backed filters and result tables for Students by course and lecturer,
-final-year high achievers, Students without current registration, academic
-advisers, lecturer expertise, staff location, research project summaries and
-programme credit summaries.
+The application is organised into three layers:
 
-The remaining planned interface ideas are not yet implemented as functional
-features. These include authentication, role-based authorisation, write
-workflows for non-Student entities, global search, notifications and help
-controls.
+1. Routes receive web requests and render responses.
+2. Services handle validation and business rules.
+3. Repositories contain direct SQLAlchemy database access.
 
-The approved PostgreSQL database separates Student data across normalised tables
-including `person`, `student`, `person_contact` and `programme`. Student writes
-use repository transactions and do not write to the masked directory view.
+SQL is kept in repository classes. Routes do not query SQLAlchemy directly.
 
-## Main Technologies
+## Database And Data
 
-1. Flask
-2. Jinja templates
-3. Bootstrap
-4. Flask SQLAlchemy
-5. Flask Migrate and Alembic
-6. PostgreSQL
-7. psycopg
-8. pytest
-9. Ruff
-10. Black
+The approved SQL scripts are the database source of truth:
+
+```text
+sql/postgresql/
+  01_create_use_full_schema_postgresql.sql
+  02_insert_use_master_data_postgresql.sql
+  03_insert_use_activity_records_postgresql.sql
+  04_use_validation_queries_postgresql.sql
+```
+
+Expected local database structure:
+
+```text
+PostgreSQL 18
+  -> database: use_records
+  -> schema: use_record_management
+  -> approved tables, views, procedures and sample data
+```
+
+The application does not create the database, run the approved SQL scripts or
+use Alembic migrations to build the approved schema.
+
+## Project Documentation
+
+| Document | Purpose |
+| --- | --- |
+| `docs/README.md` | Suggested reading order for new developers and reviewers |
+| `docs/start-here.md` | Install PostgreSQL, configure Flask, run the app and verify it works |
+| `docs/how-unirecords-works.md` | Browser flow, routes, services, repositories and PostgreSQL |
+| `docs/database-and-data.md` | Database name, schema, approved SQL scripts, writes and report logic |
+| `docs/assignment-requirements.md` | Assignment requirements mapped to implementation evidence |
+| `docs/final-submission-checklist.md` | Testing, screenshots, video, security and final ZIP checks |
+
+Planning references:
+
+- Lucidchart database diagram:
+  https://lucid.app/lucidchart/ad06d20a-3336-4adb-add4-77f31ad7f94c/edit?invitationId=inv_6f6bd50f-0f97-40bd-8323-8ab224c53b49&page=page1#
+- Figma interface design:
+  https://www.figma.com/design/9WqQOoMQ63DJAITQx6WDRU/University-Records-Database-Management-System?node-id=0-1&p=f&t=ZcNWLZ92BzlOmx4i-0
+
+## Known Limitations
+
+- Authentication is not implemented.
+- Role-based application authorisation is not implemented.
+- Non-Student entities are read-only.
+- PostgreSQL runs locally and must be recreated on each computer from the
+  approved SQL scripts.
+- Tests use the Flask testing configuration and an in-memory SQLite database;
+  live PostgreSQL behaviour must be verified locally.
+
+## Developer Quality Checks
+
+```bash
+ruff check .
+black --check .
+pytest --cov=app --cov-report=term-missing
+```
+
+Use `black .` to format Python files before re-running the checks.
 
 ## Project Structure
 
 ```text
 app/
-  models/
   repositories/
   routes/
+  security/
   services/
   static/
   templates/
 docs/
-logs/
-migrations/
+  README.md
+  start-here.md
+  how-unirecords-works.md
+  database-and-data.md
+  assignment-requirements.md
+  final-submission-checklist.md
 sql/
   postgresql/
 tests/
@@ -114,238 +156,10 @@ run.py
 wsgi.py
 ```
 
-## Important Files
-
-`pyproject.toml` contains the project metadata, dependencies and tool settings
-for Black, Ruff and pytest.
-
-`requirements.txt` is the single install file. It points to the dependencies in
-`pyproject.toml`.
-
-`.env.example` shows the environment variables needed to run the app. Keep real
-passwords and secrets in a local `.env` file. The local `.env` file is ignored by
-Git.
-
-`run.py` is the local development entry point. `wsgi.py` is the deployment
-server entry point.
-
-`logs/` is reserved for local runtime logs if file logging is added later. The
-application does not currently configure file logging. Log files are ignored by
-Git.
-
-`docs/requirement-coverage.md` maps assignment requirements to implemented
-routes, services, repositories and database objects.
-
-`docs/submission-checklist.md` lists the final application, report, security and
-evidence checks for submission.
-
-## Setup
-
-For complete local installation and assessor setup instructions, see:
-
-```text
-docs/assessor-setup.md
-```
-
-Reproducible setup flow:
-
-```text
-GitHub repository or submission ZIP
-  -> install Python dependencies
-  -> install PostgreSQL
-  -> create use_records
-  -> run approved SQL scripts
-  -> create local .env
-  -> add local PostgreSQL credentials
-  -> run Flask
-  -> use the frontend
-```
-
-Create a virtual environment:
-
-```powershell
-py -3.11 -m venv .venv
-```
-
-Activate it in Windows PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-Install the project dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Create your local environment file:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Then update `.env` if your PostgreSQL username, password or port is different.
-The `.env` file is local only and excluded from Git. Real passwords must never
-be committed.
-
-Example values:
-
-```env
-FLASK_APP=run.py
-SECRET_KEY=replace-with-a-secure-local-key
-DATABASE_URL=postgresql+psycopg://postgres:YOUR_LOCAL_PASSWORD@localhost:5432/use_records
-```
-
-## PostgreSQL Setup
-
-Create a local PostgreSQL database. The database name may be local to your
-machine, but the supplied SQL creates and uses the `use_record_management`
-schema inside that database.
-
-```sql
-CREATE DATABASE use_records;
-```
-
-Run the approved SQL scripts in this order from pgAdmin Query Tool or `psql`:
-
-1. `sql/postgresql/01_create_use_full_schema_postgresql.sql`
-2. `sql/postgresql/02_insert_use_master_data_postgresql.sql`
-3. `sql/postgresql/03_insert_use_activity_records_postgresql.sql`
-4. `sql/postgresql/04_use_validation_queries_postgresql.sql`
-
-File 01 drops and recreates the `use_record_management` schema. Do not run it
-against a database that contains work you need to keep.
-
-The PostgreSQL scripts are the current source of truth for the approved
-database. The application must not be configured to use MySQL.
-
-After the scripts have been run, Flask reads Student records from:
-
-```text
-use_records -> use_record_management -> vw_student_directory_masked
-```
-
-Database structure:
-
-```text
-PostgreSQL 18
-  -> database: use_records
-  -> schema: use_record_management
-  -> tables, views, procedures and approved data
-```
-
-The PostgreSQL database is live locally while the PostgreSQL service is running.
-It is not publicly hosted and is not accessible through the internet. The
-repository provides all approved SQL scripts needed to reproduce the database on
-another computer.
-
-The application does not create the database, create the approved schema or run
-the SQL scripts automatically.
-
-Credential rules:
-
-1. Do not commit `.env`.
-2. Do not commit real PostgreSQL passwords.
-3. Do not hard-code credentials.
-4. Do not share the developer's local PostgreSQL password.
-5. Each user supplies their own local PostgreSQL credentials.
-6. `.env.example` remains a safe template.
-
-## Assessor Handover
-
-The submitted repository or full ZIP package contains the Flask application,
-frontend files, approved PostgreSQL SQL scripts, `requirements.txt`,
-`.env.example` and the assessor setup guide.
-
-The package does not contain the developer's live local PostgreSQL server, the
-developer's `.env`, the developer's PostgreSQL password or the developer's local
-`.venv`.
-
-## Database Migrations
-
-The repository includes a Flask Migrate and Alembic scaffold, but it is not the
-source of truth for the approved 46-table PostgreSQL schema. The approved schema
-is created by the SQL files in `sql/postgresql/`.
-
-Do not run `db.create_all()` or generate Alembic revisions to create the
-approved PostgreSQL database.
-
-Migration commands may be used later after the model strategy has been updated
-deliberately:
-
-```bash
-flask db migrate -m "describe the change"
-flask db upgrade
-```
-
-## Database Health Check
-
-The application includes a read-only database health endpoint:
-
-```text
-/health/database
-```
-
-It checks that SQLAlchemy can connect, that the `use_record_management` schema
-exists, and that the approved `student` table can be queried. It does not create
-or modify database objects.
-
-## Run The App
-
-For local development, use:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-python run.py
-```
-
-Open the app at:
-
-```text
-http://127.0.0.1:5000/
-```
-
-If port `5000` is already in use, `python run.py` automatically starts on the
-next available local port and prints the correct URL to open.
-
-Deployment servers should import `app` from `wsgi.py`, which uses the production
-configuration class.
-
-## Quality Checks
-
-Run linting:
-
-```bash
-ruff check .
-```
-
-Check formatting:
-
-```bash
-black --check .
-```
-
-Run tests with coverage:
-
-```bash
-pytest --cov=app --cov-report=term-missing
-```
-
-Format the code:
-
-```bash
-black .
-```
-
-## Testing Notes
-
-Tests use the Flask testing configuration and an in memory SQLite database. They
-do not prove PostgreSQL views, triggers, stored procedures or schema-specific
-constraints.
-
-Formal PostgreSQL validation belongs to the database/testing responsibility.
-Before expecting live Student records in the app, confirm locally that
-PostgreSQL is running, `.env` contains the correct `DATABASE_URL`, `use_records`
-exists, `use_record_management` exists, and
-`vw_student_directory_masked` can be queried.
+Important files:
+
+- `pyproject.toml` contains project metadata, dependencies and tool settings.
+- `requirements.txt` installs the project and development dependencies.
+- `.env.example` is a safe local configuration template.
+- `run.py` starts the local development server.
+- `wsgi.py` exposes the deployment entry point.

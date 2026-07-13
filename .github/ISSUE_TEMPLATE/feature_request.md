@@ -12,9 +12,10 @@ Briefly explain the proposed university records feature.
 
 ## Affected Entity Or Area
 
-State whether this affects Students, Courses, Modules, Enrolments, Grades,
-Reports, dashboard data, database design, planned authentication, global search,
-notifications, help controls or another part of the app.
+State whether this affects Students, Courses, Modules and Course Offerings,
+Enrolments, Grades, Reports, dashboard data, database design, planned
+authentication, global search, notifications, help controls or another part of
+the app.
 
 ## Why This Is Needed
 
@@ -26,7 +27,8 @@ Explain what the feature should do when complete.
 
 ## Database Or Migration Impact
 
-State whether new models, migrations, seed data or query functions are expected.
+State whether approved SQL changes, repository queries or service logic are
+expected.
 
 ## Test Notes
 

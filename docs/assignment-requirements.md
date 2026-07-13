@@ -1,4 +1,4 @@
-# Requirement Coverage
+# Assignment Requirements
 
 This matrix maps the implemented application to the assignment requirements and
 the approved PostgreSQL database package.
@@ -11,7 +11,7 @@ the approved PostgreSQL database package.
 | Student detail | Single Student profile | `/students/<student_id>` | `ApprovedStudentService`, `ApprovedStudentRepository` | `vw_student_directory_masked` | Complete | Detail page shows masked Student data |
 | Student create | Transactional create workflow | `/students/new`, `POST /students` | `StudentWriteService`, `StudentWriteRepository` | `person`, `student`, `person_contact` | Complete | Form validation, CSRF and PostgreSQL transaction |
 | Student edit | Transactional update workflow | `/students/<student_id>/edit` | `StudentWriteService`, `StudentWriteRepository` | `person`, `student`, `person_contact` | Complete | Form validation, duplicate checks and transaction rollback |
-| Student delete or archive | Safe lifecycle action | `/students/<student_id>/delete` | `StudentWriteService`, `StudentWriteRepository` | `student.student_status` | Complete | Uses `Withdrawn` status because schema has no archive status |
+| Student withdrawal | Safe lifecycle action | `/students/<student_id>/withdraw` | `StudentWriteService`, `StudentWriteRepository` | `student.student_status` | Complete | Uses `Withdrawn` status because schema has no hard delete or archive status |
 | Courses page | Course catalogue | `/courses` | `AcademicRecordService`, `AcademicRecordRepository` | `course`, `department`, `course_offering` | Complete | Read-only table from approved tables |
 | Modules page | Course offerings as modules | `/modules` | `AcademicRecordService`, `AcademicRecordRepository` | `course_offering`, `course`, `academic_term` | Complete | Read-only module offering table |
 | Enrolments page | Approved enrolment records | `/enrolments` | `AcademicRecordService`, `AcademicRecordRepository` | `enrolment`, `student`, `course_offering` | Complete | Read-only enrolment table |
@@ -27,7 +27,7 @@ the approved PostgreSQL database package.
 | Programme credit summary | Credit comparison report | `/reports/programme-credit-summary` | `AssignmentReportService`, `AssignmentReportRepository` | `vw_programme_credit_summary` | Complete | Programme dropdown and credit difference |
 | Three-layer architecture | Routes, services and repositories | All routes | Route, service and repository modules | N/A | Complete | SQL remains in repository classes |
 | Security basics | CSRF and parameterised SQL | Student POST routes | `csrf.py`, write service and repositories | N/A | Complete | POST routes validate CSRF and repository SQL uses parameters |
-| Reproducible local setup | Assessor guide | N/A | Documentation | SQL scripts in `sql/postgresql` | Complete | `docs/assessor-setup.md` documents local PostgreSQL workflow |
+| Reproducible local setup | Start Here guide | N/A | Documentation | SQL scripts in `sql/postgresql` | Complete | `docs/start-here.md` documents local PostgreSQL workflow |
 
 ## Known Limitations
 
