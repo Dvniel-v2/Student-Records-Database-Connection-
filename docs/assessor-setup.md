@@ -151,6 +151,10 @@ python run.py
 http://127.0.0.1:5000/
 ```
 
+If port `5000` is already in use, `python run.py` automatically starts on the
+next available local port and prints the correct URL. Use the printed port for
+the application and health endpoint.
+
 13. Check the database health endpoint:
 
 ```text

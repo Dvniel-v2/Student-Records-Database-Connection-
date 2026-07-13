@@ -307,6 +307,9 @@ Open the app at:
 http://127.0.0.1:5000/
 ```
 
+If port `5000` is already in use, `python run.py` automatically starts on the
+next available local port and prints the correct URL to open.
+
 Deployment servers should import `app` from `wsgi.py`, which uses the production
 configuration class.
 
