@@ -503,6 +503,12 @@ body {
   text-decoration: underline;
 }
 
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
 .pagination-bar {
   display: flex;
   align-items: center;
@@ -665,6 +671,59 @@ body {
   font-weight: 800;
 }
 
+.form-panel {
+  max-width: 1080px;
+}
+
+.form-section {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--ur-border);
+}
+
+.form-section:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.form-section h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.form-field {
+  min-width: 0;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ur-border);
+}
+
+.warning-box {
+  padding: 1rem;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fff7f7;
+  color: #7f1d1d;
+}
+
+.warning-box p {
+  margin-top: 0.35rem;
+}
+
 .btn {
   border-radius: 10px;
   font-weight: 800;
@@ -755,13 +814,23 @@ body {
   }
 
   .filter-actions,
+  .form-footer,
   .filter-actions .btn,
+  .form-footer .btn,
   .pagination-bar div,
   .pagination-bar .btn {
     width: 100%;
   }
 
   .filter-actions {
+    flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-footer {
     flex-direction: column;
   }
 

@@ -1,0 +1,95 @@
+<div class="form-section">
+  <h3>Personal information</h3>
+  <div class="form-grid">
+    <div class="form-field">
+      <label class="form-label" for="first_name">First name</label>
+      <input class="form-control {% if errors.first_name %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name or '' }}" maxlength="60" required />
+      {% if errors.first_name %}<div class="invalid-feedback">{{ errors.first_name }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="last_name">Last name</label>
+      <input class="form-control {% if errors.last_name %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name or '' }}" maxlength="60" required />
+      {% if errors.last_name %}<div class="invalid-feedback">{{ errors.last_name }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="email">{% if email_optional %}New email{% else %}Email{% endif %}</label>
+      <input class="form-control {% if errors.email %}is-invalid{% endif %}" id="email" name="email" type="email" value="{{ form.email or '' }}" maxlength="150" {% if not email_optional %}required{% endif %} />
+      {% if email_optional %}<div class="form-text">Leave blank to keep the current masked email.</div>{% endif %}
+      {% if errors.email %}<div class="invalid-feedback">{{ errors.email }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="phone">Phone</label>
+      <input class="form-control" id="phone" name="phone" value="{{ form.phone or '' }}" maxlength="40" />
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="nationality">Nationality</label>
+      <input class="form-control" id="nationality" name="nationality" value="{{ form.nationality or '' }}" maxlength="80" />
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="date_of_birth">Date of birth</label>
+      <input class="form-control {% if errors.date_of_birth %}is-invalid{% endif %}" id="date_of_birth" name="date_of_birth" type="date" value="{{ form.date_of_birth or '' }}" required />
+      {% if errors.date_of_birth %}<div class="invalid-feedback">{{ errors.date_of_birth }}</div>{% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3>Academic information</h3>
+  <div class="form-grid">
+    <div class="form-field">
+      <label class="form-label" for="student_number">Student number</label>
+      <input class="form-control {% if errors.student_number %}is-invalid{% endif %}" id="student_number" name="student_number" value="{{ form.student_number or '' }}" maxlength="30" required />
+      {% if errors.student_number %}<div class="invalid-feedback">{{ errors.student_number }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="programme_code">Programme</label>
+      <select class="form-select {% if errors.programme_code %}is-invalid{% endif %}" id="programme_code" name="programme_code" required>
+        <option value="">Select programme</option>
+        {% for programme in choices.programmes %}
+          <option value="{{ programme.programme_code }}" {% if form.programme_code == programme.programme_code %}selected{% endif %}>
+            {{ programme.programme_code }} {{ programme.programme_name }}
+          </option>
+        {% endfor %}
+      </select>
+      {% if errors.programme_code %}<div class="invalid-feedback">{{ errors.programme_code }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="enrolment_year">Enrolment year</label>
+      <input class="form-control {% if errors.enrolment_year %}is-invalid{% endif %}" id="enrolment_year" name="enrolment_year" type="number" min="2000" max="2100" value="{{ form.enrolment_year or '' }}" required />
+      {% if errors.enrolment_year %}<div class="invalid-feedback">{{ errors.enrolment_year }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="year_of_study">Year of study</label>
+      <input class="form-control {% if errors.year_of_study %}is-invalid{% endif %}" id="year_of_study" name="year_of_study" type="number" min="1" max="8" value="{{ form.year_of_study or '' }}" required />
+      {% if errors.year_of_study %}<div class="invalid-feedback">{{ errors.year_of_study }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="admission_type">Admission type</label>
+      <select class="form-select {% if errors.admission_type %}is-invalid{% endif %}" id="admission_type" name="admission_type" required>
+        <option value="">Select admission type</option>
+        {% for option in choices.admission_types %}
+          <option value="{{ option }}" {% if form.admission_type == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.admission_type %}<div class="invalid-feedback">{{ errors.admission_type }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="student_status">Student status</label>
+      <select class="form-select {% if errors.student_status %}is-invalid{% endif %}" id="student_status" name="student_status">
+        {% for option in choices.student_statuses %}
+          <option value="{{ option }}" {% if (form.student_status or 'Active') == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.student_status %}<div class="invalid-feedback">{{ errors.student_status }}</div>{% endif %}
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="graduation_status">Graduation status</label>
+      <select class="form-select {% if errors.graduation_status %}is-invalid{% endif %}" id="graduation_status" name="graduation_status">
+        {% for option in choices.graduation_statuses %}
+          <option value="{{ option }}" {% if (form.graduation_status or 'Not eligible') == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.graduation_status %}<div class="invalid-feedback">{{ errors.graduation_status }}</div>{% endif %}
+    </div>
+  </div>
+</div>

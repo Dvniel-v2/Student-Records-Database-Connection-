@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Edit Student{% endblock %}
+{% block page_title %}Edit Student{% endblock %}
+{% block page_subtitle %}Update approved Student and person records{% endblock %}
+{% block content %}
+<section class="panel form-panel">
+  <div class="panel-header">
+    <div>
+      <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+      <p>{{ student.student_number }} · {{ student.masked_email }}</p>
+    </div>
+  </div>
+  <form method="post" action="{{ url_for('main.edit_student', student_id=student.student_id) }}" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    {% set email_optional = true %}
+    {% include 'student_form_fields.html' %}
+    <div class="form-footer">
+      <a class="btn btn-light" href="{{ url_for('main.view_student', student_id=student.student_id) }}">Cancel</a>
+      <button class="btn btn-primary" type="submit">Save Changes</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

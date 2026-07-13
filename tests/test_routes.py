@@ -1,9 +1,18 @@
 """Tests for the main routes."""
 
+import re
+
 from app.repositories.approved_student_repository import ApprovedStudentRecord
 from app.repositories.dashboard_repository import DashboardBar, DashboardMetrics
+from app.repositories.student_write_repository import EditableStudentRecord
 from app.services.academic_record_service import RecordPage
 from app.services.dashboard_service import DashboardData
+from app.services.student_write_service import (
+    StudentFormChoices,
+    StudentWriteConflictError,
+    StudentWriteServiceError,
+    StudentWriteValidationError,
+)
 
 
 def _approved_student() -> ApprovedStudentRecord:
@@ -110,6 +119,82 @@ class FakeAcademicRecordService:
         }
 
 
+def _editable_student() -> EditableStudentRecord:
+    return EditableStudentRecord(
+        student_id=1,
+        person_id=10,
+        student_number="USE1001",
+        first_name="Ada",
+        last_name="Lovelace",
+        masked_email="ad***@use.edu",
+        phone="+44 100",
+        nationality="British",
+        programme_code="UB-CSC",
+        programme_name="B.Sc. Computer Science",
+        date_of_birth="2001-01-01",
+        enrolment_year=2024,
+        year_of_study=1,
+        admission_type="Local",
+        student_status="Active",
+        graduation_status="Not eligible",
+    )
+
+
+class FakeStudentWriteService:
+    """Fake write service for Student CRUD route tests."""
+
+    def __init__(self):
+        self.created_form = None
+        self.updated_form = None
+        self.withdrawn_id = None
+        self.create_error = None
+        self.update_error = None
+        self.withdraw_error = None
+
+    def form_choices(self):
+        return StudentFormChoices(
+            programmes=[
+                type(
+                    "Programme",
+                    (),
+                    {
+                        "programme_code": "UB-CSC",
+                        "programme_name": "B.Sc. Computer Science",
+                    },
+                )()
+            ]
+        )
+
+    def get_student_for_edit(self, student_id: int):
+        if student_id == 1:
+            return _editable_student()
+        return None
+
+    def create_student(self, form):
+        self.created_form = form
+        if self.create_error:
+            raise self.create_error
+        return 1
+
+    def update_student(self, student_id: int, form):
+        self.updated_form = form
+        if self.update_error:
+            raise self.update_error
+
+    def withdraw_student(self, student_id: int):
+        self.withdrawn_id = student_id
+        if self.withdraw_error:
+            raise self.withdraw_error
+
+
+def _csrf_token(response) -> str:
+    match = re.search(
+        r'name="csrf_token" value="([^"]+)"', response.get_data(as_text=True)
+    )
+    assert match is not None
+    return match.group(1)
+
+
 def test_dashboard_page_renders_metrics_and_overview(client, monkeypatch):
     from app.routes import main
 
@@ -163,37 +248,204 @@ def test_view_missing_student_redirects(client, monkeypatch):
     assert b"Student not found." in response.data
 
 
-def test_create_student_is_not_yet_available_for_normalised_schema(client, monkeypatch):
+def test_create_student_form_loads_reference_data(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "student_write_service", FakeStudentWriteService())
+
+    response = client.get("/students/new")
+
+    assert response.status_code == 200
+    assert b"Add Student" in response.data
+    assert b"UB-CSC" in response.data
+
+
+def test_create_valid_student_redirects_to_detail(client, monkeypatch):
+    from app.routes import main
+
+    fake_service = FakeStudentWriteService()
+    monkeypatch.setattr(main, "student_write_service", fake_service)
+    form_response = client.get("/students/new")
+    token = _csrf_token(form_response)
+
+    response = client.post(
+        "/students",
+        data={
+            "csrf_token": token,
+            "student_number": "use1001",
+            "first_name": "Ada",
+            "last_name": "Lovelace",
+            "email": "ada@stu.use.edu",
+            "programme_code": "UB-CSC",
+            "date_of_birth": "2001-01-01",
+            "enrolment_year": "2024",
+            "year_of_study": "1",
+            "admission_type": "Local",
+            "student_status": "Active",
+            "graduation_status": "Not eligible",
+        },
+    )
+
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/students/1")
+    assert fake_service.created_form["first_name"] == "Ada"
+
+
+def test_create_invalid_student_shows_field_errors(client, monkeypatch):
+    from app.routes import main
+
+    fake_service = FakeStudentWriteService()
+    fake_service.create_error = StudentWriteValidationError(
+        {"email": "Enter a valid email address."}
+    )
+    monkeypatch.setattr(main, "student_write_service", fake_service)
+    token = _csrf_token(client.get("/students/new"))
+
+    response = client.post(
+        "/students",
+        data={"csrf_token": token, "email": "bad"},
+    )
+
+    assert response.status_code == 400
+    assert b"Enter a valid email address." in response.data
+
+
+def test_create_duplicate_student_shows_conflict(client, monkeypatch):
+    from app.routes import main
+
+    fake_service = FakeStudentWriteService()
+    fake_service.create_error = StudentWriteConflictError(
+        "A Student with this number already exists."
+    )
+    monkeypatch.setattr(main, "student_write_service", fake_service)
+    token = _csrf_token(client.get("/students/new"))
+
+    response = client.post(
+        "/students",
+        data={"csrf_token": token, "student_number": "USE1001"},
+    )
+
+    assert response.status_code == 409
+    assert b"A Student with this number already exists." in response.data
+
+
+def test_edit_student_form_loads_existing_data(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "student_write_service", FakeStudentWriteService())
+
+    response = client.get("/students/1/edit")
+
+    assert response.status_code == 200
+    assert b"Edit Student" in response.data
+    assert b"USE1001" in response.data
+
+
+def test_update_valid_student_redirects_to_detail(client, monkeypatch):
+    from app.routes import main
+
+    fake_service = FakeStudentWriteService()
+    monkeypatch.setattr(main, "student_write_service", fake_service)
+    token = _csrf_token(client.get("/students/1/edit"))
+
+    response = client.post(
+        "/students/1/edit",
+        data={
+            "csrf_token": token,
+            "student_number": "USE1001",
+            "first_name": "Ada",
+            "last_name": "Lovelace",
+            "programme_code": "UB-CSC",
+            "date_of_birth": "2001-01-01",
+            "enrolment_year": "2024",
+            "year_of_study": "2",
+            "admission_type": "Local",
+            "student_status": "Active",
+            "graduation_status": "Not eligible",
+        },
+    )
+
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/students/1")
+    assert fake_service.updated_form["year_of_study"] == "2"
+
+
+def test_update_invalid_student_shows_errors(client, monkeypatch):
+    from app.routes import main
+
+    fake_service = FakeStudentWriteService()
+    fake_service.update_error = StudentWriteValidationError(
+        {"year_of_study": "Year of study must be between 1 and 8."}
+    )
+    monkeypatch.setattr(main, "student_write_service", fake_service)
+    token = _csrf_token(client.get("/students/1/edit"))
+
+    response = client.post(
+        "/students/1/edit",
+        data={"csrf_token": token, "year_of_study": "99"},
+    )
+
+    assert response.status_code == 400
+    assert b"Year of study must be between 1 and 8." in response.data
+
+
+def test_withdraw_student_confirmation_loads(client, monkeypatch):
     from app.routes import main
 
     monkeypatch.setattr(main, "student_service", FakeApprovedStudentService())
 
-    response = client.post("/students", data={}, follow_redirects=True)
+    response = client.get("/students/1/delete")
 
     assert response.status_code == 200
-    assert b"Student record creation is not yet available" in response.data
+    assert b"Withdraw Student" in response.data
+    assert b"USE1001" in response.data
 
 
-def test_edit_student_is_not_yet_available_for_normalised_schema(client, monkeypatch):
+def test_successful_withdraw_student(client, monkeypatch):
     from app.routes import main
 
+    fake_write_service = FakeStudentWriteService()
     monkeypatch.setattr(main, "student_service", FakeApprovedStudentService())
+    monkeypatch.setattr(main, "student_write_service", fake_write_service)
+    token = _csrf_token(client.get("/students/1/delete"))
 
-    response = client.post("/students/1/edit", data={}, follow_redirects=True)
+    response = client.post("/students/1/delete", data={"csrf_token": token})
 
-    assert response.status_code == 200
-    assert b"Student editing is not yet available" in response.data
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/students/1")
+    assert fake_write_service.withdrawn_id == 1
 
 
-def test_delete_student_is_not_yet_available_for_normalised_schema(client, monkeypatch):
+def test_blocked_withdraw_student_shows_safe_message(client, monkeypatch):
     from app.routes import main
 
-    monkeypatch.setattr(main, "student_service", FakeApprovedStudentService())
+    fake_write_service = FakeStudentWriteService()
+    fake_write_service.withdraw_error = StudentWriteServiceError(
+        "Database failure should not be displayed."
+    )
+    monkeypatch.setattr(main, "student_write_service", fake_write_service)
 
-    response = client.post("/students/1/delete", follow_redirects=True)
+    with client.session_transaction() as session:
+        session["_csrf_token"] = "known-token"
+
+    response = client.post(
+        "/students/1/delete",
+        data={"csrf_token": "known-token"},
+        follow_redirects=True,
+    )
 
     assert response.status_code == 200
-    assert b"Student deletion is not yet available" in response.data
+    assert b"Student could not be withdrawn." in response.data
+
+
+def test_student_post_requires_csrf_token(client, monkeypatch):
+    from app.routes import main
+
+    monkeypatch.setattr(main, "student_write_service", FakeStudentWriteService())
+
+    response = client.post("/students", data={})
+
+    assert response.status_code == 400
 
 
 def test_academic_record_pages_render_read_only_data(client, monkeypatch):

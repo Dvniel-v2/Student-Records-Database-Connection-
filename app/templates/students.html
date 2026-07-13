@@ -3,7 +3,7 @@
 {% block page_title %}Student Records{% endblock %}
 {% block page_subtitle %}Search and browse approved Student Directory records{% endblock %}
 {% block topbar_actions %}
-  <span class="page-chip">Read only</span>
+  <a class="btn btn-primary btn-sm" href="{{ url_for('main.new_student_form') }}">Add Student</a>
 {% endblock %}
 {% block content %}
 <section class="summary-strip" aria-label="Student summary">
@@ -86,7 +86,7 @@
             <th scope="col">Masked email</th>
             <th scope="col">Year</th>
             <th scope="col">Status</th>
-            <th scope="col">Action</th>
+              <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -98,7 +98,12 @@
               <td>{{ student.masked_email }}</td>
               <td>{{ student.year_of_study }}</td>
               <td><span class="status-pill">{{ student.student_status }}</span></td>
-              <td><a class="table-link" href="{{ url_for('main.view_student', student_id=student.id) }}">View</a></td>
+              <td>
+                <div class="table-actions">
+                  <a class="table-link" href="{{ url_for('main.view_student', student_id=student.id) }}">View</a>
+                  <a class="table-link" href="{{ url_for('main.edit_student_form', student_id=student.id) }}">Edit</a>
+                </div>
+              </td>
             </tr>
           {% endfor %}
         </tbody>

@@ -49,16 +49,17 @@ use_records
   -> Student Directory and Student Detail pages
 ```
 
-Student create, edit and delete operations are not yet available for the
-normalised PostgreSQL schema.
+Student create and edit operations write to the approved normalised PostgreSQL
+tables. The withdrawal action changes the Student lifecycle status without
+deleting academic history.
 
 ## Current Development Status
 
 The project is currently being developed in stages.
 
 The Student section is the first functional part of the university records
-management system. It currently supports read-only Student list and detail pages
-through the approved PostgreSQL Student directory view.
+management system. It currently supports Student list, detail, create, edit and
+withdrawal workflows through the approved PostgreSQL schema.
 
 Some interface elements are included as design placeholders to demonstrate the
 intended direction of the complete system. These currently include:
@@ -78,12 +79,15 @@ functionality. They provide a visual structure for future development and show
 how additional university record entities may be incorporated into the
 interface.
 
-As development continues, these areas will be connected to their own database
-models, service logic, repository functions, routes and tests.
+Courses, Modules, Enrolments, Grades and Reports currently have read-only
+database-backed pages. Future development may add write workflows for those
+areas when their transaction rules are defined.
 
 The approved PostgreSQL database separates Student data across normalised tables
-including `person`, `student` and `programme`. The interface should not be read
-as evidence that every planned feature is already functional.
+including `person`, `student`, `person_contact` and `programme`. Student writes
+use repository transactions and do not write to the masked directory view. The
+interface should not be read as evidence that every planned feature is already
+functional.
 
 ## Main Technologies
 

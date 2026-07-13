@@ -169,7 +169,8 @@ Successful local setup means:
 2. The homepage loads.
 3. The Student Directory displays approved PostgreSQL records.
 4. Student detail pages open.
-5. The database health endpoint reports success.
+5. Student create, edit and withdraw forms load.
+6. The database health endpoint reports success.
 
 These checks must be confirmed on the local computer running the project.
 

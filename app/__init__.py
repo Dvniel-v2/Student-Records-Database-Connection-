@@ -6,6 +6,7 @@ from app.config import config
 from app.extensions import db, migrate
 from app.routes.health import health_bp
 from app.routes.main import main_bp
+from app.security.csrf import csrf_token
 
 
 def create_app(config_name: str | None = None, **kwargs) -> Flask:
@@ -17,6 +18,7 @@ def create_app(config_name: str | None = None, **kwargs) -> Flask:
 
     db.init_app(app)
     migrate.init_app(app, db)
+    app.jinja_env.globals["csrf_token"] = csrf_token
     app.register_blueprint(health_bp)
     app.register_blueprint(main_bp)
 

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Add Student{% endblock %}
+{% block page_title %}Add Student{% endblock %}
+{% block page_subtitle %}Create a Student in the approved PostgreSQL schema{% endblock %}
+{% block content %}
+<section class="panel form-panel">
+  <div class="panel-header">
+    <div>
+      <h2>Student details</h2>
+      <p>Creates linked records in person, student and primary contact tables.</p>
+    </div>
+  </div>
+  <form method="post" action="{{ url_for('main.create_student') }}" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    {% include 'student_form_fields.html' %}
+    <div class="form-footer">
+      <a class="btn btn-light" href="{{ url_for('main.students') }}">Cancel</a>
+      <button class="btn btn-primary" type="submit">Create Student</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

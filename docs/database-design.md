@@ -17,9 +17,30 @@ The underlying approved Student structure is normalised across tables including
 
 ## Write Responsibilities
 
-Student create, edit and delete workflows are future work. They should only be
-implemented after transaction-safe workflows are designed for the normalised
-PostgreSQL schema.
+Student create and edit workflows write to the approved normalised tables:
+
+```text
+person
+student
+person_contact
+```
+
+The Student Directory continues to read from
+`vw_student_directory_masked`. The application does not write to this view.
+
+The approved schema does not include an `Archived` Student status or a Student
+delete procedure. The frontend therefore uses a withdrawal lifecycle action:
+
+```text
+student.student_status = 'Withdrawn'
+student.graduation_status = 'Not eligible'
+```
+
+This preserves enrolments, grades and other related academic records.
+
+The schema includes approved procedures for enrolment and grade workflows, but
+not for Student create or update. Student writes are implemented in the Flask
+repository layer with parameterised SQL and SQLAlchemy transactions.
 
 ## PostgreSQL and pgAdmin
 
@@ -42,7 +63,6 @@ The SQL scripts are the current database baseline.
 
 ## Planned Entities
 
-The interface includes placeholders for Courses, Modules, Enrolments, Grades and
-Reports. The approved PostgreSQL database already contains normalised tables for
-these areas, but the Flask application has not yet connected those screens to
-dedicated repositories, services, routes and tests.
+The interface includes read-only pages for Courses, Modules, Enrolments, Grades
+and Reports. Future development may add write workflows for those entities once
+their transaction rules are defined.

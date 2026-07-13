@@ -2,6 +2,7 @@
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
+from app.security.csrf import validate_csrf
 from app.services.academic_record_service import (
     AcademicRecordService,
     AcademicRecordServiceError,
@@ -13,11 +14,18 @@ from app.services.approved_student_service import (
     ApprovedStudentValidationError,
 )
 from app.services.dashboard_service import DashboardService, DashboardServiceError
+from app.services.student_write_service import (
+    StudentWriteConflictError,
+    StudentWriteService,
+    StudentWriteServiceError,
+    StudentWriteValidationError,
+)
 
 main_bp = Blueprint("main", __name__)
 student_service = ApprovedStudentService()
 dashboard_service = DashboardService()
 academic_service = AcademicRecordService()
+student_write_service = StudentWriteService()
 
 DATABASE_UNAVAILABLE_MESSAGE = (
     "Approved PostgreSQL student records are currently unavailable. "
@@ -81,6 +89,22 @@ def students() -> str:
     )
 
 
+@main_bp.get("/students/new")
+def new_student_form() -> str:
+    """Render the approved Student creation form."""
+    try:
+        choices = student_write_service.form_choices()
+    except StudentWriteServiceError:
+        flash("Student form reference data is currently unavailable.", "error")
+        return redirect(url_for("main.students")), 302
+    return render_template(
+        "add_student.html",
+        form={},
+        errors={},
+        choices=choices,
+    )
+
+
 @main_bp.get("/courses")
 def courses() -> str:
     """Render approved course catalogue records."""
@@ -118,13 +142,39 @@ def reports() -> str:
 
 @main_bp.post("/students")
 def create_student():
-    """Keep creation unavailable until normalised PostgreSQL writes exist."""
-    flash(
-        "Student record creation is not yet available for the normalised "
-        "PostgreSQL schema.",
-        "error",
-    )
-    return redirect(url_for("main.students"))
+    """Create a Student in the approved normalised PostgreSQL schema."""
+    validate_csrf()
+    form = request.form.to_dict()
+    try:
+        student_id = student_write_service.create_student(form)
+    except StudentWriteValidationError as exc:
+        choices = student_write_service.form_choices()
+        return (
+            render_template(
+                "add_student.html",
+                form=form,
+                errors=exc.errors,
+                choices=choices,
+            ),
+            400,
+        )
+    except StudentWriteConflictError as exc:
+        choices = student_write_service.form_choices()
+        return (
+            render_template(
+                "add_student.html",
+                form=form,
+                errors={"student_number": str(exc)},
+                choices=choices,
+            ),
+            409,
+        )
+    except StudentWriteServiceError:
+        flash("Student record could not be created.", "error")
+        return redirect(url_for("main.students")), 302
+
+    flash("Student record created.", "success")
+    return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
 @main_bp.get("/students/<int:student_id>")
@@ -147,43 +197,98 @@ def view_student(student_id: int):
 
 @main_bp.get("/students/<int:student_id>/edit")
 def edit_student_form(student_id: int):
-    """Keep editing unavailable until normalised PostgreSQL writes exist."""
-    flash(
-        "Student editing is not yet available for the normalised " "PostgreSQL schema.",
-        "error",
+    """Render the approved Student edit form."""
+    try:
+        student = student_write_service.get_student_for_edit(student_id)
+        choices = student_write_service.form_choices()
+    except StudentWriteServiceError:
+        flash("Student edit data is currently unavailable.", "error")
+        return redirect(url_for("main.view_student", student_id=student_id)), 302
+
+    if student is None:
+        flash("Student not found.", "error")
+        return redirect(url_for("main.students")), 302
+    return render_template(
+        "edit_student.html",
+        student=student,
+        form=_student_form_defaults(student),
+        errors={},
+        choices=choices,
     )
-    return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
 @main_bp.post("/students/<int:student_id>/edit")
 def edit_student(student_id: int):
-    """Keep updates unavailable until normalised PostgreSQL writes exist."""
-    flash(
-        "Student editing is not yet available for the normalised " "PostgreSQL schema.",
-        "error",
-    )
+    """Update a Student in the approved normalised PostgreSQL schema."""
+    validate_csrf()
+    form = request.form.to_dict()
+    try:
+        student_write_service.update_student(student_id, form)
+    except StudentWriteValidationError as exc:
+        student = student_write_service.get_student_for_edit(student_id)
+        if student is None:
+            flash("Student not found.", "error")
+            return redirect(url_for("main.students")), 302
+        choices = student_write_service.form_choices()
+        return (
+            render_template(
+                "edit_student.html",
+                student=student,
+                form=form,
+                errors=exc.errors,
+                choices=choices,
+            ),
+            400,
+        )
+    except StudentWriteConflictError as exc:
+        student = student_write_service.get_student_for_edit(student_id)
+        choices = student_write_service.form_choices()
+        return (
+            render_template(
+                "edit_student.html",
+                student=student,
+                form=form,
+                errors={"student_number": str(exc)},
+                choices=choices,
+            ),
+            409,
+        )
+    except StudentWriteServiceError:
+        flash("Student record could not be updated.", "error")
+        return redirect(url_for("main.view_student", student_id=student_id)), 302
+
+    flash("Student record updated.", "success")
     return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
 @main_bp.get("/students/<int:student_id>/delete")
 def delete_student_confirm(student_id: int):
-    """Keep deletion unavailable until normalised PostgreSQL writes exist."""
-    flash(
-        "Student deletion is not yet available for the normalised "
-        "PostgreSQL schema.",
-        "error",
-    )
-    return redirect(url_for("main.view_student", student_id=student_id)), 302
+    """Render Student withdrawal confirmation."""
+    try:
+        student = student_service.get_student(student_id)
+    except (ApprovedStudentValidationError, ApprovedStudentServiceError):
+        flash(DATABASE_UNAVAILABLE_MESSAGE, "error")
+        return redirect(url_for("main.students")), 302
+    if student is None:
+        flash("Student not found.", "error")
+        return redirect(url_for("main.students")), 302
+    return render_template("delete_student.html", student=student)
 
 
 @main_bp.post("/students/<int:student_id>/delete")
 def delete_student(student_id: int):
-    """Keep deletes unavailable until normalised PostgreSQL writes exist."""
-    flash(
-        "Student deletion is not yet available for the normalised "
-        "PostgreSQL schema.",
-        "error",
-    )
+    """Withdraw a Student without deleting academic history."""
+    validate_csrf()
+    try:
+        student_write_service.withdraw_student(student_id)
+    except StudentWriteValidationError:
+        flash("Student not found.", "error")
+        return redirect(url_for("main.students")), 302
+    except StudentWriteServiceError:
+        flash("Student could not be withdrawn.", "error")
+        return redirect(url_for("main.view_student", student_id=student_id)), 302
+
+    flash("Student record withdrawn.", "success")
     return redirect(url_for("main.view_student", student_id=student_id)), 302
 
 
@@ -209,3 +314,22 @@ def _render_record_page(service_method: str, error_message: str) -> str:
             rows=[],
         )
     return render_template("records.html", page=page)
+
+
+def _student_form_defaults(student) -> dict[str, str]:
+    """Return editable Student values for form inputs."""
+    return {
+        "student_number": student.student_number,
+        "first_name": student.first_name,
+        "last_name": student.last_name,
+        "email": "",
+        "phone": student.phone or "",
+        "nationality": student.nationality or "",
+        "programme_code": student.programme_code,
+        "date_of_birth": student.date_of_birth,
+        "enrolment_year": str(student.enrolment_year),
+        "year_of_study": str(student.year_of_study),
+        "admission_type": student.admission_type,
+        "student_status": student.student_status,
+        "graduation_status": student.graduation_status,
+    }
