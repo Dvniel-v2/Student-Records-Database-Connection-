@@ -7,7 +7,7 @@ PostgreSQL is the only supported implementation database. The SQL files in
 `sql/postgresql` create the database structure and sample data used by
 UniRecords.
 
-The active student interface reads from the approved masked view:
+The active student interface reads from the masked directory view:
 
 ```text
 use_record_management.vw_student_directory_masked
@@ -18,7 +18,7 @@ The underlying approved student structure is normalised across tables including
 
 ## Write Responsibilities
 
-Student create and edit workflows write to the approved normalised tables:
+Student creation and editing write to the normalised tables:
 
 ```text
 person
@@ -29,7 +29,7 @@ person_contact
 The Student Directory continues to read from
 `vw_student_directory_masked`. The application does not write to this view.
 
-The approved schema does not include an `Archived` Student status or a Student
+The approved schema does not include an `Archived` student status or a student
 delete procedure. The frontend therefore uses a withdrawal lifecycle action:
 
 ```text
@@ -40,7 +40,7 @@ student.graduation_status = 'Not eligible'
 This preserves enrolments, grades and other related academic records.
 
 The schema includes approved procedures for enrolment and grade workflows, but
-not for Student create or update. Student writes are implemented in the Flask
+not for student creation or update. Student writes are implemented in the Flask
 repository layer with parameterised SQL and SQLAlchemy transactions.
 
 ## PostgreSQL And pgAdmin
@@ -74,7 +74,7 @@ The application implements eight database-backed report functions:
 
 1. Students registered on a selected course taught by a selected lecturer.
 2. Final-year students with an average overall grade above a threshold.
-3. Active students with no registration in the current approved term.
+3. Active students with no registration in the current reporting term.
 4. Academic adviser lookup for a selected student.
 5. Lecturers by expertise area.
 6. Staff by department or administrative unit.
@@ -85,6 +85,6 @@ Reports use approved tables and views such as `enrolment`, `course_offering`,
 `offering_lecturer`, `advisor_assignment`, `lecturer_expertise`,
 `non_academic_staff` and `vw_programme_credit_summary`.
 
-The Research Project Summary report uses parameterised repository SQL with
+The research project summary report uses parameterised repository SQL with
 separate aggregated common table expressions for funding, members, publications
 and outcomes. This avoids multiplying totals across one-to-many joins.

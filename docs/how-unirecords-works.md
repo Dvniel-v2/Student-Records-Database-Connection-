@@ -1,14 +1,13 @@
 # How UniRecords Works
 
-UniRecords follows a three-layer structure for the University Records Management
-System.
+UniRecords follows a three-layer structure for University Records.
 
 ## Browser And Presentation Layer
 
 Flask routes in `app/routes/main.py` receive HTTP requests and render templates.
-Templates display the dashboard, Student Directory, Student Detail, Student
-write pages, read-only academic records and reports. Static CSS and
-JavaScript stay in `app/static`.
+Templates display the dashboard, Student Directory, Student Detail, student
+write pages, read-only academic records and reports. Static CSS and JavaScript
+stay in `app/static`.
 
 Routes do not query SQLAlchemy directly. They call `ApprovedStudentService` and
 `StudentWriteService`, then translate unavailable database operations into safe
@@ -16,24 +15,22 @@ user-facing messages.
 
 ## Service Layer
 
-`app/services/approved_student_service.py` owns the approved read-only Student
-application boundary. It validates route input where needed and returns clean
-Student records from the repository.
+`app/services/approved_student_service.py` validates requests and prepares
+student data for the interface.
 
-`app/services/student_write_service.py` owns Student create, edit and withdrawal
-validation. It normalises form values, checks duplicate Student numbers and email
-addresses, validates schema-limited status values and translates database errors
-into safe messages.
+`app/services/student_write_service.py` validates student creation, editing and
+withdrawal. It normalises form values, checks duplicate student numbers and
+email addresses, validates schema-limited status values and translates database
+errors into safe messages.
 
 ## Repository Layer
 
-`app/repositories/approved_student_repository.py` performs direct approved
-Student database reads. It queries the schema-qualified
-`use_record_management.vw_student_directory_masked` view through SQLAlchemy and
-psycopg.
+`app/repositories/approved_student_repository.py` reads student records from the
+schema-qualified `use_record_management.vw_student_directory_masked` view
+through SQLAlchemy and psycopg.
 
-`app/repositories/student_write_repository.py` performs direct Student writes
-with parameterised SQL. It writes to `person`, `student` and primary
+`app/repositories/student_write_repository.py` writes student records with
+parameterised SQL. It writes to `person`, `student` and primary
 `person_contact` records. Multi-table create and update operations commit only
 after all related records succeed and roll back on failure.
 
@@ -48,7 +45,7 @@ data layer.
 2. The route calls `ApprovedStudentService`.
 3. The service calls `ApprovedStudentRepository`.
 4. The repository reads from `use_record_management.vw_student_directory_masked`.
-5. The route renders the Student interface.
+5. The route renders the student interface.
 
 ## Student Write Flow
 
@@ -62,7 +59,7 @@ data layer.
 7. The route redirects to the Student Detail page or re-renders the form with
    field-level errors.
 
-The approved schema does not define an `Archived` Student status or a Student
+The approved schema does not define an `Archived` student status or a student
 delete procedure. The frontend therefore uses Withdraw Student, which sets
 `student.student_status` to `Withdrawn` and preserves academic history.
 
@@ -74,6 +71,9 @@ delete procedure. The frontend therefore uses Withdraw Student, which sets
 4. The service validates the filters.
 5. The repository runs parameterised SQL against approved tables or views.
 6. The template displays result counts, empty states and responsive tables.
+
+The current reporting term for the no-registration report is determined from
+the academic-term data.
 
 PostgreSQL is the sole supported implementation database. Unit tests do not
 perform formal live PostgreSQL validation.

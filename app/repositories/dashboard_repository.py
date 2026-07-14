@@ -65,7 +65,7 @@ class DashboardRepository:
         )
 
     def get_student_overview(self, limit: int = 6) -> list[ApprovedStudentRecord]:
-        """Return a small approved Student overview for the dashboard."""
+        """Return a small student overview for the dashboard."""
         rows = db.session.execute(
             text(
                 f"""
@@ -91,7 +91,7 @@ class DashboardRepository:
         return [ApprovedStudentRecord(**dict(row)) for row in rows]
 
     def get_student_status_bars(self) -> list[DashboardBar]:
-        """Return Student status distribution bars from approved data."""
+        """Return student status distribution bars from approved data."""
         rows = db.session.execute(
             text(
                 f"""

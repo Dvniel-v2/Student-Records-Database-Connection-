@@ -50,7 +50,7 @@ class ApprovedStudentRecord:
 
 @dataclass(frozen=True)
 class StudentDirectoryResult:
-    """Paginated approved Student Directory result."""
+    """Paginated Student Directory result."""
 
     students: list[ApprovedStudentRecord]
     total_records: int
@@ -69,7 +69,7 @@ class ProgrammeOption:
 
 @dataclass(frozen=True)
 class StudentStatusSummary:
-    """Approved Student status counts."""
+    """Student status counts."""
 
     total: int
     by_status: dict[str, int]
@@ -82,7 +82,7 @@ class ApprovedStudentRepository:
         self.schema_name = schema_name
 
     def list_students(self) -> list[ApprovedStudentRecord]:
-        """Return approved student directory records ordered by student number."""
+        """Return student directory records ordered by student number."""
         rows = db.session.execute(
             text(
                 f"""
@@ -114,7 +114,7 @@ class ApprovedStudentRepository:
         page: int = 1,
         per_page: int = 25,
     ) -> StudentDirectoryResult:
-        """Return paginated approved student records matching visible fields."""
+        """Return paginated student records matching visible fields."""
         where_clauses: list[str] = []
         params: dict[str, str | int] = {
             "limit": per_page,
@@ -192,7 +192,7 @@ class ApprovedStudentRepository:
         )
 
     def get_student(self, student_id: int) -> ApprovedStudentRecord | None:
-        """Return one approved student directory record by student id."""
+        """Return one student directory record by student id."""
         row = (
             db.session.execute(
                 text(
@@ -237,7 +237,7 @@ class ApprovedStudentRepository:
         return [ProgrammeOption(**dict(row)) for row in rows]
 
     def list_statuses(self) -> list[str]:
-        """Return available approved Student status values."""
+        """Return available student status values."""
         rows = db.session.execute(
             text(
                 f"""
@@ -250,7 +250,7 @@ class ApprovedStudentRepository:
         return [str(status) for status in rows]
 
     def get_status_summary(self) -> StudentStatusSummary:
-        """Return approved Student status counts."""
+        """Return student status counts."""
         rows = db.session.execute(
             text(
                 f"""

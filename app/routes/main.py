@@ -64,7 +64,7 @@ def index() -> str:
 
 @main_bp.get("/students")
 def students() -> str:
-    """Render searchable, paginated approved Student Directory records."""
+    """Render searchable, paginated Student Directory records."""
     filters = {
         "q": request.args.get("q", "").strip(),
         "programme": request.args.get("programme", "").strip(),
@@ -103,7 +103,7 @@ def students() -> str:
 
 @main_bp.get("/students/new")
 def new_student_form() -> str:
-    """Render the approved Student creation form."""
+    """Render the student creation form."""
     try:
         choices = student_write_service.form_choices()
     except StudentWriteServiceError:
@@ -143,7 +143,7 @@ def grades() -> str:
 
 @main_bp.get("/reports")
 def reports() -> str:
-    """Render the assignment report catalogue."""
+    """Render the report catalogue."""
     return render_template(
         "reports.html", reports=assignment_report_service.catalogue()
     )
@@ -151,7 +151,7 @@ def reports() -> str:
 
 @main_bp.get("/reports/<report_key>")
 def report_detail(report_key: str) -> str:
-    """Render and optionally run one assignment report."""
+    """Render and optionally run one report."""
     has_run = request.args.get("run") == "1"
     try:
         report = assignment_report_service.build_report(
@@ -168,7 +168,7 @@ def report_detail(report_key: str) -> str:
 
 @main_bp.post("/students")
 def create_student():
-    """Create a Student in the approved normalised PostgreSQL schema."""
+    """Create a student in the approved normalised PostgreSQL schema."""
     validate_csrf()
     form = request.form.to_dict()
     try:
@@ -205,7 +205,7 @@ def create_student():
 
 @main_bp.get("/students/<int:student_id>")
 def view_student(student_id: int):
-    """Show a single approved student record."""
+    """Show a single student record."""
     try:
         student = student_service.get_student(student_id)
     except ApprovedStudentValidationError as exc:
@@ -223,7 +223,7 @@ def view_student(student_id: int):
 
 @main_bp.get("/students/<int:student_id>/edit")
 def edit_student_form(student_id: int):
-    """Render the approved Student edit form."""
+    """Render the student edit form."""
     try:
         student = student_write_service.get_student_for_edit(student_id)
         choices = student_write_service.form_choices()
@@ -245,7 +245,7 @@ def edit_student_form(student_id: int):
 
 @main_bp.post("/students/<int:student_id>/edit")
 def edit_student(student_id: int):
-    """Update a Student in the approved normalised PostgreSQL schema."""
+    """Update a student in the approved normalised PostgreSQL schema."""
     validate_csrf()
     form = request.form.to_dict()
     try:

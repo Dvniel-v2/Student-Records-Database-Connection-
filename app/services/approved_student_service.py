@@ -18,7 +18,7 @@ class ApprovedStudentServiceError(RuntimeError):
 
 
 class ApprovedStudentValidationError(ValueError):
-    """Raised when approved student query input is invalid."""
+    """Raised when student query input is invalid."""
 
 
 class ApprovedStudentService:
@@ -31,12 +31,12 @@ class ApprovedStudentService:
         self.repository = repository or ApprovedStudentRepository()
 
     def list_students(self) -> list[ApprovedStudentRecord]:
-        """Return approved student records."""
+        """Return student records."""
         try:
             return self.repository.list_students()
         except SQLAlchemyError as exc:
             raise ApprovedStudentServiceError(
-                "Unable to read approved student records."
+                "Unable to read student records."
             ) from exc
 
     def search_students(
@@ -48,7 +48,7 @@ class ApprovedStudentService:
         page: int = 1,
         per_page: int = 25,
     ) -> StudentDirectoryResult:
-        """Return validated and paginated approved student records."""
+        """Return validated and paginated student records."""
         cleaned_search = search_term.strip()[: self.MAX_SEARCH_LENGTH]
         cleaned_programme = programme_code.strip()[:20]
         cleaned_status = status.strip()[:40]
@@ -74,20 +74,18 @@ class ApprovedStudentService:
             return result
         except SQLAlchemyError as exc:
             raise ApprovedStudentServiceError(
-                "Unable to read approved student records."
+                "Unable to read student records."
             ) from exc
 
     def get_student(self, student_id: int) -> ApprovedStudentRecord | None:
-        """Return one approved student record."""
+        """Return one student record."""
         if student_id < 1:
             raise ApprovedStudentValidationError("Student id must be positive.")
 
         try:
             return self.repository.get_student(student_id)
         except SQLAlchemyError as exc:
-            raise ApprovedStudentServiceError(
-                "Unable to read approved student record."
-            ) from exc
+            raise ApprovedStudentServiceError("Unable to read student record.") from exc
 
     def list_programmes(self) -> list[ProgrammeOption]:
         """Return programme options for Student Directory filters."""
@@ -99,7 +97,7 @@ class ApprovedStudentService:
             ) from exc
 
     def list_statuses(self) -> list[str]:
-        """Return approved Student status filter values."""
+        """Return student status filter values."""
         try:
             return self.repository.list_statuses()
         except SQLAlchemyError as exc:
@@ -108,10 +106,10 @@ class ApprovedStudentService:
             ) from exc
 
     def get_status_summary(self) -> StudentStatusSummary:
-        """Return approved Student status summary counts."""
+        """Return student status summary counts."""
         try:
             return self.repository.get_status_summary()
         except SQLAlchemyError as exc:
             raise ApprovedStudentServiceError(
-                "Unable to read approved student summary."
+                "Unable to read student summary."
             ) from exc

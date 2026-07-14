@@ -35,7 +35,7 @@ class EditableStudentRecord:
 
 
 class StudentWriteRepository:
-    """Persist Student writes to person and student tables."""
+    """Persist student writes to person and student tables."""
 
     def __init__(self, schema_name: str = APPROVED_DATABASE_SCHEMA) -> None:
         self.schema_name = schema_name
@@ -202,7 +202,7 @@ class StudentWriteRepository:
             raise
 
     def update_student(self, student_id: int, data: dict[str, Any]) -> None:
-        """Update approved Student fields in one transaction."""
+        """Update student fields in one transaction."""
         try:
             current = self.get_student_for_edit(student_id)
             if current is None:

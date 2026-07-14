@@ -1,4 +1,4 @@
-"""Service layer for approved PostgreSQL Student write workflows."""
+"""Service layer for PostgreSQL student write workflows."""
 
 from __future__ import annotations
 
@@ -30,11 +30,11 @@ class StudentWriteValidationError(ValueError):
 
 
 class StudentWriteConflictError(RuntimeError):
-    """Raised when a Student write conflicts with existing records."""
+    """Raised when a student write conflicts with existing records."""
 
 
 class StudentWriteServiceError(RuntimeError):
-    """Raised when a Student write cannot be completed."""
+    """Raised when a student write cannot be completed."""
 
 
 @dataclass(frozen=True)
@@ -48,7 +48,7 @@ class StudentFormChoices:
 
 
 class StudentWriteService:
-    """Validate and coordinate Student writes."""
+    """Validate and coordinate student writes."""
 
     def __init__(self, repository: StudentWriteRepository | None = None) -> None:
         self.repository = repository or StudentWriteRepository()

@@ -85,7 +85,7 @@ class AssignmentReportService:
         ReportDefinition(
             "students-without-current-registration",
             "Students without current registration",
-            "Find active students without an enrolment in the selected current term.",
+            "Find active students without an enrolment in the current reporting term.",
             "None",
             [
                 ("Student number", "student_number"),
@@ -115,7 +115,7 @@ class AssignmentReportService:
         ),
         ReportDefinition(
             "lecturer-expertise",
-            "Lecturers by Expertise",
+            "Lecturers by expertise",
             "Search lecturers by expertise area.",
             "Expertise search",
             [
@@ -129,7 +129,7 @@ class AssignmentReportService:
         ),
         ReportDefinition(
             "staff-by-location",
-            "Staff by Department or Unit",
+            "Staff by department or unit",
             "Find non-academic staff by department or administrative unit.",
             "Department or administrative unit",
             [
@@ -144,7 +144,7 @@ class AssignmentReportService:
         ),
         ReportDefinition(
             "research-project-summary",
-            "Research Project Summary",
+            "Research project summary",
             "Summarise research projects, funding, members, publications and outcomes.",
             "Optional project or group",
             [
@@ -162,7 +162,7 @@ class AssignmentReportService:
         ),
         ReportDefinition(
             "programme-credit-summary",
-            "Programme Credit Summary",
+            "Programme credit summary",
             "Compare required programme credits with curriculum credits.",
             "Optional programme",
             [
