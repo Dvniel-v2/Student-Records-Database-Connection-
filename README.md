@@ -133,34 +133,85 @@ Use `black .` to format Python files before re-running the checks.
 ## Project Structure
 
 ```text
-app/
-  repositories/
-  routes/
-  security/
-  services/
-  static/
-  templates/
-docs/
-  README.md
-  start-here.md
-  how-unirecords-works.md
-  database-and-data.md
-  assignment-requirements.md
-  final-submission-checklist.md
-sql/
-  postgresql/
-tests/
-.env.example
-pyproject.toml
-requirements.txt
-run.py
-wsgi.py
+Student-Records-Database-Connection-/
+  .github/                         GitHub templates and automated checks
+    ISSUE_TEMPLATE/                Bug and feature request templates
+    workflows/                     GitHub Actions workflow for Python checks
+    pull_request_template.md       Pull request checklist
+
+  app/                             Main Flask application
+    repositories/                  Database access layer
+      academic_record_repository.py       Reads courses, modules, enrolments and grades
+      approved_student_repository.py      Reads Student Directory data
+      assignment_report_repository.py     Runs the eight report queries
+      dashboard_repository.py             Reads dashboard metrics and chart data
+      database_health_repository.py       Checks PostgreSQL and schema availability
+      student_write_repository.py         Creates, edits and withdraws students
+
+    routes/                        Web request layer
+      health.py                    Database health endpoint
+      main.py                      Dashboard, students, records and reports routes
+
+    security/                      Security helpers
+      csrf.py                      CSRF token generation and validation
+
+    services/                      Validation and business logic layer
+      academic_record_service.py          Prepares read-only academic record pages
+      approved_student_service.py         Validates and prepares student data
+      assignment_report_service.py        Defines and runs report workflows
+      dashboard_service.py                Prepares dashboard data
+      database_health_service.py          Builds database health results
+      student_write_service.py            Validates create, edit and withdrawal
+
+    static/                        Frontend assets
+      css/style.css                UniRecords visual styling
+      js/main.js                   Search, filters and small UI behaviours
+
+    templates/                     HTML pages rendered by Flask
+      base.html                    Shared layout, sidebar and top bar
+      dashboard.html               Dashboard page
+      students.html                Student Directory page
+      student_detail.html          Student Detail page
+      add_student.html             Add Student page
+      edit_student.html            Edit Student page
+      withdraw_student.html        Withdraw Student confirmation page
+      records.html                 Shared table page for records
+      reports.html                 Report catalogue page
+      report_detail.html           Individual report filters and results
+      student_form_fields.html     Shared student form fields
+
+    config.py                      Environment and database configuration
+    extensions.py                  Shared Flask extensions
+
+  docs/                            Human-readable project documentation
+    README.md                      Documentation reading order
+    start-here.md                  Beginner setup and run guide
+    how-unirecords-works.md        Application architecture
+    database-and-data.md           PostgreSQL structure and data use
+    assignment-requirements.md     Assignment evidence mapping
+    final-submission-checklist.md  Final handover checklist
+
+  sql/postgresql/                  Approved PostgreSQL database package
+    01_create_use_full_schema_postgresql.sql      Creates schema objects
+    02_insert_use_master_data_postgresql.sql      Inserts reference data
+    03_insert_use_activity_records_postgresql.sql Inserts activity records
+    04_use_validation_queries_postgresql.sql      Provides validation queries
+    README_PostgreSQL_Migration.md                Database package notes
+
+  tests/                           Automated tests
+    conftest.py                    Shared pytest fixtures
+    test_approved_student_repository.py
+    test_approved_student_service.py
+    test_assignment_report_repository.py
+    test_assignment_report_service.py
+    test_database_health.py
+    test_routes.py
+    test_student_write_service.py
+
+  .env.example                     Safe local configuration template
+  .gitignore                       Excludes secrets, virtual envs and caches
+  pyproject.toml                   Tool config for Ruff, Black and pytest
+  requirements.txt                 Python dependencies
+  run.py                           Local development entry point
+  wsgi.py                          WSGI entry point for hosted environments
 ```
-
-Important files:
-
-- `pyproject.toml` contains project metadata, dependencies and tool settings.
-- `requirements.txt` installs the project and development dependencies.
-- `.env.example` is a safe local configuration template.
-- `run.py` starts the local development server.
-- `wsgi.py` exposes the deployment entry point.
