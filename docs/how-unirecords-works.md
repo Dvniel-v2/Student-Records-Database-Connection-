@@ -101,3 +101,31 @@ is the source of truth.
 The `/health/database` endpoint checks database connectivity, schema presence
 and whether the approved `student` table can be queried. It does not create or
 change database objects.
+
+## Where To Make Changes
+
+Use the layer that owns the behaviour being changed.
+
+| Change needed | Work mainly in | Rule |
+| --- | --- | --- |
+| Page wording or layout | `app/templates/` | Keep database logic out of templates. |
+| Styling or browser behaviour | `app/static/css/`, `app/static/js/` | Keep JavaScript focused on interface behaviour. |
+| URL handling or redirects | `app/routes/` | Routes should call services, not SQL directly. |
+| Validation or business rules | `app/services/` | Keep reusable rules out of templates and repositories. |
+| Queries or transactions | `app/repositories/` | Use parameterised SQL and preserve transaction safety. |
+| Database baseline or sample data | `sql/postgresql/` | Change only with team agreement and regression testing. |
+| Automated checks | `tests/` | Update expected behaviour without weakening coverage. |
+| Setup or handover text | `docs/` | Avoid duplicating information already held in another guide. |
+
+## Rules For Future Changes
+
+1. Keep routes, services and repositories separated.
+2. Keep direct SQL out of routes and templates.
+3. Use parameterised SQL for user-controlled values.
+4. Do not commit `.env`, passwords or local credentials.
+5. Do not reintroduce MySQL or a live SQLite fallback.
+6. Do not hard-delete students; use the withdrawal lifecycle.
+7. Do not modify the approved SQL package without team agreement and regression
+   testing.
+8. Treat authentication, role-based authorisation and public deployment as
+   separate future scope.
