@@ -42,3 +42,7 @@ logs/
 instance/
 tmp/
 temp/
+
+# Local assistant/tooling state
+.agents/
+.agent/
